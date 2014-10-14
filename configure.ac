@@ -10,6 +10,9 @@ AC_REVISION([m4_esyscmd_s([git describe --tags --always])])
 AC_CONFIG_AUX_DIR([buildaux])
 AC_CONFIG_MACRO_DIR([buildaux])
 
+m4_pattern_forbid([^AX_])
+m4_pattern_forbid([^PKG_])
+
 AM_INIT_AUTOMAKE([foreign nostdinc silent-rules -Werror -Wall])
 AM_MAINTAINER_MODE()
 
@@ -17,9 +20,19 @@ AS_SHELL_SANITIZE()
 
 AC_CONFIG_SRCDIR([src/luaconfig.h])
 
+AC_PROG_CC()
+AX_REQUIRE_DEFINED([AX_APPEND_COMPILE_FLAGS])
+
+AX_APPEND_COMPILE_FLAGS([-Werror -Wall -Wpointer-arith -Wshadow], [WARNCFLAGS])
+AC_SUBST([WARNCFLAGS])
+
+dnl Initialise the testsuite
+dnl
 dnl AC_CONFIG_TESTDIR([tests])
 dnl AM_MISSING_PROG([AUTOM4TE], [autom4te])
 
+dnl Create the Makefiles
+dnl
 AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
@@ -27,3 +40,11 @@ AC_CONFIG_FILES([
 dnl	tests/Makefile
 
 AC_OUTPUT()
+
+dnl Display feature results
+dnl
+AC_MSG_NOTICE([ === Configuration results ===])
+AC_MSG_NOTICE([Package:             $PACKAGE_STRING])
+AC_MSG_NOTICE([c compiler:          $CC])
+AC_MSG_NOTICE([WARNCFLAGS:          $WARNCFLAGS])
+AC_MSG_NOTICE([ === Configuration results ===])
