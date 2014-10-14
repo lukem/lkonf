@@ -50,6 +50,8 @@ typedef struct LuaConfig LuaConfig;
 /**
  * Construct a LuaConfig.
  * @return LuaConfig created with default parameters.
+ * The internal lua_State is created with luaL_newstate().
+ * If there was an error constructing the lua_State, the error code will be set.
  */
 LUA_API LuaConfig *
 luaconfig_construct(void);
