@@ -28,6 +28,8 @@ AC_PROG_LIBTOOL()
 AX_APPEND_COMPILE_FLAGS([-Werror -Wall -Wpointer-arith -Wshadow], [WARNCFLAGS])
 AC_SUBST([WARNCFLAGS])
 
+PKG_CHECK_MODULES([LUA], [lua])
+
 dnl Initialise the testsuite
 dnl
 dnl AC_CONFIG_TESTDIR([tests])
