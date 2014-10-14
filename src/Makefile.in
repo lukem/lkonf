@@ -80,7 +80,10 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libluaconfig_la_LIBADD =
 am_libluaconfig_la_OBJECTS = libluaconfig_la-construct.lo \
-	libluaconfig_la-destruct.lo
+	libluaconfig_la-destruct.lo libluaconfig_la-get_error_code.lo \
+	libluaconfig_la-get_error_string.lo \
+	libluaconfig_la-get_lua_State.lo \
+	libluaconfig_la-reset_error.lo
 libluaconfig_la_OBJECTS = $(am_libluaconfig_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -250,7 +253,11 @@ noinst_HEADERS = \
 lib_LTLIBRARIES = libluaconfig.la
 libluaconfig_la_SOURCES = \
 	construct.c \
-	destruct.c
+	destruct.c \
+	get_error_code.c \
+	get_error_string.c \
+	get_lua_State.c \
+	reset_error.c
 
 libluaconfig_la_CPPFLAGS = \
 	-I$(srcdir) \
@@ -336,6 +343,10 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libluaconfig_la-construct.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libluaconfig_la-destruct.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libluaconfig_la-get_error_code.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libluaconfig_la-get_error_string.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libluaconfig_la-get_lua_State.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libluaconfig_la-reset_error.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -376,6 +387,38 @@ libluaconfig_la-destruct.lo: destruct.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='destruct.c' object='libluaconfig_la-destruct.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libluaconfig_la-destruct.lo `test -f 'destruct.c' || echo '$(srcdir)/'`destruct.c
+
+libluaconfig_la-get_error_code.lo: get_error_code.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libluaconfig_la-get_error_code.lo -MD -MP -MF $(DEPDIR)/libluaconfig_la-get_error_code.Tpo -c -o libluaconfig_la-get_error_code.lo `test -f 'get_error_code.c' || echo '$(srcdir)/'`get_error_code.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libluaconfig_la-get_error_code.Tpo $(DEPDIR)/libluaconfig_la-get_error_code.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_error_code.c' object='libluaconfig_la-get_error_code.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libluaconfig_la-get_error_code.lo `test -f 'get_error_code.c' || echo '$(srcdir)/'`get_error_code.c
+
+libluaconfig_la-get_error_string.lo: get_error_string.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libluaconfig_la-get_error_string.lo -MD -MP -MF $(DEPDIR)/libluaconfig_la-get_error_string.Tpo -c -o libluaconfig_la-get_error_string.lo `test -f 'get_error_string.c' || echo '$(srcdir)/'`get_error_string.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libluaconfig_la-get_error_string.Tpo $(DEPDIR)/libluaconfig_la-get_error_string.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_error_string.c' object='libluaconfig_la-get_error_string.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libluaconfig_la-get_error_string.lo `test -f 'get_error_string.c' || echo '$(srcdir)/'`get_error_string.c
+
+libluaconfig_la-get_lua_State.lo: get_lua_State.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libluaconfig_la-get_lua_State.lo -MD -MP -MF $(DEPDIR)/libluaconfig_la-get_lua_State.Tpo -c -o libluaconfig_la-get_lua_State.lo `test -f 'get_lua_State.c' || echo '$(srcdir)/'`get_lua_State.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libluaconfig_la-get_lua_State.Tpo $(DEPDIR)/libluaconfig_la-get_lua_State.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_lua_State.c' object='libluaconfig_la-get_lua_State.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libluaconfig_la-get_lua_State.lo `test -f 'get_lua_State.c' || echo '$(srcdir)/'`get_lua_State.c
+
+libluaconfig_la-reset_error.lo: reset_error.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libluaconfig_la-reset_error.lo -MD -MP -MF $(DEPDIR)/libluaconfig_la-reset_error.Tpo -c -o libluaconfig_la-reset_error.lo `test -f 'reset_error.c' || echo '$(srcdir)/'`reset_error.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libluaconfig_la-reset_error.Tpo $(DEPDIR)/libluaconfig_la-reset_error.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='reset_error.c' object='libluaconfig_la-reset_error.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libluaconfig_la-reset_error.lo `test -f 'reset_error.c' || echo '$(srcdir)/'`reset_error.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
