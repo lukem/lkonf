@@ -30,20 +30,23 @@ AC_SUBST([WARNCFLAGS])
 
 PKG_CHECK_MODULES([LUA], [lua])
 
+
 dnl Initialise the testsuite
 dnl
-dnl AC_CONFIG_TESTDIR([tests])
-dnl AM_MISSING_PROG([AUTOM4TE], [autom4te])
+AC_CONFIG_TESTDIR([tests])
+AM_MISSING_PROG([AUTOM4TE], [autom4te])
+
 
 dnl Create the Makefiles
 dnl
 AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
+	tests/Makefile
 ])
-dnl	tests/Makefile
 
 AC_OUTPUT()
+
 
 dnl Display feature results
 dnl
