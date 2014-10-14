@@ -1,10 +1,22 @@
+#
+# test programs
+#
+
 AM_CFLAGS = $(WARNCFLAGS)
+
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/src
 
 LDADD = \
 	$(builddir)/../src/libluaconfig.la
 
+noinst_PROGRAMS = \
+	luaconfig_test
 
+
+#
 # autotest rules
+#
 
 TESTSUITE = \
 	$(srcdir)/testsuite
@@ -15,6 +27,9 @@ AUTOTEST = \
 TESTSUITE_DEPS = \
 	$(srcdir)/package.m4 \
 	testsuite.at
+
+TESTSUITE_DEPS += \
+	construct.at
 
 DISTCLEANFILES = \
 	atconfig
