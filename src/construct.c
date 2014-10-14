@@ -14,6 +14,8 @@ luaconfig_construct(void)
 		return 0;
 	}
 
+	luaconfig_reset_error(lc);
+
 	lc->state = luaL_newstate();
 	if (! lc->state) {
 		lc->error_code = -1;
@@ -21,8 +23,6 @@ luaconfig_construct(void)
 			lc->error_string, sizeof(lc->error_string),
 			"Can't allocate lua state");
 	}
-
-	luaconfig_reset_error(lc);
 
 	return lc;
 }
