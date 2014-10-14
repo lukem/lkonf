@@ -11,6 +11,7 @@ test_construct(void)
 {
 	printf("luaconfig_construct()\n");
 
+	/* construct luaconfig, confirm initial state */
 	{
 		LuaConfig * tc1 = luaconfig_construct();
 		assert(tc1 && "luaconfig_construct returned 0");
@@ -22,6 +23,9 @@ test_construct(void)
 		assert(0 != errstr && "errstr == 0");
 		assert(0 == errstr[0] && "errstr[0] not empty");
 
+		lua_State * ls = luaconfig_get_lua_State(tc1);
+		assert(0 != ls && "lua_State == 0");
+
 		luaconfig_destruct(tc1);
 	}
 
@@ -29,8 +33,32 @@ test_construct(void)
 }
 
 
+int
+test_destruct(void)
+{
+	printf("luaconfig_destruct()\n");
+
+	/* destruct a default luaconfig */
+	{
+		LuaConfig * tc1 = luaconfig_construct();
+		assert(tc1 && "luaconfig_construct returned 0");
+
+		luaconfig_destruct(tc1);
+	}
+
+	/* destruct a NULL pointer (should be a no-op) */
+	{
+		luaconfig_destruct(0);
+	}
+
+	return EXIT_SUCCESS;
+}
+
+
+
 enum TestMask {
-	TEST_CONSTRUCT	= 1,
+	TEST_CONSTRUCT		= 1<<0,
+	TEST_DESTRUCT		= 1<<1,
 };
 
 void
@@ -72,8 +100,11 @@ main(int argc, char * argv[])
 		/* only test specific items */
 	int i = 0;
 	for (i = 1; i < argc; ++i) {
-		if (0 == strcmp("construct", argv[i])) {
+		if (0) {
+		} else if (0 == strcmp("construct", argv[i])) {
 			tests |= TEST_CONSTRUCT;
+		} else if (0 == strcmp("destruct", argv[i])) {
+			tests |= TEST_DESTRUCT;
 		} else {
 			fprintf(stderr, "%s: unknown argument '%s'\n",
 				progname, argv[i]);
@@ -87,6 +118,7 @@ main(int argc, char * argv[])
 	int result = EXIT_SUCCESS;
 
 	do_test(tests, TEST_CONSTRUCT, test_construct, &result);
+	do_test(tests, TEST_DESTRUCT, test_destruct, &result);
 
 	return result;
 }

@@ -3,3 +3,4 @@ AT_INIT([luaconfig])
 AT_COLOR_TESTS()
 
 m4_include([construct.at])
+m4_include([destruct.at])

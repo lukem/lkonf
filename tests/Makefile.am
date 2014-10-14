@@ -29,7 +29,8 @@ TESTSUITE_DEPS = \
 	testsuite.at
 
 TESTSUITE_DEPS += \
-	construct.at
+	construct.at \
+	destruct.at
 
 DISTCLEANFILES = \
 	atconfig
