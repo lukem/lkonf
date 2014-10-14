@@ -68,6 +68,8 @@ luaconfig_destruct(LuaConfig * iLc);
  * @param iLc	LuaConfig to use.
  * @return	lua_State used by LuaConfig. This may be useful for
  *		manipulating the sandbox, adjusting panic functions, etc.
+ *		If iLc is 0 or there's a fault in the internal state,
+ *		returns 0.
  *
  * @note Closing the lua_State underneath LuaConfig will result in undefined
  * behaviour.
@@ -82,7 +84,8 @@ luaconfig_get_lua_State(LuaConfig * iLc);
 
 /**
  * Error code from most recent LuaConfig operation, if any.
- * @return Integer value. 0 is no error.
+ * @param iLc	LuaConfig to use.
+ * @return Integer value. 0 is no error. ~0 is iLc is 0.
  * @todo provide enum or #defines for error catalog?
  */
 LUA_API int
@@ -90,7 +93,8 @@ luaconfig_get_error_code(LuaConfig * iLc);
 
 /**
  * Error string from most recent LuaConfig operation, if any.
- * @return Error string. 0 is no error.
+ * @param iLc	LuaConfig to use.
+ * @return Error string. 0 is no error, or iLc is 0.
  */
 LUA_API const char *
 luaconfig_get_error_string(LuaConfig * iLc);
