@@ -22,5 +22,7 @@ luaconfig_construct(void)
 			"Can't allocate lua state");
 	}
 
+	luaconfig_reset_error(lc);
+
 	return lc;
 }
