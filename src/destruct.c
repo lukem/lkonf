@@ -1,4 +1,4 @@
-#include "luaconfig_internal.h"
+#include "internal.h"
 
 #include <stdlib.h>
 
