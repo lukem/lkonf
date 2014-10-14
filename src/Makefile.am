@@ -7,7 +7,7 @@ noinst_HEADERS = \
 	internal.h
 
 
-noinst_LTLIBRARIES = libluaconfig.la
+lib_LTLIBRARIES = libluaconfig.la
 
 libluaconfig_la_SOURCES = \
 	construct.c \
@@ -18,4 +18,5 @@ libluaconfig_la_CPPFLAGS = \
 	$(LUA_CFLAGS)
 
 libluaconfig_la_LDFLAGS = \
+	-version-info 0:0:0 \
 	$(LUA_LIBS)
