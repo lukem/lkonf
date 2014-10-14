@@ -16,12 +16,14 @@ m4_pattern_forbid([^PKG_])
 AM_INIT_AUTOMAKE([foreign nostdinc silent-rules -Werror -Wall])
 AM_MAINTAINER_MODE()
 
+LT_PREREQ([2.4])
+
 AS_SHELL_SANITIZE()
 
 AC_CONFIG_SRCDIR([src/luaconfig.h])
 
 AC_PROG_CC()
-AX_REQUIRE_DEFINED([AX_APPEND_COMPILE_FLAGS])
+AC_PROG_LIBTOOL()
 
 AX_APPEND_COMPILE_FLAGS([-Werror -Wall -Wpointer-arith -Wshadow], [WARNCFLAGS])
 AC_SUBST([WARNCFLAGS])
