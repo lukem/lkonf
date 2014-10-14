@@ -5,18 +5,33 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum TestMask {
-	TEST_CONSTRUCT	= 1,
-};
 
 int
 test_construct(void)
 {
 	printf("luaconfig_construct()\n");
 
+	{
+		LuaConfig * tc1 = luaconfig_construct();
+		assert(tc1 && "luaconfig_construct returned 0");
+
+		int errcode = luaconfig_get_error_code(tc1);
+		assert(0 == errcode && "errcode != 0");
+
+		const char * errstr = luaconfig_get_error_string(tc1);
+		assert(0 != errstr && "errstr == 0");
+		assert(0 == errstr[0] && "errstr[0] not empty");
+
+		luaconfig_destruct(tc1);
+	}
+
 	return EXIT_SUCCESS;
 }
 
+
+enum TestMask {
+	TEST_CONSTRUCT	= 1,
+};
 
 void
 do_test(
@@ -25,13 +40,11 @@ do_test(
 	int 			(*iFunc)(void),
 	int *			ioResult)
 {
-	int res = 0;
-
 	if (! (iTests & iFlag)) {
 		return;
 	}
 
-	res = iFunc();
+	int res = iFunc();
 	if (res > *ioResult) {
 		*ioResult = res;
 	}
@@ -42,12 +55,9 @@ int
 main(int argc, char * argv[])
 {
 	enum TestMask	tests = 0;
-	int		i = 0;
-	int		result = EXIT_SUCCESS;
-	char *		progname = 0;
 
 		/* determine progname */
-	progname = strrchr(argv[0], '/');
+	char * progname = strrchr(argv[0], '/');
 	if (progname) {
 		++progname;
 	} else {
@@ -60,6 +70,7 @@ main(int argc, char * argv[])
 	}
 
 		/* only test specific items */
+	int i = 0;
 	for (i = 1; i < argc; ++i) {
 		if (0 == strcmp("construct", argv[i])) {
 			tests |= TEST_CONSTRUCT;
@@ -73,6 +84,8 @@ main(int argc, char * argv[])
 	assert(tests && "no tests selected");
 
 		/* perform each test */
+	int result = EXIT_SUCCESS;
+
 	do_test(tests, TEST_CONSTRUCT, test_construct, &result);
 
 	return result;
