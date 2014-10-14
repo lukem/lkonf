@@ -47,8 +47,9 @@ struct LuaConfig
 
 /**
  * Reset the LuaConfig error state.
+ * @warning Asserts that iLc is not 0.
  */
 void
-luaconfig_reset_error(LuaConfig *);
+luaconfig_reset_error(LuaConfig * iLc);
 
 #endif /* LUACONFIG_H */
