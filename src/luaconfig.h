@@ -109,11 +109,12 @@ luaconfig_get_error_string(LuaConfig * iLc);
  *	- get_TYPE.  api variations
  *		- "path" or { "key", "key", ...} variations
  *		- optional (with default).  or always?
- * 	- return internal lua_State
  *	- isFunction()
  *	- helpers to call functions and extract results
  *	- stack cleaner?
  *	- path walker
+ *	- internal protected wrappers for lua_*() per
+ *		https://github.com/jmmv/lutok/blob/master/state.cpp
  */
 
 #endif /* LUACONFIG_H */
