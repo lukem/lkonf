@@ -1,5 +1,5 @@
-#ifndef LUACONFIG_H
-#define LUACONFIG_H 1
+#ifndef lukonf_H
+#define lukonf_H 1
 
 /*
  * Copyright (c) 2014 Luke Mewburn <Luke@Mewburn.net>
@@ -38,66 +38,66 @@
  */
 
 /**
- * Opaque type for LuaConfig.
+ * Opaque type for Lukonf.
  */
-typedef struct LuaConfig LuaConfig;
+typedef struct Lukonf Lukonf;
 
 
 /*
- * LuaConfig object management.
+ * Lukonf object management.
  */
 
 /**
- * Construct a LuaConfig.
- * @return LuaConfig created with default parameters.
+ * Construct a Lukonf.
+ * @return Lukonf created with default parameters.
  * The internal lua_State is created with luaL_newstate().
  * If there was an error constructing the lua_State, the error code will be set.
  */
-LUA_API LuaConfig *
-luaconfig_construct(void);
+LUA_API Lukonf *
+lukonf_construct(void);
 
 /**
- * Destruct a LuaConfig.
- * @param iLc	LuaConfig to destroy.
+ * Destruct a Lukonf.
+ * @param iLc	Lukonf to destroy.
  */
 LUA_API void
-luaconfig_destruct(LuaConfig * iLc);
+lukonf_destruct(Lukonf * iLc);
 
 /**
  * Access internal lua_State.
- * @param iLc	LuaConfig to use.
- * @return	lua_State used by LuaConfig. This may be useful for
+ * @param iLc	Lukonf to use.
+ * @return	lua_State used by Lukonf. This may be useful for
  *		manipulating the sandbox, adjusting panic functions, etc.
  *		If iLc is 0 or there's a fault in the internal state,
  *		returns 0.
  *
- * @note Closing the lua_State underneath LuaConfig will result in undefined
+ * @note Closing the lua_State underneath Lukonf will result in undefined
  * behaviour.
  */
 LUA_API lua_State *
-luaconfig_get_lua_State(LuaConfig * iLc);
+lukonf_get_lua_State(Lukonf * iLc);
 
 
 /*
- * LuaConfig error management.
+ * Lukonf error management.
  */
 
 /**
- * Error code from most recent LuaConfig operation, if any.
- * @param iLc	LuaConfig to use.
+ * Error code from most recent Lukonf operation, if any.
+ * @param iLc	Lukonf to use.
  * @return Integer value. 0 is no error. ~0 is iLc is 0.
  * @todo provide enum or #defines for error catalog?
  */
 LUA_API int
-luaconfig_get_error_code(LuaConfig * iLc);
+lukonf_get_error_code(Lukonf * iLc);
 
 /**
- * Error string from most recent LuaConfig operation, if any.
- * @param iLc	LuaConfig to use.
+ * Error string from most recent Lukonf operation, if any.
+ * @param iLc	Lukonf to use.
  * @return Error string. 0 is no error, or iLc is 0.
  */
 LUA_API const char *
-luaconfig_get_error_string(LuaConfig * iLc);
+lukonf_get_error_string(Lukonf * iLc);
 
 
 /*
@@ -106,23 +106,23 @@ luaconfig_get_error_string(LuaConfig * iLc);
 
 /**
  * Load file as a Lua chunk and execute in the sandbox.
- * @param iLc	LuaConfig.
+ * @param iLc	Lukonf.
  * @param iFile	Filename
  * @return 	Error code.
  * @todo evaluate if ok.
  */
 LUA_API int
-luaconfig_load_file(LuaConfig * iLc, const char * iFile);
+lukonf_load_file(Lukonf * iLc, const char * iFile);
 
 /**
  * Load string as a Lua chunk and execute in the sandbox.
- * @param iLc		LuaConfig.
+ * @param iLc		Lukonf.
  * @param iString	String to load.
  * @return		Error code.
  * @todo evaluate if ok.
  */
 LUA_API int
-luaconfig_load_string(LuaConfig * iLc, const char * iString);
+lukonf_load_string(Lukonf * iLc, const char * iString);
 
 
 /*
@@ -143,4 +143,4 @@ luaconfig_load_string(LuaConfig * iLc, const char * iString);
  *		https://github.com/jmmv/lutok/blob/master/state.cpp
  */
 
-#endif /* LUACONFIG_H */
+#endif /* lukonf_H */

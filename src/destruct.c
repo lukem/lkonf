@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 void
-luaconfig_destruct(LuaConfig * iLc)
+lukonf_destruct(Lukonf * iLc)
 {
 	if (! iLc) {
 		return;

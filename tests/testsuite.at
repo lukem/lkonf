@@ -1,4 +1,4 @@
-AT_INIT([luaconfig])
+AT_INIT([lukonf])
 
 AT_COLOR_TESTS()
 

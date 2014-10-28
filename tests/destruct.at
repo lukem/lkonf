@@ -1,5 +1,5 @@
 AT_SETUP([destruct])
 
-AT_CHECK([luaconfig_test destruct], [0], [ignore])
+AT_CHECK([lukonf_test destruct], [0], [ignore])
 
 AT_CLEANUP()

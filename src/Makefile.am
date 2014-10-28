@@ -1,15 +1,15 @@
 AM_CFLAGS = $(WARNCFLAGS)
 
 include_HEADERS = \
-	luaconfig.h
+	lukonf.h
 
 noinst_HEADERS = \
 	internal.h
 
 
-lib_LTLIBRARIES = libluaconfig.la
+lib_LTLIBRARIES = liblukonf.la
 
-libluaconfig_la_SOURCES = \
+liblukonf_la_SOURCES = \
 	construct.c \
 	destruct.c \
 	get_error_code.c \
@@ -17,10 +17,10 @@ libluaconfig_la_SOURCES = \
 	get_lua_State.c \
 	reset_error.c
 
-libluaconfig_la_CPPFLAGS = \
+liblukonf_la_CPPFLAGS = \
 	-I$(srcdir) \
 	$(LUA_CFLAGS)
 
-libluaconfig_la_LDFLAGS = \
+liblukonf_la_LDFLAGS = \
 	-version-info 0:0:0 \
 	$(LUA_LIBS)

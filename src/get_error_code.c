@@ -1,7 +1,7 @@
 #include "internal.h"
 
 int
-luaconfig_get_error_code(LuaConfig * iLc)
+lukonf_get_error_code(Lukonf * iLc)
 {
 	if (! iLc) {
 		return ~0;

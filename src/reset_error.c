@@ -4,7 +4,7 @@
 #include <string.h>
 
 void
-luaconfig_reset_error(LuaConfig * iLc)
+lukonf_reset_error(Lukonf * iLc)
 {
 	assert(iLc && "iLc NULL");
 

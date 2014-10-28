@@ -1,7 +1,7 @@
 #include "internal.h"
 
 const char *
-luaconfig_get_error_string(LuaConfig * iLc)
+lukonf_get_error_string(Lukonf * iLc)
 {
 	if (! iLc) {
 		return 0;

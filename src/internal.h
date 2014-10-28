@@ -1,5 +1,5 @@
-#ifndef LUACONFIG_INTERNAL_H
-#define LUACONFIG_INTERNAL_H 1
+#ifndef LUKONF_INTERNAL_H
+#define LUKONF_INTERNAL_H 1
 
 /*
  * Copyright (c) 2014 Luke Mewburn <Luke@Mewburn.net>
@@ -28,17 +28,17 @@
 
 /**
  * @file
- * LuaConfig internals.
+ * Lukonf internals.
  * Do not include directly.
  */ 
 
-#include <luaconfig.h>
+#include <lukonf.h>
 
 
 /**
- * LuaConfig object.
+ * Lukonf object.
  */
-struct LuaConfig
+struct Lukonf
 {
 	lua_State *	state;
 	int		error_code;
@@ -46,10 +46,10 @@ struct LuaConfig
 };
 
 /**
- * Reset the LuaConfig error state.
+ * Reset the Lukonf error state.
  * @warning Asserts that iLc is not 0.
  */
 void
-luaconfig_reset_error(LuaConfig * iLc);
+lukonf_reset_error(Lukonf * iLc);
 
-#endif /* LUACONFIG_H */
+#endif /* LUKONF_INTERNAL_H */

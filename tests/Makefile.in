@@ -38,7 +38,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = luaconfig_test$(EXEEXT)
+noinst_PROGRAMS = lukonf_test$(EXEEXT)
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -59,10 +59,10 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-luaconfig_test_SOURCES = luaconfig_test.c
-luaconfig_test_OBJECTS = luaconfig_test.$(OBJEXT)
-luaconfig_test_LDADD = $(LDADD)
-luaconfig_test_DEPENDENCIES = $(builddir)/../src/libluaconfig.la
+lukonf_test_SOURCES = lukonf_test.c
+lukonf_test_OBJECTS = lukonf_test.$(OBJEXT)
+lukonf_test_LDADD = $(LDADD)
+lukonf_test_DEPENDENCIES = $(builddir)/../src/liblukonf.la
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -92,8 +92,8 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = luaconfig_test.c
-DIST_SOURCES = luaconfig_test.c
+SOURCES = lukonf_test.c
+DIST_SOURCES = lukonf_test.c
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -222,7 +222,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src
 
 LDADD = \
-	$(builddir)/../src/libluaconfig.la
+	$(builddir)/../src/liblukonf.la
 
 
 #
@@ -286,9 +286,9 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-luaconfig_test$(EXEEXT): $(luaconfig_test_OBJECTS) $(luaconfig_test_DEPENDENCIES) 
-	@rm -f luaconfig_test$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(luaconfig_test_OBJECTS) $(luaconfig_test_LDADD) $(LIBS)
+lukonf_test$(EXEEXT): $(lukonf_test_OBJECTS) $(lukonf_test_DEPENDENCIES) 
+	@rm -f lukonf_test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(lukonf_test_OBJECTS) $(lukonf_test_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -296,7 +296,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/luaconfig_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lukonf_test.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

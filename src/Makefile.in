@@ -78,20 +78,18 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libluaconfig_la_LIBADD =
-am_libluaconfig_la_OBJECTS = libluaconfig_la-construct.lo \
-	libluaconfig_la-destruct.lo libluaconfig_la-get_error_code.lo \
-	libluaconfig_la-get_error_string.lo \
-	libluaconfig_la-get_lua_State.lo \
-	libluaconfig_la-reset_error.lo
-libluaconfig_la_OBJECTS = $(am_libluaconfig_la_OBJECTS)
+liblukonf_la_LIBADD =
+am_liblukonf_la_OBJECTS = liblukonf_la-construct.lo \
+	liblukonf_la-destruct.lo liblukonf_la-get_error_code.lo \
+	liblukonf_la-get_error_string.lo liblukonf_la-get_lua_State.lo \
+	liblukonf_la-reset_error.lo
+liblukonf_la_OBJECTS = $(am_liblukonf_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
-libluaconfig_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(libluaconfig_la_LDFLAGS) $(LDFLAGS) \
-	-o $@
+liblukonf_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(liblukonf_la_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = 
 depcomp = $(SHELL) $(top_srcdir)/buildaux/depcomp
 am__depfiles_maybe = depfiles
@@ -118,8 +116,8 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(libluaconfig_la_SOURCES)
-DIST_SOURCES = $(libluaconfig_la_SOURCES)
+SOURCES = $(liblukonf_la_SOURCES)
+DIST_SOURCES = $(liblukonf_la_SOURCES)
 HEADERS = $(include_HEADERS) $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -246,13 +244,13 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CFLAGS = $(WARNCFLAGS)
 include_HEADERS = \
-	luaconfig.h
+	lukonf.h
 
 noinst_HEADERS = \
 	internal.h
 
-lib_LTLIBRARIES = libluaconfig.la
-libluaconfig_la_SOURCES = \
+lib_LTLIBRARIES = liblukonf.la
+liblukonf_la_SOURCES = \
 	construct.c \
 	destruct.c \
 	get_error_code.c \
@@ -260,11 +258,11 @@ libluaconfig_la_SOURCES = \
 	get_lua_State.c \
 	reset_error.c
 
-libluaconfig_la_CPPFLAGS = \
+liblukonf_la_CPPFLAGS = \
 	-I$(srcdir) \
 	$(LUA_CFLAGS)
 
-libluaconfig_la_LDFLAGS = \
+liblukonf_la_LDFLAGS = \
 	-version-info 0:0:0 \
 	$(LUA_LIBS)
 
@@ -333,8 +331,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libluaconfig.la: $(libluaconfig_la_OBJECTS) $(libluaconfig_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libluaconfig_la_LINK) -rpath $(libdir) $(libluaconfig_la_OBJECTS) $(libluaconfig_la_LIBADD) $(LIBS)
+liblukonf.la: $(liblukonf_la_OBJECTS) $(liblukonf_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(liblukonf_la_LINK) -rpath $(libdir) $(liblukonf_la_OBJECTS) $(liblukonf_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -342,12 +340,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libluaconfig_la-construct.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libluaconfig_la-destruct.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libluaconfig_la-get_error_code.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libluaconfig_la-get_error_string.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libluaconfig_la-get_lua_State.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libluaconfig_la-reset_error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblukonf_la-construct.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblukonf_la-destruct.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblukonf_la-get_error_code.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblukonf_la-get_error_string.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblukonf_la-get_lua_State.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblukonf_la-reset_error.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -373,53 +371,53 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-libluaconfig_la-construct.lo: construct.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libluaconfig_la-construct.lo -MD -MP -MF $(DEPDIR)/libluaconfig_la-construct.Tpo -c -o libluaconfig_la-construct.lo `test -f 'construct.c' || echo '$(srcdir)/'`construct.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libluaconfig_la-construct.Tpo $(DEPDIR)/libluaconfig_la-construct.Plo
+liblukonf_la-construct.lo: construct.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblukonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblukonf_la-construct.lo -MD -MP -MF $(DEPDIR)/liblukonf_la-construct.Tpo -c -o liblukonf_la-construct.lo `test -f 'construct.c' || echo '$(srcdir)/'`construct.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblukonf_la-construct.Tpo $(DEPDIR)/liblukonf_la-construct.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='construct.c' object='libluaconfig_la-construct.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='construct.c' object='liblukonf_la-construct.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libluaconfig_la-construct.lo `test -f 'construct.c' || echo '$(srcdir)/'`construct.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblukonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblukonf_la-construct.lo `test -f 'construct.c' || echo '$(srcdir)/'`construct.c
 
-libluaconfig_la-destruct.lo: destruct.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libluaconfig_la-destruct.lo -MD -MP -MF $(DEPDIR)/libluaconfig_la-destruct.Tpo -c -o libluaconfig_la-destruct.lo `test -f 'destruct.c' || echo '$(srcdir)/'`destruct.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libluaconfig_la-destruct.Tpo $(DEPDIR)/libluaconfig_la-destruct.Plo
+liblukonf_la-destruct.lo: destruct.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblukonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblukonf_la-destruct.lo -MD -MP -MF $(DEPDIR)/liblukonf_la-destruct.Tpo -c -o liblukonf_la-destruct.lo `test -f 'destruct.c' || echo '$(srcdir)/'`destruct.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblukonf_la-destruct.Tpo $(DEPDIR)/liblukonf_la-destruct.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='destruct.c' object='libluaconfig_la-destruct.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='destruct.c' object='liblukonf_la-destruct.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libluaconfig_la-destruct.lo `test -f 'destruct.c' || echo '$(srcdir)/'`destruct.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblukonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblukonf_la-destruct.lo `test -f 'destruct.c' || echo '$(srcdir)/'`destruct.c
 
-libluaconfig_la-get_error_code.lo: get_error_code.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libluaconfig_la-get_error_code.lo -MD -MP -MF $(DEPDIR)/libluaconfig_la-get_error_code.Tpo -c -o libluaconfig_la-get_error_code.lo `test -f 'get_error_code.c' || echo '$(srcdir)/'`get_error_code.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libluaconfig_la-get_error_code.Tpo $(DEPDIR)/libluaconfig_la-get_error_code.Plo
+liblukonf_la-get_error_code.lo: get_error_code.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblukonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblukonf_la-get_error_code.lo -MD -MP -MF $(DEPDIR)/liblukonf_la-get_error_code.Tpo -c -o liblukonf_la-get_error_code.lo `test -f 'get_error_code.c' || echo '$(srcdir)/'`get_error_code.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblukonf_la-get_error_code.Tpo $(DEPDIR)/liblukonf_la-get_error_code.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_error_code.c' object='libluaconfig_la-get_error_code.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_error_code.c' object='liblukonf_la-get_error_code.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libluaconfig_la-get_error_code.lo `test -f 'get_error_code.c' || echo '$(srcdir)/'`get_error_code.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblukonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblukonf_la-get_error_code.lo `test -f 'get_error_code.c' || echo '$(srcdir)/'`get_error_code.c
 
-libluaconfig_la-get_error_string.lo: get_error_string.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libluaconfig_la-get_error_string.lo -MD -MP -MF $(DEPDIR)/libluaconfig_la-get_error_string.Tpo -c -o libluaconfig_la-get_error_string.lo `test -f 'get_error_string.c' || echo '$(srcdir)/'`get_error_string.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libluaconfig_la-get_error_string.Tpo $(DEPDIR)/libluaconfig_la-get_error_string.Plo
+liblukonf_la-get_error_string.lo: get_error_string.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblukonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblukonf_la-get_error_string.lo -MD -MP -MF $(DEPDIR)/liblukonf_la-get_error_string.Tpo -c -o liblukonf_la-get_error_string.lo `test -f 'get_error_string.c' || echo '$(srcdir)/'`get_error_string.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblukonf_la-get_error_string.Tpo $(DEPDIR)/liblukonf_la-get_error_string.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_error_string.c' object='libluaconfig_la-get_error_string.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_error_string.c' object='liblukonf_la-get_error_string.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libluaconfig_la-get_error_string.lo `test -f 'get_error_string.c' || echo '$(srcdir)/'`get_error_string.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblukonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblukonf_la-get_error_string.lo `test -f 'get_error_string.c' || echo '$(srcdir)/'`get_error_string.c
 
-libluaconfig_la-get_lua_State.lo: get_lua_State.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libluaconfig_la-get_lua_State.lo -MD -MP -MF $(DEPDIR)/libluaconfig_la-get_lua_State.Tpo -c -o libluaconfig_la-get_lua_State.lo `test -f 'get_lua_State.c' || echo '$(srcdir)/'`get_lua_State.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libluaconfig_la-get_lua_State.Tpo $(DEPDIR)/libluaconfig_la-get_lua_State.Plo
+liblukonf_la-get_lua_State.lo: get_lua_State.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblukonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblukonf_la-get_lua_State.lo -MD -MP -MF $(DEPDIR)/liblukonf_la-get_lua_State.Tpo -c -o liblukonf_la-get_lua_State.lo `test -f 'get_lua_State.c' || echo '$(srcdir)/'`get_lua_State.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblukonf_la-get_lua_State.Tpo $(DEPDIR)/liblukonf_la-get_lua_State.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_lua_State.c' object='libluaconfig_la-get_lua_State.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_lua_State.c' object='liblukonf_la-get_lua_State.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libluaconfig_la-get_lua_State.lo `test -f 'get_lua_State.c' || echo '$(srcdir)/'`get_lua_State.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblukonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblukonf_la-get_lua_State.lo `test -f 'get_lua_State.c' || echo '$(srcdir)/'`get_lua_State.c
 
-libluaconfig_la-reset_error.lo: reset_error.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libluaconfig_la-reset_error.lo -MD -MP -MF $(DEPDIR)/libluaconfig_la-reset_error.Tpo -c -o libluaconfig_la-reset_error.lo `test -f 'reset_error.c' || echo '$(srcdir)/'`reset_error.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libluaconfig_la-reset_error.Tpo $(DEPDIR)/libluaconfig_la-reset_error.Plo
+liblukonf_la-reset_error.lo: reset_error.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblukonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblukonf_la-reset_error.lo -MD -MP -MF $(DEPDIR)/liblukonf_la-reset_error.Tpo -c -o liblukonf_la-reset_error.lo `test -f 'reset_error.c' || echo '$(srcdir)/'`reset_error.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblukonf_la-reset_error.Tpo $(DEPDIR)/liblukonf_la-reset_error.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='reset_error.c' object='libluaconfig_la-reset_error.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='reset_error.c' object='liblukonf_la-reset_error.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libluaconfig_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libluaconfig_la-reset_error.lo `test -f 'reset_error.c' || echo '$(srcdir)/'`reset_error.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblukonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblukonf_la-reset_error.lo `test -f 'reset_error.c' || echo '$(srcdir)/'`reset_error.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

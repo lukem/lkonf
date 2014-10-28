@@ -8,10 +8,10 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src
 
 LDADD = \
-	$(builddir)/../src/libluaconfig.la
+	$(builddir)/../src/liblukonf.la
 
 noinst_PROGRAMS = \
-	luaconfig_test
+	lukonf_test
 
 
 #

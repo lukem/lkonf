@@ -1,4 +1,4 @@
-#include <luaconfig.h>
+#include <lukonf.h>
 
 #include <assert.h>
 #include <stdio.h>
@@ -9,24 +9,24 @@
 int
 test_construct(void)
 {
-	printf("luaconfig_construct()\n");
+	printf("lukonf_construct()\n");
 
-	/* construct luaconfig, confirm initial state */
+	/* construct lukonf, confirm initial state */
 	{
-		LuaConfig * tc1 = luaconfig_construct();
-		assert(tc1 && "luaconfig_construct returned 0");
+		Lukonf * tc1 = lukonf_construct();
+		assert(tc1 && "lukonf_construct returned 0");
 
-		int errcode = luaconfig_get_error_code(tc1);
+		int errcode = lukonf_get_error_code(tc1);
 		assert(0 == errcode && "errcode != 0");
 
-		const char * errstr = luaconfig_get_error_string(tc1);
+		const char * errstr = lukonf_get_error_string(tc1);
 		assert(0 != errstr && "errstr == 0");
 		assert(0 == errstr[0] && "errstr[0] not empty");
 
-		lua_State * ls = luaconfig_get_lua_State(tc1);
+		lua_State * ls = lukonf_get_lua_State(tc1);
 		assert(0 != ls && "lua_State == 0");
 
-		luaconfig_destruct(tc1);
+		lukonf_destruct(tc1);
 	}
 
 	return EXIT_SUCCESS;
@@ -36,19 +36,19 @@ test_construct(void)
 int
 test_destruct(void)
 {
-	printf("luaconfig_destruct()\n");
+	printf("lukonf_destruct()\n");
 
-	/* destruct a default luaconfig */
+	/* destruct a default lukonf */
 	{
-		LuaConfig * tc1 = luaconfig_construct();
-		assert(tc1 && "luaconfig_construct returned 0");
+		Lukonf * tc1 = lukonf_construct();
+		assert(tc1 && "lukonf_construct returned 0");
 
-		luaconfig_destruct(tc1);
+		lukonf_destruct(tc1);
 	}
 
 	/* destruct a NULL pointer (should be a no-op) */
 	{
-		luaconfig_destruct(0);
+		lukonf_destruct(0);
 	}
 
 	return EXIT_SUCCESS;

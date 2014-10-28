@@ -4,17 +4,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-LuaConfig *
-luaconfig_construct(void)
+Lukonf *
+lukonf_construct(void)
 {
-	LuaConfig * lc = 0;
+	Lukonf * lc = 0;
 
 	lc = calloc(1, sizeof(*lc));
 	if (! lc) {
 		return 0;
 	}
 
-	luaconfig_reset_error(lc);
+	lukonf_reset_error(lc);
 
 	lc->state = luaL_newstate();
 	if (! lc->state) {
