@@ -14,7 +14,7 @@ lkonf_construct(void)
 		return 0;
 	}
 
-	lkonf_reset_error(lc);
+	lki_reset_error(lc);
 
 	lc->state = luaL_newstate();
 	if (! lc->state) {

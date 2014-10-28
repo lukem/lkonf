@@ -52,21 +52,21 @@ struct lkonf_s
  * @warning Asserts that iLc is not 0.
  */
 void
-lkonf_reset_error(lkonf_t * iLc);
+lki_reset_error(lkonf_t * iLc);
 
 /**
  * Set the lkonf_t error state and string.
  * @warning Asserts that iLc is not 0.
  */
 void
-lkonf_set_error(lkonf_t * iLc, lkerr_t iCode, const char * iString);
+lki_set_error(lkonf_t * iLc, lkerr_t iCode, const char * iString);
 
 /**
  * Set the lkonf_t error state and error string at top of the Lua stack.
  * @warning Asserts that iLc is not 0.
  */
 void
-lkonf_set_error_from_state(lkonf_t * iLc, lkerr_t iCode);
+lki_set_error_from_state(lkonf_t * iLc, lkerr_t iCode);
 
 
 /**
@@ -78,7 +78,7 @@ lkonf_set_error_from_state(lkonf_t * iLc, lkerr_t iCode);
  * @returns Error state if not ok.
  */
 lkerr_t
-lkonf_state_entry(lkonf_t * iLc);
+lki_state_entry(lkonf_t * iLc);
 
 /**
  * State exit validation and cleanup.
@@ -87,7 +87,7 @@ lkonf_state_entry(lkonf_t * iLc);
  * @warning Asserts that the Lua stack hasn't gone below the depth.
  */
 lkerr_t
-lkonf_state_exit(lkonf_t * iLc);
+lki_state_exit(lkonf_t * iLc);
 
 
 /**
@@ -100,6 +100,6 @@ lkonf_state_exit(lkonf_t * iLc);
  * @todo sandbox
  */
 lkerr_t
-lkonf_call_chunk(lkonf_t * iLc, const int iNumArgs, const int iNumResults);
+lki_call_chunk(lkonf_t * iLc, const int iNumArgs, const int iNumResults);
 
 #endif /* LKONF_INTERNAL_H */

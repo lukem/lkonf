@@ -9,21 +9,21 @@ lkonf_load_file(lkonf_t * iLc, const char * iFile)
 		return LK_LKONF_NULL;
 	}
 
-	if (LK_OK != lkonf_state_entry(iLc)) {
-		return lkonf_state_exit(iLc);
+	if (LK_OK != lki_state_entry(iLc)) {
+		return lki_state_exit(iLc);
 	}
 
 	if (! iFile) {
-		lkonf_set_error(iLc, LK_ARG_BAD, "iFile NULL");
-		return lkonf_state_exit(iLc);
+		lki_set_error(iLc, LK_ARG_BAD, "iFile NULL");
+		return lki_state_exit(iLc);
 	}
 
 	if (luaL_loadfile(iLc->state, iFile)) {
-		lkonf_set_error_from_state(iLc, LK_LOAD_CHUNK);
-		return lkonf_state_exit(iLc);
+		lki_set_error_from_state(iLc, LK_LOAD_CHUNK);
+		return lki_state_exit(iLc);
 	}
 
-	lkonf_call_chunk(iLc, 0, 0);
+	lki_call_chunk(iLc, 0, 0);
 
-	return lkonf_state_exit(iLc);
+	return lki_state_exit(iLc);
 }

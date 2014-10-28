@@ -3,17 +3,17 @@
 #include <assert.h>
 
 lkerr_t
-lkonf_state_entry(lkonf_t * iLc)
+lki_state_entry(lkonf_t * iLc)
 {
 	if (! iLc) {
 		return LK_LKONF_NULL;
 	}
 
-	lkonf_reset_error(iLc);
+	lki_reset_error(iLc);
 
 	iLc->depth = -1;
 	if (! iLc->state) {
-		lkonf_set_error(iLc, LK_STATE_NULL, "Lua state null");
+		lki_set_error(iLc, LK_STATE_NULL, "Lua state null");
 		return iLc->error_code;
 	}
 
@@ -23,7 +23,7 @@ lkonf_state_entry(lkonf_t * iLc)
 }
 
 lkerr_t
-lkonf_state_exit(lkonf_t * iLc)
+lki_state_exit(lkonf_t * iLc)
 {
 	if (! iLc) {
 		return LK_LKONF_NULL;
@@ -31,7 +31,7 @@ lkonf_state_exit(lkonf_t * iLc)
 
 	if (! iLc->state) {
 		if (! iLc->error_code) {
-			lkonf_set_error(iLc, LK_STATE_NULL, "Lua state null");
+			lki_set_error(iLc, LK_STATE_NULL, "Lua state null");
 		}
 		return iLc->error_code;
 	}

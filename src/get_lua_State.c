@@ -7,6 +7,6 @@ lkonf_get_lua_State(lkonf_t * iLc)
 		return 0;
 	}
 
-	lkonf_reset_error(iLc);
+	lki_reset_error(iLc);
 	return iLc->state;
 }
