@@ -16,6 +16,7 @@ liblkonf_la_SOURCES = \
 	get_error_code.c \
 	get_error_string.c \
 	get_lua_State.c \
+	load_file.c \
 	load_string.c \
 	set_error.c \
 	state_entry_exit.c

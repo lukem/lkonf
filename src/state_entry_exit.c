@@ -2,7 +2,6 @@
 
 #include <assert.h>
 
-
 lkerr_t
 lkonf_state_entry(lkonf_t * iLc)
 {
