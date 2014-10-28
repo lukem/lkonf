@@ -82,7 +82,8 @@ liblkonf_la_LIBADD =
 am_liblkonf_la_OBJECTS = liblkonf_la-construct.lo \
 	liblkonf_la-destruct.lo liblkonf_la-get_error_code.lo \
 	liblkonf_la-get_error_string.lo liblkonf_la-get_lua_State.lo \
-	liblkonf_la-reset_error.lo
+	liblkonf_la-load_string.lo liblkonf_la-set_error.lo \
+	liblkonf_la-state_entry_exit.lo
 liblkonf_la_OBJECTS = $(am_liblkonf_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -256,7 +257,9 @@ liblkonf_la_SOURCES = \
 	get_error_code.c \
 	get_error_string.c \
 	get_lua_State.c \
-	reset_error.c
+	load_string.c \
+	set_error.c \
+	state_entry_exit.c
 
 liblkonf_la_CPPFLAGS = \
 	-I$(srcdir) \
@@ -345,7 +348,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_error_code.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_error_string.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_lua_State.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-reset_error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-load_string.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-set_error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-state_entry_exit.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -411,13 +416,29 @@ liblkonf_la-get_lua_State.lo: get_lua_State.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-get_lua_State.lo `test -f 'get_lua_State.c' || echo '$(srcdir)/'`get_lua_State.c
 
-liblkonf_la-reset_error.lo: reset_error.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-reset_error.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-reset_error.Tpo -c -o liblkonf_la-reset_error.lo `test -f 'reset_error.c' || echo '$(srcdir)/'`reset_error.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-reset_error.Tpo $(DEPDIR)/liblkonf_la-reset_error.Plo
+liblkonf_la-load_string.lo: load_string.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-load_string.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-load_string.Tpo -c -o liblkonf_la-load_string.lo `test -f 'load_string.c' || echo '$(srcdir)/'`load_string.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-load_string.Tpo $(DEPDIR)/liblkonf_la-load_string.Plo
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='reset_error.c' object='liblkonf_la-reset_error.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='load_string.c' object='liblkonf_la-load_string.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-reset_error.lo `test -f 'reset_error.c' || echo '$(srcdir)/'`reset_error.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-load_string.lo `test -f 'load_string.c' || echo '$(srcdir)/'`load_string.c
+
+liblkonf_la-set_error.lo: set_error.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-set_error.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-set_error.Tpo -c -o liblkonf_la-set_error.lo `test -f 'set_error.c' || echo '$(srcdir)/'`set_error.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-set_error.Tpo $(DEPDIR)/liblkonf_la-set_error.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='set_error.c' object='liblkonf_la-set_error.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-set_error.lo `test -f 'set_error.c' || echo '$(srcdir)/'`set_error.c
+
+liblkonf_la-state_entry_exit.lo: state_entry_exit.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-state_entry_exit.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-state_entry_exit.Tpo -c -o liblkonf_la-state_entry_exit.lo `test -f 'state_entry_exit.c' || echo '$(srcdir)/'`state_entry_exit.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-state_entry_exit.Tpo $(DEPDIR)/liblkonf_la-state_entry_exit.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='state_entry_exit.c' object='liblkonf_la-state_entry_exit.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-state_entry_exit.lo `test -f 'state_entry_exit.c' || echo '$(srcdir)/'`state_entry_exit.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
