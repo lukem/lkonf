@@ -48,8 +48,8 @@ typedef struct lkonf_s lkonf_t;
 typedef enum
 {
 	LK_OK			= 0,	/** No error. */
-	LK_LKONF_NULL		= 1,	/** lkonf_t is NULL pointer. */
-	LK_NO_LUA_STATE		= 2,	/** lua_State couldn't be allocated. */
+	LK_LKONF_NULL		= 1,	/** lkonf_t is NULL. */
+	LK_STATE_NULL		= 2,	/** Lua state is NULL. */
 	LK_ARG_NULL		= 3,	/** Method argument pointer is NULL */
 	LK_LOAD_CHUNK		= 4,	/** Can't load chunk. */
 } lkerr_t;
@@ -62,8 +62,8 @@ typedef enum
 /**
  * Construct an lkonf_t.
  * @return lkonf_t created with default parameters.
- * The internal lua_State is created with luaL_newstate().
- * If there was an error constructing the lua_State, the error code will be set.
+ * The internal Lua state is created with luaL_newstate().
+ * If there was an error constructing the Lua state, the error code will be set.
  */
 LUA_API lkonf_t *
 lkonf_construct(void);
@@ -76,14 +76,14 @@ LUA_API void
 lkonf_destruct(lkonf_t * iLc);
 
 /**
- * Access internal lua_State.
+ * Access internal Lua state.
  * @param iLc	lkonf_t to use.
- * @return	lua_State used by lkonf_t. This may be useful for
+ * @return	Lua state used by lkonf_t. This may be useful for
  *		manipulating the sandbox, adjusting panic functions, etc.
  *		If iLc is 0 or there's a fault in the internal state,
  *		returns 0.
  *
- * @note Closing the lua_State underneath lkonf_t will result in undefined
+ * @note Closing the Lua state underneath lkonf_t will result in undefined
  * behaviour.
  */
 LUA_API lua_State *

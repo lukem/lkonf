@@ -76,7 +76,6 @@ lkonf_set_error_from_state(lkonf_t * iLc, lkerr_t iCode);
  * The Lua stack will be reset to this point by lkonf_state_exit().
  * Also resets the error state if ok.
  * @returns Error state if not ok.
- * @warning Asserts that iLc is not 0.
  */
 lkerr_t
 lkonf_state_entry(lkonf_t * iLc);
@@ -85,7 +84,6 @@ lkonf_state_entry(lkonf_t * iLc);
  * State exit validation and cleanup.
  * Call on exit from public methods that have called lkonf_state_entry().
  * Returns the current error code of the iLc.
- * @warning Asserts that iLc is not 0.
  * @warning Asserts that the Lua stack hasn't gone below the depth.
  */
 lkerr_t

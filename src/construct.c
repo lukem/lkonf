@@ -18,7 +18,7 @@ lkonf_construct(void)
 
 	lc->state = luaL_newstate();
 	if (! lc->state) {
-		lc->error_code = LK_NO_LUA_STATE;
+		lc->error_code = LK_STATE_NULL;
 		snprintf(
 			lc->error_string, sizeof(lc->error_string),
 			"Can't allocate lua state");
