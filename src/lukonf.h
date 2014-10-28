@@ -42,6 +42,14 @@
  */
 typedef struct Lukonf Lukonf;
 
+/**
+ * Error codes.
+ */
+typedef enum
+{
+	LK_OK		= 0,	/** No error */
+} lkerr_t;
+
 
 /*
  * Lukonf object management.
@@ -85,10 +93,9 @@ lukonf_get_lua_State(Lukonf * iLc);
 /**
  * Error code from most recent Lukonf operation, if any.
  * @param iLc	Lukonf to use.
- * @return Integer value. 0 is no error. ~0 is iLc is 0.
- * @todo provide enum or #defines for error catalog?
+ * @return Error code.
  */
-LUA_API int
+LUA_API lkerr_t
 lukonf_get_error_code(Lukonf * iLc);
 
 /**
@@ -111,7 +118,7 @@ lukonf_get_error_string(Lukonf * iLc);
  * @return 	Error code.
  * @todo evaluate if ok.
  */
-LUA_API int
+LUA_API lkerr_t
 lukonf_load_file(Lukonf * iLc, const char * iFile);
 
 /**
@@ -121,7 +128,7 @@ lukonf_load_file(Lukonf * iLc, const char * iFile);
  * @return		Error code.
  * @todo evaluate if ok.
  */
-LUA_API int
+LUA_API lkerr_t
 lukonf_load_string(Lukonf * iLc, const char * iString);
 
 

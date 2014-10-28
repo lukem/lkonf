@@ -1,6 +1,6 @@
 #include "internal.h"
 
-int
+lkerr_t
 lukonf_get_error_code(Lukonf * iLc)
 {
 	if (! iLc) {

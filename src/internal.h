@@ -41,7 +41,7 @@
 struct Lukonf
 {
 	lua_State *	state;
-	int		error_code;
+	lkerr_t		error_code;
 	char		error_string[128];
 };
 
