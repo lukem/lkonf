@@ -1,15 +1,15 @@
 AM_CFLAGS = $(WARNCFLAGS)
 
 include_HEADERS = \
-	lukonf.h
+	lkonf.h
 
 noinst_HEADERS = \
 	internal.h
 
 
-lib_LTLIBRARIES = liblukonf.la
+lib_LTLIBRARIES = liblkonf.la
 
-liblukonf_la_SOURCES = \
+liblkonf_la_SOURCES = \
 	construct.c \
 	destruct.c \
 	get_error_code.c \
@@ -17,10 +17,10 @@ liblukonf_la_SOURCES = \
 	get_lua_State.c \
 	reset_error.c
 
-liblukonf_la_CPPFLAGS = \
+liblkonf_la_CPPFLAGS = \
 	-I$(srcdir) \
 	$(LUA_CFLAGS)
 
-liblukonf_la_LDFLAGS = \
+liblkonf_la_LDFLAGS = \
 	-version-info 0:0:0 \
 	$(LUA_LIBS)

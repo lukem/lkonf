@@ -1,7 +1,7 @@
 #include "internal.h"
 
 lkerr_t
-lukonf_get_error_code(Lukonf * iLc)
+lkonf_get_error_code(lkonf_t * iLc)
 {
 	if (! iLc) {
 		return ~0;

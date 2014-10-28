@@ -1,5 +1,5 @@
-#ifndef LUKONF_H
-#define LUKONF_H 1
+#ifndef LKONF_H
+#define LKONF_H 1
 
 /*
  * Copyright (c) 2014 Luke Mewburn <Luke@Mewburn.net>
@@ -38,9 +38,9 @@
  */
 
 /**
- * Opaque type for Lukonf.
+ * Opaque type for lkonf_t.
  */
-typedef struct Lukonf Lukonf;
+typedef struct lkonf_s lkonf_t;
 
 /**
  * Error codes.
@@ -52,59 +52,59 @@ typedef enum
 
 
 /*
- * Lukonf object management.
+ * lkonf_t object management.
  */
 
 /**
- * Construct a Lukonf.
- * @return Lukonf created with default parameters.
+ * Construct an lkonf_t.
+ * @return lkonf_t created with default parameters.
  * The internal lua_State is created with luaL_newstate().
  * If there was an error constructing the lua_State, the error code will be set.
  */
-LUA_API Lukonf *
-lukonf_construct(void);
+LUA_API lkonf_t *
+lkonf_construct(void);
 
 /**
- * Destruct a Lukonf.
- * @param iLc	Lukonf to destroy.
+ * Destruct an lkonf_t.
+ * @param iLc	lkonf_t to destroy.
  */
 LUA_API void
-lukonf_destruct(Lukonf * iLc);
+lkonf_destruct(lkonf_t * iLc);
 
 /**
  * Access internal lua_State.
- * @param iLc	Lukonf to use.
- * @return	lua_State used by Lukonf. This may be useful for
+ * @param iLc	lkonf_t to use.
+ * @return	lua_State used by lkonf_t. This may be useful for
  *		manipulating the sandbox, adjusting panic functions, etc.
  *		If iLc is 0 or there's a fault in the internal state,
  *		returns 0.
  *
- * @note Closing the lua_State underneath Lukonf will result in undefined
+ * @note Closing the lua_State underneath lkonf_t will result in undefined
  * behaviour.
  */
 LUA_API lua_State *
-lukonf_get_lua_State(Lukonf * iLc);
+lkonf_get_lua_State(lkonf_t * iLc);
 
 
 /*
- * Lukonf error management.
+ * lkonf_t error management.
  */
 
 /**
- * Error code from most recent Lukonf operation, if any.
- * @param iLc	Lukonf to use.
+ * Error code from most recent lkonf_t operation, if any.
+ * @param iLc	lkonf_t to use.
  * @return Error code.
  */
 LUA_API lkerr_t
-lukonf_get_error_code(Lukonf * iLc);
+lkonf_get_error_code(lkonf_t * iLc);
 
 /**
- * Error string from most recent Lukonf operation, if any.
- * @param iLc	Lukonf to use.
+ * Error string from most recent lkonf operation, if any.
+ * @param iLc	lkonf_t to use.
  * @return Error string. 0 is no error, or iLc is 0.
  */
 LUA_API const char *
-lukonf_get_error_string(Lukonf * iLc);
+lkonf_get_error_string(lkonf_t * iLc);
 
 
 /*
@@ -113,23 +113,23 @@ lukonf_get_error_string(Lukonf * iLc);
 
 /**
  * Load file as a Lua chunk and execute in the sandbox.
- * @param iLc	Lukonf.
+ * @param iLc	lkonf_t.
  * @param iFile	Filename
  * @return 	Error code.
  * @todo evaluate if ok.
  */
 LUA_API lkerr_t
-lukonf_load_file(Lukonf * iLc, const char * iFile);
+lkonf_load_file(lkonf_t * iLc, const char * iFile);
 
 /**
  * Load string as a Lua chunk and execute in the sandbox.
- * @param iLc		Lukonf.
+ * @param iLc		lkonf_t.
  * @param iString	String to load.
  * @return		Error code.
  * @todo evaluate if ok.
  */
 LUA_API lkerr_t
-lukonf_load_string(Lukonf * iLc, const char * iString);
+lkonf_load_string(lkonf_t * iLc, const char * iString);
 
 
 /*
@@ -150,4 +150,4 @@ lukonf_load_string(Lukonf * iLc, const char * iString);
  *		https://github.com/jmmv/lutok/blob/master/state.cpp
  */
 
-#endif /* LUKONF_H */
+#endif /* LKONF_H */

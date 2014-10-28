@@ -8,10 +8,10 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src
 
 LDADD = \
-	$(builddir)/../src/liblukonf.la
+	$(builddir)/../src/liblkonf.la
 
 noinst_PROGRAMS = \
-	lukonf_test
+	lkonf_test
 
 
 #

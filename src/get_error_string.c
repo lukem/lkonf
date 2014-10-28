@@ -1,7 +1,7 @@
 #include "internal.h"
 
 const char *
-lukonf_get_error_string(Lukonf * iLc)
+lkonf_get_error_string(lkonf_t * iLc)
 {
 	if (! iLc) {
 		return 0;

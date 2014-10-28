@@ -1,5 +1,5 @@
-#ifndef LUKONF_INTERNAL_H
-#define LUKONF_INTERNAL_H 1
+#ifndef LKONF_INTERNAL_H
+#define LKONF_INTERNAL_H 1
 
 /*
  * Copyright (c) 2014 Luke Mewburn <Luke@Mewburn.net>
@@ -28,17 +28,17 @@
 
 /**
  * @file
- * Lukonf internals.
+ * lkonf_t internals.
  * Do not include directly.
  */ 
 
-#include <lukonf.h>
+#include <lkonf.h>
 
 
 /**
- * Lukonf object.
+ * lkonf_t object.
  */
-struct Lukonf
+struct lkonf_s
 {
 	lua_State *	state;
 	lkerr_t		error_code;
@@ -46,10 +46,10 @@ struct Lukonf
 };
 
 /**
- * Reset the Lukonf error state.
+ * Reset the lkonf_t error state.
  * @warning Asserts that iLc is not 0.
  */
 void
-lukonf_reset_error(Lukonf * iLc);
+lkonf_reset_error(lkonf_t * iLc);
 
-#endif /* LUKONF_INTERNAL_H */
+#endif /* LKONF_INTERNAL_H */

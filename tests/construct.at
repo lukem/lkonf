@@ -1,5 +1,5 @@
 AT_SETUP([construct])
 
-AT_CHECK([lukonf_test construct], [0], [ignore])
+AT_CHECK([lkonf_test construct], [0], [ignore])
 
 AT_CLEANUP()

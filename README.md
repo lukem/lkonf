@@ -1,7 +1,7 @@
 README
 ======
 
-lukonf provides an interface to use Lua as configuration for C applications.
+lkonf provides an interface to use Lua as configuration for C applications.
 
 
 Copyright

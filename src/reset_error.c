@@ -4,7 +4,7 @@
 #include <string.h>
 
 void
-lukonf_reset_error(Lukonf * iLc)
+lkonf_reset_error(lkonf_t * iLc)
 {
 	assert(iLc && "iLc NULL");
 

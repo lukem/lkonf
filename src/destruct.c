@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 void
-lukonf_destruct(Lukonf * iLc)
+lkonf_destruct(lkonf_t * iLc)
 {
 	if (! iLc) {
 		return;

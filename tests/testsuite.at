@@ -1,4 +1,4 @@
-AT_INIT([lukonf])
+AT_INIT([lkonf])
 
 AT_COLOR_TESTS()
 

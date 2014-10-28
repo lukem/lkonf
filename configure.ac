@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([lukonf], [0.1], [Luke@Mewburn.net])
+AC_INIT([lkonf], [0.1], [Luke@Mewburn.net])
 
 AC_COPYRIGHT([[
 Copyright 2014, Luke Mewburn <Luke@Mewburn.net>.
@@ -20,7 +20,7 @@ LT_PREREQ([2.4])
 
 AS_SHELL_SANITIZE()
 
-AC_CONFIG_SRCDIR([src/lukonf.h])
+AC_CONFIG_SRCDIR([src/lkonf.h])
 
 AC_PROG_CC()
 AC_PROG_LIBTOOL()

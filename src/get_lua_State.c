@@ -1,12 +1,12 @@
 #include "internal.h"
 
 lua_State *
-lukonf_get_lua_State(Lukonf * iLc)
+lkonf_get_lua_State(lkonf_t * iLc)
 {
 	if (! iLc) {
 		return 0;
 	}
 
-	lukonf_reset_error(iLc);
+	lkonf_reset_error(iLc);
 	return iLc->state;
 }
