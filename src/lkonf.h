@@ -50,8 +50,9 @@ typedef enum
 	LK_OK			= 0,	/** No error. */
 	LK_LKONF_NULL		= 1,	/** lkonf_t is NULL. */
 	LK_STATE_NULL		= 2,	/** Lua state is NULL. */
-	LK_ARG_NULL		= 3,	/** Method argument pointer is NULL */
+	LK_ARG_BAD		= 3,	/** Method argument is bad */
 	LK_LOAD_CHUNK		= 4,	/** Can't load chunk. */
+	LK_CALL_CHUNK		= 5,	/** Can't call chunk. */
 } lkerr_t;
 
 

@@ -70,7 +70,7 @@ lkonf_set_error_from_state(lkonf_t * iLc, lkerr_t iCode);
 
 
 /**
- * State entry validation.
+ * State entry validation and setup.
  * Call on entry to public methods to ensure Lua state is defined
  * and to remember Lua stack position.
  * The Lua stack will be reset to this point by lkonf_state_exit().
@@ -93,12 +93,13 @@ lkonf_state_exit(lkonf_t * iLc);
 /**
  * Call chunk at top of stack.
  * If there's an error the iLc error state will be setup.
+ * @warning Asserts that iLc and iLc->state are not 0.
  * @param iLc		Context.
  * @param iNumArgs	Number of arguments.
- * @param iNumRes	Number of results.
+ * @param iNumResults	Number of results.
  * @todo sandbox
  */
 lkerr_t
-lkonf_call_chunk(lkonf_t * iLc, const int iNumArgs, const int iNumRes);
+lkonf_call_chunk(lkonf_t * iLc, const int iNumArgs, const int iNumResults);
 
 #endif /* LKONF_INTERNAL_H */

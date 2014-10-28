@@ -10,6 +10,7 @@ noinst_HEADERS = \
 lib_LTLIBRARIES = liblkonf.la
 
 liblkonf_la_SOURCES = \
+	call_chunk.c \
 	construct.c \
 	destruct.c \
 	get_error_code.c \

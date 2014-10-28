@@ -79,11 +79,11 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 liblkonf_la_LIBADD =
-am_liblkonf_la_OBJECTS = liblkonf_la-construct.lo \
-	liblkonf_la-destruct.lo liblkonf_la-get_error_code.lo \
-	liblkonf_la-get_error_string.lo liblkonf_la-get_lua_State.lo \
-	liblkonf_la-load_string.lo liblkonf_la-set_error.lo \
-	liblkonf_la-state_entry_exit.lo
+am_liblkonf_la_OBJECTS = liblkonf_la-call_chunk.lo \
+	liblkonf_la-construct.lo liblkonf_la-destruct.lo \
+	liblkonf_la-get_error_code.lo liblkonf_la-get_error_string.lo \
+	liblkonf_la-get_lua_State.lo liblkonf_la-load_string.lo \
+	liblkonf_la-set_error.lo liblkonf_la-state_entry_exit.lo
 liblkonf_la_OBJECTS = $(am_liblkonf_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -252,6 +252,7 @@ noinst_HEADERS = \
 
 lib_LTLIBRARIES = liblkonf.la
 liblkonf_la_SOURCES = \
+	call_chunk.c \
 	construct.c \
 	destruct.c \
 	get_error_code.c \
@@ -343,6 +344,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-call_chunk.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-construct.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-destruct.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_error_code.Plo@am__quote@
@@ -375,6 +377,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+liblkonf_la-call_chunk.lo: call_chunk.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-call_chunk.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-call_chunk.Tpo -c -o liblkonf_la-call_chunk.lo `test -f 'call_chunk.c' || echo '$(srcdir)/'`call_chunk.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-call_chunk.Tpo $(DEPDIR)/liblkonf_la-call_chunk.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='call_chunk.c' object='liblkonf_la-call_chunk.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-call_chunk.lo `test -f 'call_chunk.c' || echo '$(srcdir)/'`call_chunk.c
 
 liblkonf_la-construct.lo: construct.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-construct.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-construct.Tpo -c -o liblkonf_la-construct.lo `test -f 'construct.c' || echo '$(srcdir)/'`construct.c

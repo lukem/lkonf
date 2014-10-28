@@ -14,8 +14,7 @@ lkonf_load_string(lkonf_t * iLc, const char * iString)
 	}
 
 	if (! iString) {
-		lkonf_set_error(iLc,
-			LK_ARG_NULL, "lkonf_load_string string NULL");
+		lkonf_set_error(iLc, LK_ARG_BAD, "iString NULL");
 		return lkonf_state_exit(iLc);
 	}
 
@@ -24,9 +23,7 @@ lkonf_load_string(lkonf_t * iLc, const char * iString)
 		return lkonf_state_exit(iLc);
 	}
 
-#if 0 // TODO
 	lkonf_call_chunk(iLc, 0, 0);
-#endif
 
 	return lkonf_state_exit(iLc);
 }
