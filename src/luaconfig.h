@@ -101,7 +101,33 @@ luaconfig_get_error_string(LuaConfig * iLc);
 
 
 /*
+ * Chunk loading.
+ */
+
+/**
+ * Load file as a Lua chunk and execute in the sandbox.
+ * @param iLc	LuaConfig.
+ * @param iFile	Filename
+ * @return 	Error code.
+ * @todo evaluate if ok.
+ */
+LUA_API int
+luaconfig_load_file(LuaConfig * iLc, const char * iFile);
+
+/**
+ * Load string as a Lua chunk and execute in the sandbox.
+ * @param iLc		LuaConfig.
+ * @param iString	String to load.
+ * @return		Error code.
+ * @todo evaluate if ok.
+ */
+LUA_API int
+luaconfig_load_string(LuaConfig * iLc, const char * iString);
+
+
+/*
  * TODO
+ *	- enum for error_code ?
  *	- loadfile
  *	- loadstring
  *	- instruction limits
