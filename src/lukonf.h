@@ -1,5 +1,5 @@
-#ifndef lukonf_H
-#define lukonf_H 1
+#ifndef LUKONF_H
+#define LUKONF_H 1
 
 /*
  * Copyright (c) 2014 Luke Mewburn <Luke@Mewburn.net>
@@ -143,4 +143,4 @@ lukonf_load_string(Lukonf * iLc, const char * iString);
  *		https://github.com/jmmv/lutok/blob/master/state.cpp
  */
 
-#endif /* lukonf_H */
+#endif /* LUKONF_H */
