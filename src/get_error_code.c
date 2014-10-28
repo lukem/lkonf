@@ -4,7 +4,7 @@ lkerr_t
 lkonf_get_error_code(lkonf_t * iLc)
 {
 	if (! iLc) {
-		return ~0;
+		return LK_LKONF_NULL;
 	}
 
 	return iLc->error_code;

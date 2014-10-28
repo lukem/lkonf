@@ -47,7 +47,9 @@ typedef struct lkonf_s lkonf_t;
  */
 typedef enum
 {
-	LK_OK		= 0,	/** No error */
+	LK_OK			= 0,	/** No error. */
+	LK_LKONF_NULL		= 1,	/** lkonf_t is NULL pointer. */
+	LK_NO_LUA_STATE		= 2,	/** lua_State couldn't be allocated. */
 } lkerr_t;
 
 
@@ -134,7 +136,6 @@ lkonf_load_string(lkonf_t * iLc, const char * iString);
 
 /*
  * TODO
- *	- enum for error_code ?
  *	- loadfile
  *	- loadstring
  *	- instruction limits

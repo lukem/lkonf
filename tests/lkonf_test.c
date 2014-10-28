@@ -16,8 +16,8 @@ test_construct(void)
 		lkonf_t * tc1 = lkonf_construct();
 		assert(tc1 && "lkonf_construct returned 0");
 
-		int errcode = lkonf_get_error_code(tc1);
-		assert(0 == errcode && "errcode != 0");
+		lkerr_t errcode = lkonf_get_error_code(tc1);
+		assert(LK_OK == errcode && "errcode != LK_OK");
 
 		const char * errstr = lkonf_get_error_string(tc1);
 		assert(0 != errstr && "errstr == 0");
