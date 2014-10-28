@@ -50,6 +50,8 @@ typedef enum
 	LK_OK			= 0,	/** No error. */
 	LK_LKONF_NULL		= 1,	/** lkonf_t is NULL pointer. */
 	LK_NO_LUA_STATE		= 2,	/** lua_State couldn't be allocated. */
+	LK_ARG_NULL		= 3,	/** Method argument pointer is NULL */
+	LK_LOAD_CHUNK		= 4,	/** Can't load chunk. */
 } lkerr_t;
 
 
@@ -136,8 +138,6 @@ lkonf_load_string(lkonf_t * iLc, const char * iString);
 
 /*
  * TODO
- *	- loadfile
- *	- loadstring
  *	- instruction limits
  *	- sandbox manipulation
  *	- get_TYPE.  api variations
@@ -145,7 +145,6 @@ lkonf_load_string(lkonf_t * iLc, const char * iString);
  *		- optional (with default).  or always?
  *	- isFunction()
  *	- helpers to call functions and extract results
- *	- stack cleaner?
  *	- path walker
  *	- internal protected wrappers for lua_*() per
  *		https://github.com/jmmv/lutok/blob/master/state.cpp

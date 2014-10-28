@@ -43,7 +43,9 @@ struct lkonf_s
 	lua_State *	state;
 	lkerr_t		error_code;
 	char		error_string[128];
+	int		depth;
 };
+
 
 /**
  * Reset the lkonf_t error state.
@@ -51,5 +53,54 @@ struct lkonf_s
  */
 void
 lkonf_reset_error(lkonf_t * iLc);
+
+/**
+ * Set the lkonf_t error state and string.
+ * @warning Asserts that iLc is not 0.
+ */
+void
+lkonf_set_error(lkonf_t * iLc, lkerr_t iCode, const char * iString);
+
+/**
+ * Set the lkonf_t error state and error string at top of the Lua stack.
+ * @warning Asserts that iLc is not 0.
+ */
+void
+lkonf_set_error_from_state(lkonf_t * iLc, lkerr_t iCode);
+
+
+/**
+ * State entry validation.
+ * Call on entry to public methods to ensure Lua state is defined
+ * and to remember Lua stack position.
+ * The Lua stack will be reset to this point by lkonf_state_exit().
+ * Also resets the error state if ok.
+ * @returns Error state if not ok.
+ * @warning Asserts that iLc is not 0.
+ */
+lkerr_t
+lkonf_state_entry(lkonf_t * iLc);
+
+/**
+ * State exit validation and cleanup.
+ * Call on exit from public methods that have called lkonf_state_entry().
+ * Returns the current error code of the iLc.
+ * @warning Asserts that iLc is not 0.
+ * @warning Asserts that the Lua stack hasn't gone below the depth.
+ */
+lkerr_t
+lkonf_state_exit(lkonf_t * iLc);
+
+
+/**
+ * Call chunk at top of stack.
+ * If there's an error the iLc error state will be setup.
+ * @param iLc		Context.
+ * @param iNumArgs	Number of arguments.
+ * @param iNumRes	Number of results.
+ * @todo sandbox
+ */
+lkerr_t
+lkonf_call_chunk(lkonf_t * iLc, const int iNumArgs, const int iNumRes);
 
 #endif /* LKONF_INTERNAL_H */
