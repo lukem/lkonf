@@ -7,26 +7,34 @@
 
 
 int
+streq(const char * lhs, const char * rhs)
+{
+	assert(lhs);
+	assert(rhs);
+	return (0 == strcmp(lhs, rhs));
+}
+
+int
 test_construct(void)
 {
 	printf("lkonf_construct()\n");
 
 	/* construct lkonf_t, confirm initial state */
 	{
-		lkonf_t * tc1 = lkonf_construct();
-		assert(tc1 && "lkonf_construct returned 0");
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
 
-		const lkerr_t errcode = lkonf_get_error_code(tc1);
+		const lkerr_t errcode = lkonf_get_error_code(lk);
 		assert(LK_OK == errcode && "errcode != LK_OK");
 
-		const char * errstr = lkonf_get_error_string(tc1);
+		const char * errstr = lkonf_get_error_string(lk);
 		assert(0 != errstr && "errstr == 0");
 		assert(0 == errstr[0] && "errstr[0] not empty");
 
-		lua_State * ls = lkonf_get_lua_State(tc1);
+		lua_State * ls = lkonf_get_lua_State(lk);
 		assert(0 != ls && "lua_State == 0");
 
-		lkonf_destruct(tc1);
+		lkonf_destruct(lk);
 	}
 
 	return EXIT_SUCCESS;
@@ -40,10 +48,10 @@ test_destruct(void)
 
 	/* destruct a default lkonf_t */
 	{
-		lkonf_t * tc1 = lkonf_construct();
-		assert(tc1 && "lkonf_construct returned 0");
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
 
-		lkonf_destruct(tc1);
+		lkonf_destruct(lk);
 	}
 
 	/* destruct a NULL pointer (should be a no-op) */
@@ -54,6 +62,32 @@ test_destruct(void)
 	return EXIT_SUCCESS;
 }
 
+void
+ensure_result(
+	lkonf_t *	lk,
+	const lkerr_t	code,
+	const char *	desc,
+	const lkerr_t	expect_code,
+	const char *	expect_str)
+{
+	if (code != expect_code) {
+		fprintf(stderr, "%s: code %d != expected %d\n",
+			desc, code, expect_code);
+		assert(code == expect_code);
+	}
+	const lkerr_t lk_code = lkonf_get_error_code(lk);
+	if (code != lk_code) {
+		fprintf(stderr, "%s: code %d != get_error_code %d\n",
+			desc, code, lk_code);
+		assert(code == lk_code);
+	}
+	const char * lk_errstr = lkonf_get_error_string(lk);
+	if (! streq(lk_errstr, expect_str)) {
+		fprintf(stderr, "%s: errstr '%s' != expected '%s'\n",
+			desc, lk_errstr, expect_str);
+		assert(0 && "errstr != expected");
+	}
+}
 
 int
 test_load_file(void)
@@ -62,17 +96,20 @@ test_load_file(void)
 
 	/* fail: load null kconf_t: fail */
 	{
-		assert(LK_LKONF_NULL == lkonf_load_file(0, 0));
+		const lkerr_t res = lkonf_load_file(0, 0);
+		assert(LK_LKONF_NULL == res);
 	}
 
 /* TODO: fail: load kconf_t with null state */
 
 	/* fail: load with filename null pointer */
 	{
-		lkonf_t * tc1 = lkonf_construct();
-		assert(tc1 && "lkonf_construct returned 0");
-		assert(LK_ARG_BAD == lkonf_load_file(tc1, 0));
-		lkonf_destruct(tc1);
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+		const lkerr_t res = lkonf_load_file(lk, 0);
+		ensure_result(lk, res,
+			"load_file(lk, 0)", LK_ARG_BAD, "iFile NULL");
+		lkonf_destruct(lk);
 	}
 
 /* TODO: finish */
@@ -95,10 +132,35 @@ test_load_string(void)
 
 	/* fail: load with string null pointer */
 	{
-		lkonf_t * tc1 = lkonf_construct();
-		assert(tc1 && "lkonf_construct returned 0");
-		assert(LK_ARG_BAD == lkonf_load_string(tc1, 0));
-		lkonf_destruct(tc1);
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+		const lkerr_t res = lkonf_load_string(lk, 0);
+		ensure_result(lk, res,
+			"load_string(lk, 0)", LK_ARG_BAD, "iString NULL");
+		lkonf_destruct(lk);
+	}
+
+	/* fail: syntax error in string */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+		const lkerr_t res = lkonf_load_string(lk, "junk");
+		ensure_result(lk, res,
+			"load_string(lk, \"junk\")",
+			LK_LOAD_CHUNK,
+			"[string \"junk\"]:1: '=' expected near '<eof>'");
+		lkonf_destruct(lk);
+	}
+
+/* TODO: trigger LK_CALL_CHUNK */
+
+	/* pass: "t=1" */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+		const lkerr_t res = lkonf_load_string(lk, "t=1");
+		ensure_result(lk, res, "load_string(lk, \"t=1\")", LK_OK, "");
+		lkonf_destruct(lk);
 	}
 
 /* TODO: finish */
@@ -162,12 +224,12 @@ main(int argc, char * argv[])
 	enum TestFlags tests = 0;
 	int ai, ti;
 	for (ai = 1; ai < argc; ++ai) {
-		if (0 == strcmp("all", argv[ai])) {
+		if (streq("all", argv[ai])) {
 			tests = ~0;
 			continue;
 		}
 		for (ti = 0; nameToTest[ti].name; ++ti) {
-			if (0 == strcmp(argv[ai], nameToTest[ti].name))
+			if (streq(argv[ai], nameToTest[ti].name))
 				break;
 		}
 		if (! nameToTest[ti].name) {
