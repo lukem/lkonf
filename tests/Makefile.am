@@ -30,7 +30,9 @@ TESTSUITE_DEPS = \
 
 TESTSUITE_DEPS += \
 	construct.at \
-	destruct.at
+	destruct.at \
+	load_file.at \
+	load_string.at
 
 DISTCLEANFILES = \
 	atconfig

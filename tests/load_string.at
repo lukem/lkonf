@@ -1,0 +1,5 @@
+AT_SETUP([load_string])
+
+AT_CHECK([lkonf_test load_string], [0], [ignore])
+
+AT_CLEANUP()

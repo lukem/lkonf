@@ -4,3 +4,5 @@ AT_COLOR_TESTS()
 
 m4_include([construct.at])
 m4_include([destruct.at])
+m4_include([load_file.at])
+m4_include([load_string.at])
