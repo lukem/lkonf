@@ -592,6 +592,8 @@ at_format='?'
 # Description of all the test groups.
 at_help_all="1;construct.at:1;construct;;
 2;destruct.at:1;destruct;;
+3;load_file.at:1;load_file;;
+4;load_string.at:1;load_string;;
 "
 # List of the all the test groups.
 at_groups_all=`$as_echo "$at_help_all" | sed 's/;.*//'`
@@ -605,7 +607,7 @@ at_fn_validate_ranges ()
   for at_grp
   do
     eval at_value=\$$at_grp
-    if test $at_value -lt 1 || test $at_value -gt 2; then
+    if test $at_value -lt 1 || test $at_value -gt 4; then
       $as_echo "invalid test group: $at_value" >&2
       exit 1
     fi
@@ -2039,3 +2041,59 @@ $at_traceon; }
 ) 5>&1 2>&1 7>&- | eval $at_tee_pipe
 read at_status <"$at_status_file"
 #AT_STOP_2
+#AT_START_3
+at_fn_group_banner 3 'load_file.at:1' \
+  "load_file" "                                      "
+at_xfail=no
+(
+  $as_echo "3. $at_setup_line: testing $at_desc ..."
+  $at_traceon
+
+
+{ set +x
+$as_echo "$at_srcdir/load_file.at:3: lkonf_test load_file"
+at_fn_check_prepare_trace "load_file.at:3"
+( $at_check_trace; lkonf_test load_file
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo stdout:; cat "$at_stdout"
+at_fn_check_status 0 $at_status "$at_srcdir/load_file.at:3"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+  set +x
+  $at_times_p && times >"$at_times_file"
+) 5>&1 2>&1 7>&- | eval $at_tee_pipe
+read at_status <"$at_status_file"
+#AT_STOP_3
+#AT_START_4
+at_fn_group_banner 4 'load_string.at:1' \
+  "load_string" "                                    "
+at_xfail=no
+(
+  $as_echo "4. $at_setup_line: testing $at_desc ..."
+  $at_traceon
+
+
+{ set +x
+$as_echo "$at_srcdir/load_string.at:3: lkonf_test load_string"
+at_fn_check_prepare_trace "load_string.at:3"
+( $at_check_trace; lkonf_test load_string
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo stdout:; cat "$at_stdout"
+at_fn_check_status 0 $at_status "$at_srcdir/load_string.at:3"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+  set +x
+  $at_times_p && times >"$at_times_file"
+) 5>&1 2>&1 7>&- | eval $at_tee_pipe
+read at_status <"$at_status_file"
+#AT_STOP_4

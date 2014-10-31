@@ -235,7 +235,7 @@ AUTOTEST = \
 	$(AUTOM4TE) --language=autotest
 
 TESTSUITE_DEPS = $(srcdir)/package.m4 testsuite.at construct.at \
-	destruct.at
+	destruct.at load_file.at load_string.at
 DISTCLEANFILES = \
 	atconfig
 
