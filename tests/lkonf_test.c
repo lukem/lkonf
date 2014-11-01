@@ -140,7 +140,7 @@ test_load_string(void)
 		lkonf_destruct(lk);
 	}
 
-	/* fail: syntax error in string */
+	/* fail: LK_LOAD_CHUNK syntax error in string */
 	{
 		lkonf_t * lk = lkonf_construct();
 		assert(lk && "lkonf_construct returned 0");
@@ -152,7 +152,17 @@ test_load_string(void)
 		lkonf_destruct(lk);
 	}
 
-/* TODO: trigger LK_CALL_CHUNK */
+	/* fail: LK_CALL_CHUNK run-time error in string */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+		const lkerr_t res = lkonf_load_string(lk, "junk()");
+		ensure_result(lk, res,
+			"load_string(lk, \"junk()\")",
+			LK_CALL_CHUNK,
+			"[string \"junk()\"]:1: attempt to call global 'junk' (a nil value)");
+		lkonf_destruct(lk);
+	}
 
 	/* pass: "t=1" */
 	{
@@ -163,7 +173,9 @@ test_load_string(void)
 		lkonf_destruct(lk);
 	}
 
-/* TODO: finish */
+/* TODO: instruction limit */
+
+/* TODO: sandbox tests */
 
 	return EXIT_SUCCESS;
 }
