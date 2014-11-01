@@ -36,13 +36,37 @@
 
 
 /**
- * lkonf_t object.
+ * lkonf_t implementation object.
  */
 struct lkonf_s
 {
+	/**
+	 * Lua state.
+	 */
 	lua_State *	state;
+
+	/**
+	 * Current error code.
+	 */
 	lkerr_t		error_code;
+
+	/**
+	 * Current error string.
+	 * Empty if no error.
+	 */
 	char		error_string[128];
+
+	/**
+	 * Instruction limit (mask count).
+	 */
+	int		instruction_limit;
+
+	/**
+	 * Lua state stack depth.
+	 * Use by lki_state_entry() and lki_state_exit() during
+	 * external API calls that modify the stack, to ensure
+	 * that the stack is reset to its previous state.
+	 */
 	int		depth;
 };
 
@@ -56,16 +80,18 @@ lki_reset_error(lkonf_t * iLc);
 
 /**
  * Set the lkonf_t error state and string.
+ * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
-void
+lkerr_t
 lki_set_error(lkonf_t * iLc, lkerr_t iCode, const char * iString);
 
 /**
  * Set the lkonf_t error state and error string at top of the Lua stack.
+ * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
-void
+lkerr_t
 lki_set_error_from_state(lkonf_t * iLc, lkerr_t iCode);
 
 

@@ -13,6 +13,7 @@ lkonf_construct(void)
 	if (! lc) {
 		return 0;
 	}
+// TODO set default lc->instruction_limit ?
 
 	lki_reset_error(lc);
 

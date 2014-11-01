@@ -13,8 +13,7 @@ lki_state_entry(lkonf_t * iLc)
 
 	iLc->depth = -1;
 	if (! iLc->state) {
-		lki_set_error(iLc, LK_STATE_NULL, "Lua state null");
-		return iLc->error_code;
+		return lki_set_error(iLc, LK_STATE_NULL, "Lua state null");
 	}
 
 	iLc->depth = lua_gettop(iLc->state);
