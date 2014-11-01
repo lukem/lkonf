@@ -2,4 +2,60 @@ AT_SETUP([load_string])
 
 AT_CHECK([lkonf_test load_string], [0], [ignore])
 
+AT_CHECK([lkonf_test -a 'a=nil' load_string], [0], [dnl
+lkonf_load_string()
+load_string:  a=nil
+result:       0 (LK_OK)
+error_code:   0 (LK_OK)
+error_string: @&t@
+])
+
+AT_CHECK([lkonf_test -a 'print()' load_string], [0], [dnl
+lkonf_load_string()
+load_string:  print()
+result:       5 (LK_CALL_CHUNK)
+error_code:   5 (LK_CALL_CHUNK)
+error_string: @<:@string "print()"@:>@:1: attempt to call global 'print' (a nil value)
+])
+
+AT_CHECK([lkonf_test -a 'function foo() end' load_string], [0], [dnl
+lkonf_load_string()
+load_string:  function foo() end
+result:       0 (LK_OK)
+error_code:   0 (LK_OK)
+error_string: @&t@
+])
+
+AT_CHECK([lkonf_test -a 'function foo() end foo()' load_string], [0], [dnl
+lkonf_load_string()
+load_string:  function foo() end foo()
+result:       0 (LK_OK)
+error_code:   0 (LK_OK)
+error_string: @&t@
+])
+
+AT_CHECK([lkonf_test -a 'local function foo() end foo()' load_string], [0], [dnl
+lkonf_load_string()
+load_string:  local function foo() end foo()
+result:       0 (LK_OK)
+error_code:   0 (LK_OK)
+error_string: @&t@
+])
+
+AT_CHECK([lkonf_test -a '
+local function foo()
+    print()
+end
+foo()' load_string], [0], [dnl
+lkonf_load_string()
+load_string:  @&t@
+local function foo()
+    print()
+end
+foo()
+result:       5 (LK_CALL_CHUNK)
+error_code:   5 (LK_CALL_CHUNK)
+error_string: @<:@string "..."@:>@:3: attempt to call global 'print' (a nil value)
+])
+
 AT_CLEANUP()

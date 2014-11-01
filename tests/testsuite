@@ -2092,6 +2092,138 @@ $at_failed && at_fn_log_failure
 $at_traceon; }
 
 
+{ set +x
+$as_echo "$at_srcdir/load_string.at:5: lkonf_test -a 'a=nil' load_string"
+at_fn_check_prepare_trace "load_string.at:5"
+( $at_check_trace; lkonf_test -a 'a=nil' load_string
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo >>"$at_stdout"; $as_echo "lkonf_load_string()
+load_string:  a=nil
+result:       0 (LK_OK)
+error_code:   0 (LK_OK)
+error_string: 
+" | \
+  $at_diff - "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/load_string.at:5"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+{ set +x
+$as_echo "$at_srcdir/load_string.at:13: lkonf_test -a 'print()' load_string"
+at_fn_check_prepare_trace "load_string.at:13"
+( $at_check_trace; lkonf_test -a 'print()' load_string
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo >>"$at_stdout"; $as_echo "lkonf_load_string()
+load_string:  print()
+result:       5 (LK_CALL_CHUNK)
+error_code:   5 (LK_CALL_CHUNK)
+error_string: [string \"print()\"]:1: attempt to call global 'print' (a nil value)
+" | \
+  $at_diff - "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/load_string.at:13"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+{ set +x
+$as_echo "$at_srcdir/load_string.at:21: lkonf_test -a 'function foo() end' load_string"
+at_fn_check_prepare_trace "load_string.at:21"
+( $at_check_trace; lkonf_test -a 'function foo() end' load_string
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo >>"$at_stdout"; $as_echo "lkonf_load_string()
+load_string:  function foo() end
+result:       0 (LK_OK)
+error_code:   0 (LK_OK)
+error_string: 
+" | \
+  $at_diff - "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/load_string.at:21"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+{ set +x
+$as_echo "$at_srcdir/load_string.at:29: lkonf_test -a 'function foo() end foo()' load_string"
+at_fn_check_prepare_trace "load_string.at:29"
+( $at_check_trace; lkonf_test -a 'function foo() end foo()' load_string
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo >>"$at_stdout"; $as_echo "lkonf_load_string()
+load_string:  function foo() end foo()
+result:       0 (LK_OK)
+error_code:   0 (LK_OK)
+error_string: 
+" | \
+  $at_diff - "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/load_string.at:29"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+{ set +x
+$as_echo "$at_srcdir/load_string.at:37: lkonf_test -a 'local function foo() end foo()' load_string"
+at_fn_check_prepare_trace "load_string.at:37"
+( $at_check_trace; lkonf_test -a 'local function foo() end foo()' load_string
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo >>"$at_stdout"; $as_echo "lkonf_load_string()
+load_string:  local function foo() end foo()
+result:       0 (LK_OK)
+error_code:   0 (LK_OK)
+error_string: 
+" | \
+  $at_diff - "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/load_string.at:37"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
+{ set +x
+$as_echo "$at_srcdir/load_string.at:45: lkonf_test -a '
+local function foo()
+    print()
+end
+foo()' load_string"
+at_fn_check_prepare_notrace 'an embedded newline' "load_string.at:45"
+( $at_check_trace; lkonf_test -a '
+local function foo()
+    print()
+end
+foo()' load_string
+) >>"$at_stdout" 2>>"$at_stderr" 5>&-
+at_status=$? at_failed=false
+$at_check_filter
+at_fn_diff_devnull "$at_stderr" || at_failed=:
+echo >>"$at_stdout"; $as_echo "lkonf_load_string()
+load_string:  
+local function foo()
+    print()
+end
+foo()
+result:       5 (LK_CALL_CHUNK)
+error_code:   5 (LK_CALL_CHUNK)
+error_string: [string \"...\"]:3: attempt to call global 'print' (a nil value)
+" | \
+  $at_diff - "$at_stdout" || at_failed=:
+at_fn_check_status 0 $at_status "$at_srcdir/load_string.at:45"
+$at_failed && at_fn_log_failure
+$at_traceon; }
+
+
   set +x
   $at_times_p && times >"$at_times_file"
 ) 5>&1 2>&1 7>&- | eval $at_tee_pipe
