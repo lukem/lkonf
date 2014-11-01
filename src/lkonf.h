@@ -31,11 +31,13 @@
  * Use Lua as configuration for C applications.
  */ 
 
+extern "C" {
+
 #include <lua.h>
 
-/*
- * Types.
- */
+	/*
+	 * Types.
+	 */
 
 /**
  * Opaque type for lkonf_t.
@@ -56,18 +58,20 @@ typedef enum
 } lkerr_t;
 
 
-/*
- * lkonf_t object management.
- */
+	/*
+	 * lkonf_t object management.
+	 */
+
 
 /**
  * Construct an lkonf_t.
- * @return lkonf_t created with default parameters.
  * The internal Lua state is created with luaL_newstate().
  * If there was an error constructing the Lua state, the error code will be set.
+ * @return lkonf_t created with default parameters, or 0 on failure.
  */
 LUA_API lkonf_t *
 lkonf_construct(void);
+
 
 /**
  * Destruct an lkonf_t.
@@ -75,6 +79,7 @@ lkonf_construct(void);
  */
 LUA_API void
 lkonf_destruct(lkonf_t * iLc);
+
 
 /**
  * Access internal Lua state.
@@ -91,47 +96,48 @@ LUA_API lua_State *
 lkonf_get_lua_State(lkonf_t * iLc);
 
 
-/*
- * lkonf_t error management.
- */
+	/*
+	 * lkonf_t error management.
+	 */
+
 
 /**
  * Error code from most recent lkonf_t operation, if any.
  * @param iLc	lkonf_t to use.
- * @return Error code.
+ * @return	Error code, or LK_LKONF_NULL if iLc is 0.
  */
 LUA_API lkerr_t
 lkonf_get_error_code(lkonf_t * iLc);
 
+
 /**
  * Error string from most recent lkonf operation, if any.
  * @param iLc	lkonf_t to use.
- * @return Error string. 0 is no error, or iLc is 0.
+ * @return	Error string. 0 is no error, or iLc is 0.
  */
 LUA_API const char *
 lkonf_get_error_string(lkonf_t * iLc);
 
 
-/*
- * Chunk loading.
- */
+	/*
+	 * Chunk loading.
+	 */
 
 /**
  * Load file as a Lua chunk and execute in the sandbox.
  * @param iLc	lkonf_t.
  * @param iFile	Filename
- * @return 	Error code.
- * @todo evaluate if ok.
+ * @return 	Error code, or LK_OK if ok.
  */
 LUA_API lkerr_t
 lkonf_load_file(lkonf_t * iLc, const char * iFile);
+
 
 /**
  * Load string as a Lua chunk and execute in the sandbox.
  * @param iLc		lkonf_t.
  * @param iString	String to load.
- * @return		Error code.
- * @todo evaluate if ok.
+ * @return 		Error code, or LK_OK if ok.
  */
 LUA_API lkerr_t
 lkonf_load_string(lkonf_t * iLc, const char * iString);
@@ -150,5 +156,7 @@ lkonf_load_string(lkonf_t * iLc, const char * iString);
  *	- internal protected wrappers for lua_*() per
  *		https://github.com/jmmv/lutok/blob/master/state.cpp
  */
+
+} /* extern "C" */
 
 #endif /* LKONF_H */
