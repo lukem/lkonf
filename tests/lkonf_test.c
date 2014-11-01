@@ -164,7 +164,19 @@ test_load_file(const struct TestContext * context)
 		lkonf_destruct(lk);
 	}
 
-/* TODO: finish */
+	/* test load_file -a <arg> */
+	assert(context);
+	if (context->arg) {
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+		printf("load_file:    %s\n", context->arg);
+		const lkerr_t res = lkonf_load_file(lk, context->arg);
+		printf("result:       %d (%s)\n", res, err_to_str(res));
+		const lkerr_t gec = lkonf_get_error_code(lk);
+		printf("error_code:   %d (%s)\n", gec, err_to_str(gec));
+		const char * ges = lkonf_get_error_string(lk);
+		printf("error_string: %s\n", ges);
+	}
 
 	return EXIT_SUCCESS;
 }
@@ -229,7 +241,7 @@ test_load_string(const struct TestContext * context)
 
 /* TODO: sandbox tests */
 
-	/* test -a <arg> string */
+	/* test load_string -a <arg> */
 	assert(context);
 	if (context->arg) {
 		lkonf_t * lk = lkonf_construct();

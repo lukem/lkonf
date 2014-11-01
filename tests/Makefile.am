@@ -39,7 +39,9 @@ DISTCLEANFILES = \
 
 EXTRA_DIST = \
 	$(TESTSUITE) \
-	$(TESTSUITE_DEPS)
+	$(TESTSUITE_DEPS) \
+	files/print.lua \
+	files/simple.lua
 
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	:; { \

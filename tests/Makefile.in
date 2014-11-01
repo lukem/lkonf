@@ -241,7 +241,9 @@ DISTCLEANFILES = \
 
 EXTRA_DIST = \
 	$(TESTSUITE) \
-	$(TESTSUITE_DEPS)
+	$(TESTSUITE_DEPS) \
+	files/print.lua \
+	files/simple.lua
 
 all: all-am
 
