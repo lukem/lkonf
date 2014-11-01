@@ -4,8 +4,51 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 
+
+/**
+ * One flag per test.
+ */
+enum TestFlags
+{
+	TF_construct		= 1<<0,
+	TF_destruct		= 1<<1,
+	TF_load_file		= 1<<2,
+	TF_load_string		= 1<<3,
+};
+
+
+/**
+ * Test context.
+ */
+struct TestContext
+{
+	const char *	arg;
+};
+
+
+/**
+ * Return string representation of a given lkerr_t code.
+ */
+const char *
+err_to_str(const lkerr_t code)
+{
+	switch (code) {
+		case LK_OK:		return "LK_OK";
+		case LK_LKONF_NULL:	return "LK_LKONF_NULL";
+		case LK_STATE_NULL:	return "LK_STATE_NULL";
+		case LK_ARG_BAD:	return "LK_ARG_BAD";
+		case LK_LOAD_CHUNK:	return "LK_LOAD_CHUNK";
+		case LK_CALL_CHUNK:	return "LK_CALL_CHUNK";
+	}
+	return "<unknown>";
+}
+
+/**
+ * Return non-zero if the strings are equal.
+ */
 int
 streq(const char * lhs, const char * rhs)
 {
@@ -14,6 +57,9 @@ streq(const char * lhs, const char * rhs)
 	return (0 == strcmp(lhs, rhs));
 }
 
+/**
+ * Validate that the code and error string were returned for a given test.
+ */
 void
 ensure_result(
 	lkonf_t *	lk,
@@ -23,15 +69,19 @@ ensure_result(
 	const char *	expect_str)
 {
 	if (code != expect_code) {
-		fprintf(stderr, "%s: code %d != expected %d\n",
-			desc, code, expect_code);
+		fprintf(stderr, "%s: code %d (%s) != expected %d (%s)\n",
+			desc,
+			code, err_to_str(code),
+			expect_code, err_to_str(expect_code));
 		assert(code == expect_code);
 	}
-	const lkerr_t lk_code = lkonf_get_error_code(lk);
-	if (code != lk_code) {
-		fprintf(stderr, "%s: code %d != get_error_code %d\n",
-			desc, code, lk_code);
-		assert(code == lk_code);
+	const lkerr_t gec = lkonf_get_error_code(lk);
+	if (code != gec) {
+		fprintf(stderr, "%s: code %d (%s) != get_error_code %d (%s)\n",
+			desc,
+			code, err_to_str(code),
+			gec, err_to_str(gec));
+		assert(code == gec);
 	}
 	const char * lk_errstr = lkonf_get_error_string(lk);
 	if (! streq(lk_errstr, expect_str)) {
@@ -43,7 +93,7 @@ ensure_result(
 
 
 int
-test_construct(void)
+test_construct(const struct TestContext * context)
 {
 	printf("lkonf_construct()\n");
 
@@ -70,7 +120,7 @@ test_construct(void)
 
 
 int
-test_destruct(void)
+test_destruct(const struct TestContext * context)
 {
 	printf("lkonf_destruct()\n");
 
@@ -92,7 +142,7 @@ test_destruct(void)
 
 
 int
-test_load_file(void)
+test_load_file(const struct TestContext * context)
 {
 	printf("lkonf_load_file()\n");
 
@@ -121,7 +171,7 @@ test_load_file(void)
 
 
 int
-test_load_string(void)
+test_load_string(const struct TestContext * context)
 {
 	printf("lkonf_load_string()\n");
 
@@ -184,23 +234,13 @@ test_load_string(void)
 
 
 /**
- * One flag per test.
- */
-enum TestFlags {
-	TF_construct		= 1<<0,
-	TF_destruct		= 1<<1,
-	TF_load_file		= 1<<2,
-	TF_load_string		= 1<<3,
-};
-
-
-/**
  * Mapping of test name to TestFlags and function to execute.
  */
-const struct {
+const struct
+{
 	const char *		name;
 	enum TestFlags		flag;
-	int			(*function)(void);
+	int			(*function)(const struct TestContext *);
 } nameToTest[] = {
 	{ "construct",		TF_construct,	test_construct },
 	{ "destruct",		TF_destruct,	test_destruct },
@@ -213,9 +253,10 @@ const struct {
 int
 usage(const char * progname)
 {
-	fprintf(stderr, "Usage: %s <test> [...]\n", progname);
+	fprintf(stderr, "Usage: %s [-a <arg>] <test> [...]\n", progname);
+	fprintf(stderr, "   -a <arg>    Optional argument to <test>\n");
 	fprintf(stderr, " Supported <test> values:\n");
-	fprintf(stderr, "   all          all tests\n");
+	fprintf(stderr, "   all         all tests\n");
 	int ti;
 	for (ti = 0; nameToTest[ti].name; ++ti) {
 		fprintf(stderr, "   %s\n", nameToTest[ti].name);
@@ -233,6 +274,20 @@ main(int argc, char * argv[])
 		++progname;
 	} else {
 		progname = argv[0];
+	}
+
+	struct TestContext context;
+	context.arg = 0;
+
+	int ch;
+	while (-1 != (ch = getopt(argc, argv, "a:"))) {
+		switch (ch) {
+			case 'a':
+				context.arg = optarg;
+				break;
+			default:
+				return usage(progname);
+		}
 	}
 
 		/* only test specific items */
@@ -267,7 +322,7 @@ main(int argc, char * argv[])
 		if (! (tests & nameToTest[ti].flag)) {
 			continue;
 		}
-		int res = nameToTest[ti].function();
+		int res = nameToTest[ti].function(&context);
 		if (res > result) {
 			result = res;
 		}
