@@ -176,6 +176,9 @@ test_load_file(const struct TestContext * context)
 		printf("error_code:   %d (%s)\n", gec, err_to_str(gec));
 		const char * ges = lkonf_get_error_string(lk);
 		printf("error_string: %s\n", ges);
+
+		if (LK_OK != res)
+			return EXIT_FAILURE;
 	}
 
 	return EXIT_SUCCESS;
@@ -253,6 +256,9 @@ test_load_string(const struct TestContext * context)
 		printf("error_code:   %d (%s)\n", gec, err_to_str(gec));
 		const char * ges = lkonf_get_error_string(lk);
 		printf("error_string: %s\n", ges);
+
+		if (LK_OK != res)
+			return EXIT_FAILURE;
 	}
 
 	return EXIT_SUCCESS;
