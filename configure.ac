@@ -30,6 +30,8 @@ AC_SUBST([WARNCFLAGS])
 
 PKG_CHECK_MODULES([LUA], [lua])
 
+dnl TODO doxygen
+dnl
 
 dnl Initialise the testsuite
 dnl
