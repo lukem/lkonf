@@ -75,7 +75,7 @@ struct lkonf_s
  * Reset the lkonf_t error state.
  * @warning Asserts that iLc is not 0.
  */
-void
+LUA_API void
 lki_reset_error(lkonf_t * iLc);
 
 /**
@@ -83,7 +83,7 @@ lki_reset_error(lkonf_t * iLc);
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
-lkerr_t
+LUA_API lkerr_t
 lki_set_error(lkonf_t * iLc, lkerr_t iCode, const char * iString);
 
 /**
@@ -91,7 +91,7 @@ lki_set_error(lkonf_t * iLc, lkerr_t iCode, const char * iString);
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
-lkerr_t
+LUA_API lkerr_t
 lki_set_error_from_state(lkonf_t * iLc, lkerr_t iCode);
 
 
@@ -103,7 +103,7 @@ lki_set_error_from_state(lkonf_t * iLc, lkerr_t iCode);
  * Also resets the error state if ok.
  * @returns Error state if not ok.
  */
-lkerr_t
+LUA_API lkerr_t
 lki_state_entry(lkonf_t * iLc);
 
 /**
@@ -112,7 +112,7 @@ lki_state_entry(lkonf_t * iLc);
  * Returns the current error code of the iLc.
  * @warning Asserts that the Lua stack hasn't gone below the depth.
  */
-lkerr_t
+LUA_API lkerr_t
 lki_state_exit(lkonf_t * iLc);
 
 
@@ -125,7 +125,14 @@ lki_state_exit(lkonf_t * iLc);
  * @param iNumResults	Number of results.
  * @todo sandbox
  */
-lkerr_t
+LUA_API lkerr_t
 lki_call_chunk(lkonf_t * iLc, const int iNumArgs, const int iNumResults);
+
+/**
+ * Raise lua error for maskcount exceeded.
+ */
+LUA_API void
+lki_maskcount_exceeded(lua_State * iState, lua_Debug * iArg);
+
 
 #endif /* LKONF_INTERNAL_H */

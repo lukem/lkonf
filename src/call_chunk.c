@@ -1,6 +1,7 @@
 #include "internal.h"
 
 #include <assert.h>
+#include <lauxlib.h>
 
 lkerr_t
 lki_call_chunk(lkonf_t * iLc, const int iNumArgs, const int iNumResults)
@@ -18,7 +19,13 @@ lki_call_chunk(lkonf_t * iLc, const int iNumArgs, const int iNumResults)
 		return iLc->error_code;
 	}
 
-// TODO set instruction limit
+	if (iLc->instruction_limit > 0) {
+		lua_sethook(
+			iLc->state,
+			&lki_maskcount_exceeded,
+			LUA_MASKCOUNT,
+			iLc->instruction_limit);
+	}
 
 // TODO sandbox
 
@@ -26,7 +33,20 @@ lki_call_chunk(lkonf_t * iLc, const int iNumArgs, const int iNumResults)
 		lki_set_error_from_state(iLc, LK_CALL_CHUNK);
 	}
 
-// TODO reset instruction limit
+	if (iLc->instruction_limit > 0) {
+		lua_sethook(
+			iLc->state,
+			&lki_maskcount_exceeded,
+			LUA_MASKCOUNT,
+			0);
+	}
 
 	return iLc->error_code;
+}
+
+
+void
+lki_maskcount_exceeded(lua_State * iState, lua_Debug * iArg)
+{
+        luaL_error(iState, "Instruction count exceeded");
 }

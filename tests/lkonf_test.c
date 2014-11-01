@@ -17,6 +17,7 @@ enum TestFlags
 	TF_destruct		= 1<<1,
 	TF_load_file		= 1<<2,
 	TF_load_string		= 1<<3,
+	TF_instruction_limit		= 1<<4,
 };
 
 
@@ -157,10 +158,12 @@ test_load_file(const struct TestContext * context)
 	/* fail: load with filename null pointer */
 	{
 		lkonf_t * lk = lkonf_construct();
+
 		assert(lk && "lkonf_construct returned 0");
 		const lkerr_t res = lkonf_load_file(lk, 0);
 		ensure_result(lk, res,
 			"load_file(lk, 0)", LK_ARG_BAD, "iFile NULL");
+
 		lkonf_destruct(lk);
 	}
 
@@ -169,6 +172,7 @@ test_load_file(const struct TestContext * context)
 	if (context->arg) {
 		lkonf_t * lk = lkonf_construct();
 		assert(lk && "lkonf_construct returned 0");
+
 		printf("load_file:    %s\n", context->arg);
 		const lkerr_t res = lkonf_load_file(lk, context->arg);
 		printf("result:       %d (%s)\n", res, err_to_str(res));
@@ -201,9 +205,11 @@ test_load_string(const struct TestContext * context)
 	{
 		lkonf_t * lk = lkonf_construct();
 		assert(lk && "lkonf_construct returned 0");
+
 		const lkerr_t res = lkonf_load_string(lk, 0);
 		ensure_result(lk, res,
 			"load_string(lk, 0)", LK_ARG_BAD, "iString NULL");
+
 		lkonf_destruct(lk);
 	}
 
@@ -211,11 +217,13 @@ test_load_string(const struct TestContext * context)
 	{
 		lkonf_t * lk = lkonf_construct();
 		assert(lk && "lkonf_construct returned 0");
+
 		const lkerr_t res = lkonf_load_string(lk, "junk");
 		ensure_result(lk, res,
 			"load_string(lk, \"junk\")",
 			LK_LOAD_CHUNK,
 			"[string \"junk\"]:1: '=' expected near '<eof>'");
+
 		lkonf_destruct(lk);
 	}
 
@@ -223,11 +231,13 @@ test_load_string(const struct TestContext * context)
 	{
 		lkonf_t * lk = lkonf_construct();
 		assert(lk && "lkonf_construct returned 0");
+
 		const lkerr_t res = lkonf_load_string(lk, "junk()");
 		ensure_result(lk, res,
 			"load_string(lk, \"junk()\")",
 			LK_CALL_CHUNK,
 			"[string \"junk()\"]:1: attempt to call global 'junk' (a nil value)");
+
 		lkonf_destruct(lk);
 	}
 
@@ -235,8 +245,10 @@ test_load_string(const struct TestContext * context)
 	{
 		lkonf_t * lk = lkonf_construct();
 		assert(lk && "lkonf_construct returned 0");
+
 		const lkerr_t res = lkonf_load_string(lk, "t=1");
 		ensure_result(lk, res, "load_string(lk, \"t=1\")", LK_OK, "");
+
 		lkonf_destruct(lk);
 	}
 
@@ -264,6 +276,91 @@ test_load_string(const struct TestContext * context)
 	return EXIT_SUCCESS;
 }
 
+int
+test_instruction_limit(const struct TestContext * context)
+{
+	printf("lkonf_set_instruction_limit()\n");
+
+	/* fail: load null kconf_t: fail */
+	{
+		assert(LK_LKONF_NULL == lkonf_load_string(0, 0));
+	}
+
+	/* fail: set_instruction_limit < 0 */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+
+		const lkerr_t res = lkonf_set_instruction_limit(lk, -2);
+		ensure_result(lk, res,
+			"set_instruction_limit(lk, -2)",
+			LK_ARG_BAD, "iLimit < 0");
+
+		lkonf_destruct(lk);
+	}
+
+	/* pass: set & get */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+
+		const int	limit = 10;
+
+		const lkerr_t sil = lkonf_set_instruction_limit(lk, limit);
+		ensure_result(lk, sil,
+			"set_instruction_limit(lk, 10)", LK_OK, "");
+
+		const int gil = lkonf_get_instruction_limit(lk);
+		assert(limit == gil);
+
+		lkonf_destruct(lk);
+	}
+
+	/* pass: long loop, no limit */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+
+		const int	limit = 0;
+		const char *	expr = "for i=1, 1000 do end";
+
+		const lkerr_t sil = lkonf_set_instruction_limit(lk, limit);
+		assert(LK_OK == sil);
+
+		const lkerr_t res = lkonf_load_string(lk, expr);
+		ensure_result(lk, res, expr,
+			LK_OK, "");
+
+		const int gil = lkonf_get_instruction_limit(lk);
+		assert(limit == gil);
+
+		lkonf_destruct(lk);
+	}
+
+	/* pass: long loop, limited and terminated */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+
+		const int	limit = 100;
+		const char *	expr = "for i=1, 1000 do end";
+
+		const lkerr_t sil = lkonf_set_instruction_limit(lk, limit);
+		assert(LK_OK == sil);
+
+		const lkerr_t res = lkonf_load_string(lk, expr);
+		ensure_result(lk, res, expr,
+			LK_CALL_CHUNK, "Instruction count exceeded");
+
+		const int gil = lkonf_get_instruction_limit(lk);
+		assert(limit == gil);
+
+		lkonf_destruct(lk);
+	}
+
+	return EXIT_SUCCESS;
+}
+
 
 /**
  * Mapping of test name to TestFlags and function to execute.
@@ -277,7 +374,8 @@ const struct
 	{ "construct",		TF_construct,	test_construct },
 	{ "destruct",		TF_destruct,	test_destruct },
 	{ "load_file",		TF_load_file,	test_load_file },
-	{ "load_string",	TF_load_string,	test_load_string,},
+	{ "load_string",	TF_load_string,	test_load_string },
+	{ "instruction_limit",	TF_instruction_limit, test_instruction_limit },
 	{ 0,			0,		0 },
 };
 
