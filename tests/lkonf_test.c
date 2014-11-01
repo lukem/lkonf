@@ -14,6 +14,34 @@ streq(const char * lhs, const char * rhs)
 	return (0 == strcmp(lhs, rhs));
 }
 
+void
+ensure_result(
+	lkonf_t *	lk,
+	const lkerr_t	code,
+	const char *	desc,
+	const lkerr_t	expect_code,
+	const char *	expect_str)
+{
+	if (code != expect_code) {
+		fprintf(stderr, "%s: code %d != expected %d\n",
+			desc, code, expect_code);
+		assert(code == expect_code);
+	}
+	const lkerr_t lk_code = lkonf_get_error_code(lk);
+	if (code != lk_code) {
+		fprintf(stderr, "%s: code %d != get_error_code %d\n",
+			desc, code, lk_code);
+		assert(code == lk_code);
+	}
+	const char * lk_errstr = lkonf_get_error_string(lk);
+	if (! streq(lk_errstr, expect_str)) {
+		fprintf(stderr, "%s: errstr '%s' != expected '%s'\n",
+			desc, lk_errstr, expect_str);
+		assert(0 && "errstr != expected");
+	}
+}
+
+
 int
 test_construct(void)
 {
@@ -62,32 +90,6 @@ test_destruct(void)
 	return EXIT_SUCCESS;
 }
 
-void
-ensure_result(
-	lkonf_t *	lk,
-	const lkerr_t	code,
-	const char *	desc,
-	const lkerr_t	expect_code,
-	const char *	expect_str)
-{
-	if (code != expect_code) {
-		fprintf(stderr, "%s: code %d != expected %d\n",
-			desc, code, expect_code);
-		assert(code == expect_code);
-	}
-	const lkerr_t lk_code = lkonf_get_error_code(lk);
-	if (code != lk_code) {
-		fprintf(stderr, "%s: code %d != get_error_code %d\n",
-			desc, code, lk_code);
-		assert(code == lk_code);
-	}
-	const char * lk_errstr = lkonf_get_error_string(lk);
-	if (! streq(lk_errstr, expect_str)) {
-		fprintf(stderr, "%s: errstr '%s' != expected '%s'\n",
-			desc, lk_errstr, expect_str);
-		assert(0 && "errstr != expected");
-	}
-}
 
 int
 test_load_file(void)
@@ -220,6 +222,7 @@ usage(const char * progname)
 	}
 	return EXIT_FAILURE;
 }
+
 
 int
 main(int argc, char * argv[])
