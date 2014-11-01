@@ -82,8 +82,10 @@ liblkonf_la_LIBADD =
 am_liblkonf_la_OBJECTS = liblkonf_la-call_chunk.lo \
 	liblkonf_la-construct.lo liblkonf_la-destruct.lo \
 	liblkonf_la-get_error_code.lo liblkonf_la-get_error_string.lo \
+	liblkonf_la-get_instruction_limit.lo \
 	liblkonf_la-get_lua_State.lo liblkonf_la-load_file.lo \
 	liblkonf_la-load_string.lo liblkonf_la-set_error.lo \
+	liblkonf_la-set_instruction_limit.lo \
 	liblkonf_la-state_entry_exit.lo
 liblkonf_la_OBJECTS = $(am_liblkonf_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
@@ -258,10 +260,12 @@ liblkonf_la_SOURCES = \
 	destruct.c \
 	get_error_code.c \
 	get_error_string.c \
+	get_instruction_limit.c \
 	get_lua_State.c \
 	load_file.c \
 	load_string.c \
 	set_error.c \
+	set_instruction_limit.c \
 	state_entry_exit.c
 
 liblkonf_la_CPPFLAGS = \
@@ -351,10 +355,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-destruct.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_error_code.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_error_string.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_instruction_limit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_lua_State.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-load_file.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-load_string.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-set_error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-set_instruction_limit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-state_entry_exit.Plo@am__quote@
 
 .c.o:
@@ -421,6 +427,14 @@ liblkonf_la-get_error_string.lo: get_error_string.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-get_error_string.lo `test -f 'get_error_string.c' || echo '$(srcdir)/'`get_error_string.c
 
+liblkonf_la-get_instruction_limit.lo: get_instruction_limit.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-get_instruction_limit.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-get_instruction_limit.Tpo -c -o liblkonf_la-get_instruction_limit.lo `test -f 'get_instruction_limit.c' || echo '$(srcdir)/'`get_instruction_limit.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-get_instruction_limit.Tpo $(DEPDIR)/liblkonf_la-get_instruction_limit.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_instruction_limit.c' object='liblkonf_la-get_instruction_limit.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-get_instruction_limit.lo `test -f 'get_instruction_limit.c' || echo '$(srcdir)/'`get_instruction_limit.c
+
 liblkonf_la-get_lua_State.lo: get_lua_State.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-get_lua_State.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-get_lua_State.Tpo -c -o liblkonf_la-get_lua_State.lo `test -f 'get_lua_State.c' || echo '$(srcdir)/'`get_lua_State.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-get_lua_State.Tpo $(DEPDIR)/liblkonf_la-get_lua_State.Plo
@@ -452,6 +466,14 @@ liblkonf_la-set_error.lo: set_error.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='set_error.c' object='liblkonf_la-set_error.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-set_error.lo `test -f 'set_error.c' || echo '$(srcdir)/'`set_error.c
+
+liblkonf_la-set_instruction_limit.lo: set_instruction_limit.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-set_instruction_limit.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-set_instruction_limit.Tpo -c -o liblkonf_la-set_instruction_limit.lo `test -f 'set_instruction_limit.c' || echo '$(srcdir)/'`set_instruction_limit.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-set_instruction_limit.Tpo $(DEPDIR)/liblkonf_la-set_instruction_limit.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='set_instruction_limit.c' object='liblkonf_la-set_instruction_limit.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-set_instruction_limit.lo `test -f 'set_instruction_limit.c' || echo '$(srcdir)/'`set_instruction_limit.c
 
 liblkonf_la-state_entry_exit.lo: state_entry_exit.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-state_entry_exit.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-state_entry_exit.Tpo -c -o liblkonf_la-state_entry_exit.lo `test -f 'state_entry_exit.c' || echo '$(srcdir)/'`state_entry_exit.c
