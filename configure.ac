@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([lkonf], [0.1], [Luke@Mewburn.net])
+AC_INIT([lkonf], [0.2], [Luke@Mewburn.net])
 
 AC_COPYRIGHT([[
 Copyright 2014, Luke Mewburn <Luke@Mewburn.net>.
