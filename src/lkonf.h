@@ -31,7 +31,9 @@
  * Use Lua as configuration for C applications.
  */ 
 
+#ifdef  __cplusplus
 extern "C" {
+#endif
 
 #include <lua.h>
 
@@ -157,6 +159,8 @@ lkonf_load_string(lkonf_t * iLc, const char * iString);
  *		https://github.com/jmmv/lutok/blob/master/state.cpp
  */
 
+#ifdef  __cplusplus
 } /* extern "C" */
+#endif
 
 #endif /* LKONF_H */
