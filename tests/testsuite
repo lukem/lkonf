@@ -2065,15 +2065,15 @@ $at_traceon; }
 
 
 { set +x
-$as_echo "$at_srcdir/load_file.at:5: lkonf_test -a \${abs_srcdir}/files/simple.lua load_file"
+$as_echo "$at_srcdir/load_file.at:5: cp \${srcdir}/files/simple.lua . && lkonf_test -a simple.lua load_file"
 at_fn_check_prepare_notrace 'a ${...} parameter expansion' "load_file.at:5"
-( $at_check_trace; lkonf_test -a ${abs_srcdir}/files/simple.lua load_file
+( $at_check_trace; cp ${srcdir}/files/simple.lua . && lkonf_test -a simple.lua load_file
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "lkonf_load_file()
-load_file:    ${abs_srcdir}/files/simple.lua
+load_file:    simple.lua
 result:       0 (LK_OK)
 error_code:   0 (LK_OK)
 error_string: 
@@ -2085,18 +2085,18 @@ $at_traceon; }
 
 
 { set +x
-$as_echo "$at_srcdir/load_file.at:13: lkonf_test -a \${abs_srcdir}/files/print.lua load_file"
+$as_echo "$at_srcdir/load_file.at:13: cp \${abs_srcdir}/files/print.lua . && lkonf_test -a print.lua load_file"
 at_fn_check_prepare_notrace 'a ${...} parameter expansion' "load_file.at:13"
-( $at_check_trace; lkonf_test -a ${abs_srcdir}/files/print.lua load_file
+( $at_check_trace; cp ${abs_srcdir}/files/print.lua . && lkonf_test -a print.lua load_file
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
 echo >>"$at_stdout"; $as_echo "lkonf_load_file()
-load_file:    ${abs_srcdir}/files/print.lua
+load_file:    print.lua
 result:       5 (LK_CALL_CHUNK)
 error_code:   5 (LK_CALL_CHUNK)
-error_string: ${abs_srcdir}/files/print.lua:2: attempt to call global 'print' (a nil value)
+error_string: print.lua:2: attempt to call global 'print' (a nil value)
 " | \
   $at_diff - "$at_stdout" || at_failed=:
 at_fn_check_status 0 $at_status "$at_srcdir/load_file.at:13"
