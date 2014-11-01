@@ -15,10 +15,12 @@ liblkonf_la_SOURCES = \
 	destruct.c \
 	get_error_code.c \
 	get_error_string.c \
+	get_instruction_limit.c \
 	get_lua_State.c \
 	load_file.c \
 	load_string.c \
 	set_error.c \
+	set_instruction_limit.c \
 	state_entry_exit.c
 
 liblkonf_la_CPPFLAGS = \

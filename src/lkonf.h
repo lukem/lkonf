@@ -145,9 +145,30 @@ LUA_API lkerr_t
 lkonf_load_string(lkonf_t * iLc, const char * iString);
 
 
+	/*
+	 * Sandboxing and instruction limits.
+	 */
+
+/**
+ * Get the current instruction limit.
+ * @param iLc	lkonf_t.
+ * @return	Instruct limit in iLc. -1 if iLc is 0.
+ */
+LUA_API int
+lkonf_get_instruction_limit(lkonf_t * iLc);
+
+/**
+ * Set the current instruction limit.
+ * @param iLc		lkonf_t.
+ * @param iLimit	Limit to set.  0 is no limit.
+ * @return 		Error code, or LK_OK if ok.
+ */
+LUA_API lkerr_t
+lkonf_set_instruction_limit(lkonf_t * iLc, const int iLimit);
+
+
 /*
  * TODO
- *	- instruction limits
  *	- sandbox manipulation
  *	- get_TYPE.  api variations
  *		- "path" or { "key", "key", ...} variations
