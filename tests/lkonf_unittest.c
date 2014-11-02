@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-
 
 
 /**
@@ -18,15 +16,6 @@ enum TestFlags
 	TF_load_file		= 1<<2,
 	TF_load_string		= 1<<3,
 	TF_instruction_limit	= 1<<4,
-};
-
-
-/**
- * Test context.
- */
-struct TestContext
-{
-	const char *	arg;
 };
 
 
@@ -94,7 +83,7 @@ ensure_result(
 
 
 int
-test_construct(const struct TestContext * context)
+test_construct(void)
 {
 	printf("lkonf_construct()\n");
 
@@ -121,7 +110,7 @@ test_construct(const struct TestContext * context)
 
 
 int
-test_destruct(const struct TestContext * context)
+test_destruct(void)
 {
 	printf("lkonf_destruct()\n");
 
@@ -143,7 +132,7 @@ test_destruct(const struct TestContext * context)
 
 
 int
-test_load_file(const struct TestContext * context)
+test_load_file(void)
 {
 	printf("lkonf_load_file()\n");
 
@@ -167,32 +156,12 @@ test_load_file(const struct TestContext * context)
 		lkonf_destruct(lk);
 	}
 
-	/* test load_file -a <arg> */
-	assert(context);
-	if (context->arg) {
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
-
-		printf("load_file:    %s\n", context->arg);
-		const lkerr_t res = lkonf_load_file(lk, context->arg);
-		printf("result:       %d (%s)\n", res, err_to_str(res));
-		const lkerr_t gec = lkonf_get_error_code(lk);
-		printf("error_code:   %d (%s)\n", gec, err_to_str(gec));
-		const char * ges = lkonf_get_error_string(lk);
-		printf("error_string: %s\n", ges);
-
-		lkonf_destruct(lk);
-
-		if (LK_OK != res)
-			return EXIT_FAILURE;
-	}
-
 	return EXIT_SUCCESS;
 }
 
 
 int
-test_load_string(const struct TestContext * context)
+test_load_string(void)
 {
 	printf("lkonf_load_string()\n");
 
@@ -254,35 +223,13 @@ test_load_string(const struct TestContext * context)
 		lkonf_destruct(lk);
 	}
 
-/* TODO: instruction limit */
-
 /* TODO: sandbox tests */
-
-	/* test load_string -a <arg> */
-	assert(context);
-	if (context->arg) {
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
-
-		printf("load_string:  %s\n", context->arg);
-		const lkerr_t res = lkonf_load_string(lk, context->arg);
-		printf("result:       %d (%s)\n", res, err_to_str(res));
-		const lkerr_t gec = lkonf_get_error_code(lk);
-		printf("error_code:   %d (%s)\n", gec, err_to_str(gec));
-		const char * ges = lkonf_get_error_string(lk);
-		printf("error_string: %s\n", ges);
-
-		lkonf_destruct(lk);
-
-		if (LK_OK != res)
-			return EXIT_FAILURE;
-	}
 
 	return EXIT_SUCCESS;
 }
 
 int
-test_instruction_limit(const struct TestContext * context)
+test_instruction_limit(void)
 {
 	printf("lkonf_set_instruction_limit()\n");
 
@@ -374,7 +321,7 @@ const struct
 {
 	const char *		name;
 	enum TestFlags		flag;
-	int			(*function)(const struct TestContext *);
+	int			(*function)(void);
 } nameToTest[] = {
 	{ "construct",		TF_construct,	test_construct },
 	{ "destruct",		TF_destruct,	test_destruct },
@@ -388,9 +335,8 @@ const struct
 int
 usage(const char * progname)
 {
-	fprintf(stderr, "Usage: %s [-a <arg>] <test> [...]\n", progname);
-	fprintf(stderr, "   -a <arg>    Optional argument to <test>\n");
-	fprintf(stderr, " Supported <test> values:\n");
+	fprintf(stderr, "Usage: %s <test> [...]\n", progname);
+	fprintf(stderr, "  Supported <test> values:\n");
 	fprintf(stderr, "   all         all tests\n");
 	int ti;
 	for (ti = 0; nameToTest[ti].name; ++ti) {
@@ -411,27 +357,10 @@ main(int argc, char * argv[])
 		progname = argv[0];
 	}
 
-	struct TestContext context;
-	context.arg = 0;
-
-	int ch;
-	while (-1 != (ch = getopt(argc, argv, "a:"))) {
-		switch (ch) {
-			case 'a':
-				context.arg = optarg;
-				break;
-			default:
-				return usage(progname);
-		}
-	}
-
-	argc -= optind;
-	argv += optind;
-
 		/* only test specific items */
 	enum TestFlags tests = 0;
 	int ai, ti;
-	for (ai = 0; ai < argc; ++ai) {
+	for (ai = 1; ai < argc; ++ai) {
 		if (streq("all", argv[ai])) {
 			tests = ~0;
 			continue;
@@ -460,7 +389,7 @@ main(int argc, char * argv[])
 		if (! (tests & nameToTest[ti].flag)) {
 			continue;
 		}
-		int res = nameToTest[ti].function(&context);
+		int res = nameToTest[ti].function();
 		if (res > result) {
 			result = res;
 		}
