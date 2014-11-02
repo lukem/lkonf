@@ -17,7 +17,7 @@ enum TestFlags
 	TF_destruct		= 1<<1,
 	TF_load_file		= 1<<2,
 	TF_load_string		= 1<<3,
-	TF_instruction_limit		= 1<<4,
+	TF_instruction_limit	= 1<<4,
 };
 
 
