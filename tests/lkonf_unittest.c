@@ -181,6 +181,8 @@ test_load_file(const struct TestContext * context)
 		const char * ges = lkonf_get_error_string(lk);
 		printf("error_string: %s\n", ges);
 
+		lkonf_destruct(lk);
+
 		if (LK_OK != res)
 			return EXIT_FAILURE;
 	}
@@ -261,6 +263,7 @@ test_load_string(const struct TestContext * context)
 	if (context->arg) {
 		lkonf_t * lk = lkonf_construct();
 		assert(lk && "lkonf_construct returned 0");
+
 		printf("load_string:  %s\n", context->arg);
 		const lkerr_t res = lkonf_load_string(lk, context->arg);
 		printf("result:       %d (%s)\n", res, err_to_str(res));
@@ -268,6 +271,8 @@ test_load_string(const struct TestContext * context)
 		printf("error_code:   %d (%s)\n", gec, err_to_str(gec));
 		const char * ges = lkonf_get_error_string(lk);
 		printf("error_string: %s\n", ges);
+
+		lkonf_destruct(lk);
 
 		if (LK_OK != res)
 			return EXIT_FAILURE;
