@@ -1996,9 +1996,9 @@ at_xfail=no
 
 
 { set +x
-$as_echo "$at_srcdir/construct.at:3: lkonf_test construct"
+$as_echo "$at_srcdir/construct.at:3: lkonf_unittest construct"
 at_fn_check_prepare_trace "construct.at:3"
-( $at_check_trace; lkonf_test construct
+( $at_check_trace; lkonf_unittest construct
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2024,9 +2024,9 @@ at_xfail=no
 
 
 { set +x
-$as_echo "$at_srcdir/destruct.at:3: lkonf_test destruct"
+$as_echo "$at_srcdir/destruct.at:3: lkonf_unittest destruct"
 at_fn_check_prepare_trace "destruct.at:3"
-( $at_check_trace; lkonf_test destruct
+( $at_check_trace; lkonf_unittest destruct
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2052,9 +2052,9 @@ at_xfail=no
 
 
 { set +x
-$as_echo "$at_srcdir/load_file.at:3: lkonf_test load_file"
+$as_echo "$at_srcdir/load_file.at:3: lkonf_unittest load_file"
 at_fn_check_prepare_trace "load_file.at:3"
-( $at_check_trace; lkonf_test load_file
+( $at_check_trace; lkonf_unittest load_file
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2066,9 +2066,9 @@ $at_traceon; }
 
 
 { set +x
-$as_echo "$at_srcdir/load_file.at:5: cp \${srcdir}/files/simple.lua . && lkonf_test -a simple.lua load_file"
+$as_echo "$at_srcdir/load_file.at:5: cp \${srcdir}/files/simple.lua . && lkonf_unittest -a simple.lua load_file"
 at_fn_check_prepare_notrace 'a ${...} parameter expansion' "load_file.at:5"
-( $at_check_trace; cp ${srcdir}/files/simple.lua . && lkonf_test -a simple.lua load_file
+( $at_check_trace; cp ${srcdir}/files/simple.lua . && lkonf_unittest -a simple.lua load_file
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2086,9 +2086,9 @@ $at_traceon; }
 
 
 { set +x
-$as_echo "$at_srcdir/load_file.at:14: cp \${abs_srcdir}/files/print.lua . && lkonf_test -a print.lua load_file"
+$as_echo "$at_srcdir/load_file.at:14: cp \${abs_srcdir}/files/print.lua . && lkonf_unittest -a print.lua load_file"
 at_fn_check_prepare_notrace 'a ${...} parameter expansion' "load_file.at:14"
-( $at_check_trace; cp ${abs_srcdir}/files/print.lua . && lkonf_test -a print.lua load_file
+( $at_check_trace; cp ${abs_srcdir}/files/print.lua . && lkonf_unittest -a print.lua load_file
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2120,9 +2120,9 @@ at_xfail=no
 
 
 { set +x
-$as_echo "$at_srcdir/load_string.at:3: lkonf_test load_string"
+$as_echo "$at_srcdir/load_string.at:3: lkonf_unittest load_string"
 at_fn_check_prepare_trace "load_string.at:3"
-( $at_check_trace; lkonf_test load_string
+( $at_check_trace; lkonf_unittest load_string
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2134,9 +2134,9 @@ $at_traceon; }
 
 
 { set +x
-$as_echo "$at_srcdir/load_string.at:5: lkonf_test -a 'a=nil' load_string"
+$as_echo "$at_srcdir/load_string.at:5: lkonf_unittest -a 'a=nil' load_string"
 at_fn_check_prepare_trace "load_string.at:5"
-( $at_check_trace; lkonf_test -a 'a=nil' load_string
+( $at_check_trace; lkonf_unittest -a 'a=nil' load_string
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2154,9 +2154,9 @@ $at_traceon; }
 
 
 { set +x
-$as_echo "$at_srcdir/load_string.at:13: lkonf_test -a 'print()' load_string"
+$as_echo "$at_srcdir/load_string.at:13: lkonf_unittest -a 'print()' load_string"
 at_fn_check_prepare_trace "load_string.at:13"
-( $at_check_trace; lkonf_test -a 'print()' load_string
+( $at_check_trace; lkonf_unittest -a 'print()' load_string
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2174,9 +2174,9 @@ $at_traceon; }
 
 
 { set +x
-$as_echo "$at_srcdir/load_string.at:21: lkonf_test -a 'function foo() end' load_string"
+$as_echo "$at_srcdir/load_string.at:21: lkonf_unittest -a 'function foo() end' load_string"
 at_fn_check_prepare_trace "load_string.at:21"
-( $at_check_trace; lkonf_test -a 'function foo() end' load_string
+( $at_check_trace; lkonf_unittest -a 'function foo() end' load_string
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2194,9 +2194,9 @@ $at_traceon; }
 
 
 { set +x
-$as_echo "$at_srcdir/load_string.at:29: lkonf_test -a 'function foo() end foo()' load_string"
+$as_echo "$at_srcdir/load_string.at:29: lkonf_unittest -a 'function foo() end foo()' load_string"
 at_fn_check_prepare_trace "load_string.at:29"
-( $at_check_trace; lkonf_test -a 'function foo() end foo()' load_string
+( $at_check_trace; lkonf_unittest -a 'function foo() end foo()' load_string
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2214,9 +2214,9 @@ $at_traceon; }
 
 
 { set +x
-$as_echo "$at_srcdir/load_string.at:37: lkonf_test -a 'local function foo() end foo()' load_string"
+$as_echo "$at_srcdir/load_string.at:37: lkonf_unittest -a 'local function foo() end foo()' load_string"
 at_fn_check_prepare_trace "load_string.at:37"
-( $at_check_trace; lkonf_test -a 'local function foo() end foo()' load_string
+( $at_check_trace; lkonf_unittest -a 'local function foo() end foo()' load_string
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
@@ -2234,13 +2234,13 @@ $at_traceon; }
 
 
 { set +x
-$as_echo "$at_srcdir/load_string.at:45: lkonf_test -a '
+$as_echo "$at_srcdir/load_string.at:45: lkonf_unittest -a '
 local function foo()
     print()
 end
 foo()' load_string"
 at_fn_check_prepare_notrace 'an embedded newline' "load_string.at:45"
-( $at_check_trace; lkonf_test -a '
+( $at_check_trace; lkonf_unittest -a '
 local function foo()
     print()
 end
@@ -2280,9 +2280,9 @@ at_xfail=no
 
 
 { set +x
-$as_echo "$at_srcdir/instruction_limit.at:3: lkonf_test instruction_limit"
+$as_echo "$at_srcdir/instruction_limit.at:3: lkonf_unittest instruction_limit"
 at_fn_check_prepare_trace "instruction_limit.at:3"
-( $at_check_trace; lkonf_test instruction_limit
+( $at_check_trace; lkonf_unittest instruction_limit
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter

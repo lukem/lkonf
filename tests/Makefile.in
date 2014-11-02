@@ -38,7 +38,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = lkonf_test$(EXEEXT)
+noinst_PROGRAMS = lkonf_unittest$(EXEEXT)
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -59,10 +59,10 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-lkonf_test_SOURCES = lkonf_test.c
-lkonf_test_OBJECTS = lkonf_test.$(OBJEXT)
-lkonf_test_LDADD = $(LDADD)
-lkonf_test_DEPENDENCIES = $(builddir)/../src/liblkonf.la
+lkonf_unittest_SOURCES = lkonf_unittest.c
+lkonf_unittest_OBJECTS = lkonf_unittest.$(OBJEXT)
+lkonf_unittest_LDADD = $(LDADD)
+lkonf_unittest_DEPENDENCIES = $(builddir)/../src/liblkonf.la
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -92,8 +92,8 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = lkonf_test.c
-DIST_SOURCES = lkonf_test.c
+SOURCES = lkonf_unittest.c
+DIST_SOURCES = lkonf_unittest.c
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -288,9 +288,9 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-lkonf_test$(EXEEXT): $(lkonf_test_OBJECTS) $(lkonf_test_DEPENDENCIES) 
-	@rm -f lkonf_test$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(lkonf_test_OBJECTS) $(lkonf_test_LDADD) $(LIBS)
+lkonf_unittest$(EXEEXT): $(lkonf_unittest_OBJECTS) $(lkonf_unittest_DEPENDENCIES) 
+	@rm -f lkonf_unittest$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(lkonf_unittest_OBJECTS) $(lkonf_unittest_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -298,7 +298,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lkonf_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lkonf_unittest.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
