@@ -25,7 +25,7 @@ AC_CONFIG_SRCDIR([src/lkonf.h])
 AC_PROG_CC()
 AC_PROG_LIBTOOL()
 
-AX_APPEND_COMPILE_FLAGS([-Werror -Wall -Wpointer-arith -Wshadow], [WARNCFLAGS])
+AX_APPEND_COMPILE_FLAGS([-Werror -Wall -Wextra -Wpointer-arith -Wshadow], [WARNCFLAGS])
 AC_SUBST([WARNCFLAGS])
 
 PKG_CHECK_MODULES([LUA], [lua])
