@@ -1,8 +1,8 @@
 AT_SETUP([load_file])
 
-AT_CHECK([lkonf_test load_file], [0], [ignore])
+AT_CHECK([lkonf_unittest load_file], [0], [ignore])
 
-AT_CHECK([cp ${srcdir}/files/simple.lua . && lkonf_test -a simple.lua load_file],
+AT_CHECK([cp ${srcdir}/files/simple.lua . && lkonf_unittest -a simple.lua load_file],
 [0], [dnl
 lkonf_load_file()
 load_file:    simple.lua
@@ -11,7 +11,7 @@ error_code:   0 (LK_OK)
 error_string: @&t@
 ])
 
-AT_CHECK([cp ${abs_srcdir}/files/print.lua . && lkonf_test -a print.lua load_file],
+AT_CHECK([cp ${abs_srcdir}/files/print.lua . && lkonf_unittest -a print.lua load_file],
 [1], [dnl
 lkonf_load_file()
 load_file:    print.lua

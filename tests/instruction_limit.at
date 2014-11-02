@@ -1,5 +1,5 @@
 AT_SETUP([instruction_limit])
 
-AT_CHECK([lkonf_test instruction_limit], [0], [ignore])
+AT_CHECK([lkonf_unittest instruction_limit], [0], [ignore])
 
 AT_CLEANUP()
