@@ -48,5 +48,7 @@ lki_call_chunk(lkonf_t * iLc, const int iNumArgs, const int iNumResults)
 void
 lki_maskcount_exceeded(lua_State * iState, lua_Debug * iArg)
 {
+	(void)iArg;	/* UNUSED */
+
         luaL_error(iState, "Instruction count exceeded");
 }
