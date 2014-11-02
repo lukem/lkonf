@@ -11,6 +11,7 @@ LDADD = \
 	$(builddir)/../src/liblkonf.la
 
 noinst_PROGRAMS = \
+	lkonf \
 	lkonf_unittest
 
 
