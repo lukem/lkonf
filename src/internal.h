@@ -72,14 +72,14 @@ struct lkonf_s
 
 
 /**
- * Reset the lkonf_t error state.
+ * Reset the lkonf_t error code and clear the error string.
  * @warning Asserts that iLc is not 0.
  */
 LUA_API void
 lki_reset_error(lkonf_t * iLc);
 
 /**
- * Set the lkonf_t error state and string.
+ * Set the lkonf_t error code and string.
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
@@ -87,7 +87,17 @@ LUA_API lkerr_t
 lki_set_error(lkonf_t * iLc, lkerr_t iCode, const char * iString);
 
 /**
- * Set the lkonf_t error state and error string at top of the Lua stack.
+ * Set the lkonf_t error code and string.
+ * Error string is of the form: iString + ": " + iItem.
+ * @return iCode.
+ * @warning Asserts that iLc is not 0.
+ */
+LUA_API lkerr_t
+lki_set_error_item(lkonf_t * iLc, lkerr_t iCode, const char * iString,
+	const char * iItem);
+
+/*k
+ * Set the error code to iCode and error string to the string at Lua stack top.
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
