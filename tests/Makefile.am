@@ -12,7 +12,7 @@ LDADD = \
 
 noinst_PROGRAMS = \
 	lkonf \
-	lkonf_unittest
+	unittest_lkonf
 
 
 #

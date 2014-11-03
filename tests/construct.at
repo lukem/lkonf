@@ -1,5 +1,5 @@
 AT_SETUP([construct])
 
-AT_CHECK([lkonf_unittest construct], [0], [ignore])
+AT_CHECK([unittest_lkonf construct], [0], [ignore])
 
 AT_CLEANUP()

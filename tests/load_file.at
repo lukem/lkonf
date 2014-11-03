@@ -1,6 +1,6 @@
 AT_SETUP([load_file])
 
-AT_CHECK([lkonf_unittest load_file], [0], [ignore])
+AT_CHECK([unittest_lkonf load_file], [0], [ignore])
 
 AT_CHECK([cp ${srcdir}/files/simple.lua . && lkonf file simple.lua])
 
