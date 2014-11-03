@@ -1,0 +1,5 @@
+AT_SETUP([get_integer])
+
+AT_CHECK([unittest_lkonf get_integer], [0], [ignore])
+
+AT_CLEANUP()

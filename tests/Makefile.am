@@ -32,6 +32,7 @@ TESTSUITE_DEPS = \
 TESTSUITE_DEPS += \
 	construct.at \
 	destruct.at \
+	get_integer.at \
 	instruction_limit.at \
 	load_file.at \
 	load_string.at
