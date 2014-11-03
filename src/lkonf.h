@@ -181,11 +181,25 @@ lkonf_set_instruction_limit(lkonf_t * iLc, const int iLimit);
  * @param	iLc	lkonf_t.
  * @param	iPath	String of the form "[table[.table[...]].]key".
  * @param[out]	oValue	Result.
- * @return	Error code, or LK_OK if oValue and oValLen populated.
- * @todo Default handling? Or lkerr_t LK_NIL ?
+ * @return	Error code, or LK_OK if oValue populated.
  */
 LUA_API lkerr_t
 lkonf_get_integer(lkonf_t * iLc, const char * iPath, lua_Integer * oValue);
+
+/**
+ * Get string value at iPath.
+ * The value at iPath must be either a string
+ * or a function that returns a string when called as function(iPath).
+ * Coercion from other types is not supported.
+ * @param	iLc	lkonf_t.
+ * @param	iPath	String of the form "[table[.table[...]].]key".
+ * @param[out]	oValue	Result string.
+ * @param[out]	oLen	Length of oValue, if oLen is not NULL.
+ * @return	Error code, or LK_OK if oValue (and possibly oLen) populated.
+ */
+LUA_API lkerr_t
+lkonf_get_string(lkonf_t * iLc, const char * iPath,
+	const char ** oValue, size_t * oLen);
 
 
 /*
