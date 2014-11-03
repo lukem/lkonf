@@ -548,14 +548,14 @@ local hidden = \"no\" \
 	const lkerr_t sil = lkonf_set_instruction_limit(lk, 100);
 	ensure_result(lk, sil, "set_instruction_limit(lk, 100)", LK_OK, "");
 
-	const char * gotstr = 0;
+	char * gotstr = 0;
 	size_t gotlen = -wantlen;
 	const lkerr_t res = lkonf_get_string(lk, path, &gotstr, &gotlen);
 	ensure_result(lk, res, desc, expect_code, expect_str);
 	if (LK_OK == expect_code) {
 		assert(wantlen == gotlen);
 		assert(streq(wantstr, gotstr));
-		free((void *)gotstr);
+		free(gotstr);
 		gotstr = 0;
 	} else {
 		assert(-wantlen == gotlen);	/* didn't change */
@@ -592,7 +592,7 @@ test_get_string(void)
 		lkonf_t * lk = lkonf_construct();
 		assert(lk && "lkonf_construct returned 0");
 
-		const char * v;
+		char * v = 0;
 		const lkerr_t res = lkonf_get_string(lk, 0, &v, 0);
 		ensure_result(lk, res,
 			"get_integer(lk, 0, &v)", LK_ARG_BAD, "iPath NULL");

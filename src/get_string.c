@@ -7,7 +7,7 @@ LUA_API lkerr_t
 lkonf_get_string(
 	lkonf_t *	iLc,
 	const char *	iPath,
-	const char **	oValue,
+	char **		oValue,
 	size_t *	oLen)
 {
 	if (! iLc) {

@@ -195,6 +195,8 @@ lkonf_get_integer(lkonf_t * iLc, const char * iPath, lua_Integer * oValue);
  * @param	iLc	lkonf_t.
  * @param	iPath	String of the form "[table[.table[...]].]key".
  * @param[out]	oValue	Result string. Caller must free if return is LK_OK.
+ *			Is nul ('\0') terminated, but may contain nul
+ *			characters; use oLen to obtain the full length.
  * @param[out]	oLen	Length of oValue, if oLen is not NULL.
  * @return	Error code, or LK_OK if oValue (and possibly oLen) populated.
  */
@@ -202,7 +204,7 @@ LUA_API lkerr_t
 lkonf_get_string(
 	lkonf_t *	iLc,
 	const char *	iPath,
-	const char **	oValue,
+	char **		oValue,
 	size_t *	oLen);
 
 
