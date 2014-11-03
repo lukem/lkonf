@@ -36,6 +36,7 @@ err_to_str(const lkerr_t code)
 		case LK_CALL_CHUNK:	return "LK_CALL_CHUNK";
 		case LK_KEY_BAD:	return "LK_KEY_BAD";
 		case LK_VALUE_BAD:	return "LK_VALUE_BAD";
+		case LK_VALUE_NIL:	return "LK_VALUE_NIL";
 	}
 	return "<unknown>";
 }
@@ -343,12 +344,12 @@ local hidden = 1 \
 ";
 	char desc[128];
 	snprintf(desc, sizeof(desc), "get_integer('%s')", path);
-	if (LK_OK == expect_code) {
-		printf("%s = %" PRId64 "\n", desc, (int64_t)wanted);
-	} else {
-		printf("%s fail; code %s '%s'\n",
-			desc, err_to_str(expect_code), expect_str);
+	printf("%s = %" PRId64, desc, (int64_t)wanted);
+	if (LK_OK != expect_code) {
+		printf("; expect code %s '%s'",
+			err_to_str(expect_code), expect_str);
 	}
+	printf("\n");
 
 	lkonf_t * lk = lkonf_construct();
 	assert(lk && "lkonf_construct returned 0");
@@ -360,13 +361,13 @@ local hidden = 1 \
 	const lkerr_t sil = lkonf_set_instruction_limit(lk, 100);
 	ensure_result(lk, sil, "set_instruction_limit(lk, 100)", LK_OK, "");
 
-	lua_Integer v = -1;
+	lua_Integer v = -wanted;
 	const lkerr_t res = lkonf_get_integer(lk, path, &v);
 	ensure_result(lk, res, desc, expect_code, expect_str);
 	if (LK_OK == expect_code) {
 		assert(wanted == v);
 	} else {
-		assert(-1 == v);	/* didn't change */
+		assert(-wanted == v);	/* didn't change */
 	}
 
 	lkonf_destruct(lk);
@@ -410,15 +411,17 @@ test_get_integer(void)
 	/* pass: t1 */
 	exercise_get_integer("t1", 1, LK_OK, "");
 
-	/* fail: missing top-level key */
-	exercise_get_integer("missing", 0,
-		LK_VALUE_BAD, "Not an integer: missing");
+	/* pass: top-level key 'missing' not set */
+	exercise_get_integer("missing", 5, LK_VALUE_NIL, "");
 
 	/* pass: t2.k1 */
 	exercise_get_integer("t2.k1", 2, LK_OK, "");
 
 	/* pass: t3.k1.k2 */
 	exercise_get_integer("t3.k1.k2", 33, LK_OK, "");
+
+	/* pass: t3.k1.absent not set */
+	exercise_get_integer("t3.k1.absent", 5, LK_VALUE_NIL, "");
 
 	/* pass: t3.k1. */
 	exercise_get_integer("t3.k1.", 0, LK_KEY_BAD,
@@ -483,8 +486,8 @@ test_get_integer(void)
 	/* fail: t. */
 	exercise_get_integer("t.", 0, LK_KEY_BAD, "Empty component in: t.");
 
-	/* fail: t.k */
-	exercise_get_integer("t.k", 0, LK_VALUE_BAD, "Not an integer: t.k");
+	/* pass: t.k nil VALUE */
+	exercise_get_integer("t.k", 999, LK_VALUE_NIL, "");
 
 	/* fail: toolong takes too long */
 	exercise_get_integer("toolong", 0,
@@ -498,8 +501,7 @@ test_get_integer(void)
 	exercise_get_integer("justright", 5, LK_OK, "");
 
 	/* fail: hidden */
-	exercise_get_integer("hidden", 0,
-		LK_VALUE_BAD, "Not an integer: hidden");
+	exercise_get_integer("hidden", 0, LK_VALUE_NIL, "");
 
 	return EXIT_SUCCESS;
 }

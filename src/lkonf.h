@@ -59,6 +59,7 @@ typedef enum
 	LK_CALL_CHUNK		= 5,	/** Can't call chunk. */
 	LK_KEY_BAD		= 6,	/** Key/path-component not a table. */
 	LK_VALUE_BAD		= 7,	/** Value of incorrect type. */
+	LK_VALUE_NIL		= 8,	/** Value is NIL. */
 } lkerr_t;
 
 
@@ -178,7 +179,7 @@ lkonf_set_instruction_limit(lkonf_t * iLc, const int iLimit);
  * The value at iPath must be either an integer
  * or a function that returns an integer when called as function(iPath).
  * @param	iLc	lkonf_t.
- * @param	iPath	String of the form "table[.table[. ...]].key".
+ * @param	iPath	String of the form "[table[.table[...]].]key".
  * @param[out]	oValue	Result.
  * @return	Error code, or LK_OK if oValue and oValLen populated.
  * @todo Default handling? Or lkerr_t LK_NIL ?

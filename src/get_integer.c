@@ -27,7 +27,10 @@ lkonf_get_integer(lkonf_t * iLc, const char * iPath, lua_Integer * oValue)
 		}
 	}
 
-/* TODO handle optional (LUA_TNIL) here  */
+	if (LUA_TNIL == lua_type(iLc->state, -1)) {
+		lki_set_error(iLc, LK_VALUE_NIL, "");
+		return lki_state_exit(iLc);
+	}
 
 	if (LUA_TNUMBER != lua_type(iLc->state, -1)) {
 		lki_set_error_item(iLc, LK_VALUE_BAD, "Not an integer", iPath);
