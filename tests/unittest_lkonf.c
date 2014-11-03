@@ -420,8 +420,11 @@ test_get_integer(void)
 	/* pass: t3.k1.k2 */
 	exercise_get_integer("t3.k1.k2", 33, LK_OK, "");
 
-	/* fail: t3.k1.k2. */
-	exercise_get_integer("t3.k1.k2.", 33, LK_KEY_BAD, "Not a table: k2");
+	/* pass: t3.k1. */
+	exercise_get_integer("t3.k1.", 0, LK_KEY_BAD, "Empty key");
+
+	/* fail: t3.k1.k2.k4 */
+	exercise_get_integer("t3.k1.k2.k4", 33, LK_KEY_BAD, "Not a table: k2");
 
 	/* fail: t3.k1.b3 (not an integer)  */
 	exercise_get_integer("t3.k1.b3", 0,
