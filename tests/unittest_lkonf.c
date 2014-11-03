@@ -38,6 +38,7 @@ err_to_str(const lkerr_t code)
 		case LK_KEY_BAD:	return "LK_KEY_BAD";
 		case LK_VALUE_BAD:	return "LK_VALUE_BAD";
 		case LK_VALUE_NIL:	return "LK_VALUE_NIL";
+		case LK_MALLOC_FAILURE:	return "LK_MALLOC_FAILURE";
 	}
 	return "<unknown>";
 }
@@ -554,6 +555,8 @@ local hidden = \"no\" \
 	if (LK_OK == expect_code) {
 		assert(wantlen == gotlen);
 		assert(streq(wantstr, gotstr));
+		free((void *)gotstr);
+		gotstr = 0;
 	} else {
 		assert(-wantlen == gotlen);	/* didn't change */
 	}

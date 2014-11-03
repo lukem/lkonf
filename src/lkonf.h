@@ -60,6 +60,7 @@ typedef enum
 	LK_KEY_BAD		= 6,	/** Key/path-component not a table. */
 	LK_VALUE_BAD		= 7,	/** Value of incorrect type. */
 	LK_VALUE_NIL		= 8,	/** Value is NIL. */
+	LK_MALLOC_FAILURE	= 10,	/** Can't allocate memory. */
 } lkerr_t;
 
 
@@ -193,21 +194,24 @@ lkonf_get_integer(lkonf_t * iLc, const char * iPath, lua_Integer * oValue);
  * Coercion from other types is not supported.
  * @param	iLc	lkonf_t.
  * @param	iPath	String of the form "[table[.table[...]].]key".
- * @param[out]	oValue	Result string.
+ * @param[out]	oValue	Result string. Caller must free if return is LK_OK.
  * @param[out]	oLen	Length of oValue, if oLen is not NULL.
  * @return	Error code, or LK_OK if oValue (and possibly oLen) populated.
  */
 LUA_API lkerr_t
-lkonf_get_string(lkonf_t * iLc, const char * iPath,
-	const char ** oValue, size_t * oLen);
+lkonf_get_string(
+	lkonf_t *	iLc,
+	const char *	iPath,
+	const char **	oValue,
+	size_t *	oLen);
 
 
 /*
  * TODO
  *	- sandbox manipulation
- *	- get_TYPE.  api variations
- *		- "path" or { "key", "key", ...} variations
- *		- optional (with default).  or always?
+ *	- get_boolean
+ *	- get_double
+ *	- get_TYPE { "key", "key", ...} variations
  *	- isFunction()
  *	- helpers to call functions and extract results
  *	- path walker

@@ -1,5 +1,8 @@
 #include "internal.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 LUA_API lkerr_t
 lkonf_get_string(
 	lkonf_t *	iLc,
@@ -41,7 +44,19 @@ lkonf_get_string(
 		return lki_state_exit(iLc);
 	}
 
-	*oValue = lua_tolstring(iLc->state, -1, oLen);
+	size_t len = 0;
+	const char * result = lua_tolstring(iLc->state, -1, &len);
+
+	char * copy = malloc(len + 1);
+	if (! copy) {
+		lki_set_error_item(iLc, LK_MALLOC_FAILURE,
+			"Copying string result for", iPath);
+		return lki_state_exit(iLc);
+	}
+	memcpy(copy, result, len + 1);
+
+	*oValue = copy;
+	*oLen = len;
 
 	return lki_state_exit(iLc);
 }
