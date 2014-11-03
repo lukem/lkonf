@@ -81,11 +81,12 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 liblkonf_la_LIBADD =
 am_liblkonf_la_OBJECTS = liblkonf_la-call_chunk.lo \
 	liblkonf_la-construct.lo liblkonf_la-destruct.lo \
-	liblkonf_la-get_error_code.lo liblkonf_la-get_error_string.lo \
+	liblkonf_la-find_table.lo liblkonf_la-get_error_code.lo \
+	liblkonf_la-get_error_string.lo \
 	liblkonf_la-get_instruction_limit.lo \
-	liblkonf_la-get_lua_State.lo liblkonf_la-load_file.lo \
-	liblkonf_la-load_string.lo liblkonf_la-set_error.lo \
-	liblkonf_la-set_instruction_limit.lo \
+	liblkonf_la-get_integer.lo liblkonf_la-get_lua_State.lo \
+	liblkonf_la-load_file.lo liblkonf_la-load_string.lo \
+	liblkonf_la-set_error.lo liblkonf_la-set_instruction_limit.lo \
 	liblkonf_la-state_entry_exit.lo
 liblkonf_la_OBJECTS = $(am_liblkonf_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
@@ -258,9 +259,11 @@ liblkonf_la_SOURCES = \
 	call_chunk.c \
 	construct.c \
 	destruct.c \
+	find_table.c \
 	get_error_code.c \
 	get_error_string.c \
 	get_instruction_limit.c \
+	get_integer.c \
 	get_lua_State.c \
 	load_file.c \
 	load_string.c \
@@ -353,9 +356,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-call_chunk.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-construct.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-destruct.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-find_table.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_error_code.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_error_string.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_instruction_limit.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_integer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_lua_State.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-load_file.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-load_string.Plo@am__quote@
@@ -411,6 +416,14 @@ liblkonf_la-destruct.lo: destruct.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-destruct.lo `test -f 'destruct.c' || echo '$(srcdir)/'`destruct.c
 
+liblkonf_la-find_table.lo: find_table.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-find_table.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-find_table.Tpo -c -o liblkonf_la-find_table.lo `test -f 'find_table.c' || echo '$(srcdir)/'`find_table.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-find_table.Tpo $(DEPDIR)/liblkonf_la-find_table.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='find_table.c' object='liblkonf_la-find_table.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-find_table.lo `test -f 'find_table.c' || echo '$(srcdir)/'`find_table.c
+
 liblkonf_la-get_error_code.lo: get_error_code.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-get_error_code.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-get_error_code.Tpo -c -o liblkonf_la-get_error_code.lo `test -f 'get_error_code.c' || echo '$(srcdir)/'`get_error_code.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-get_error_code.Tpo $(DEPDIR)/liblkonf_la-get_error_code.Plo
@@ -434,6 +447,14 @@ liblkonf_la-get_instruction_limit.lo: get_instruction_limit.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_instruction_limit.c' object='liblkonf_la-get_instruction_limit.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-get_instruction_limit.lo `test -f 'get_instruction_limit.c' || echo '$(srcdir)/'`get_instruction_limit.c
+
+liblkonf_la-get_integer.lo: get_integer.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-get_integer.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-get_integer.Tpo -c -o liblkonf_la-get_integer.lo `test -f 'get_integer.c' || echo '$(srcdir)/'`get_integer.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-get_integer.Tpo $(DEPDIR)/liblkonf_la-get_integer.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_integer.c' object='liblkonf_la-get_integer.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-get_integer.lo `test -f 'get_integer.c' || echo '$(srcdir)/'`get_integer.c
 
 liblkonf_la-get_lua_State.lo: get_lua_State.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-get_lua_State.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-get_lua_State.Tpo -c -o liblkonf_la-get_lua_State.lo `test -f 'get_lua_State.c' || echo '$(srcdir)/'`get_lua_State.c
