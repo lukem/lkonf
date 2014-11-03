@@ -18,6 +18,7 @@ enum TestFlags
 	TF_load_string		= 1<<3,
 	TF_instruction_limit	= 1<<4,
 	TF_get_integer		= 1<<5,
+	TF_get_string		= 1<<6,
 };
 
 
@@ -507,6 +508,173 @@ test_get_integer(void)
 }
 
 
+void
+exercise_get_string(
+	const char *		path,
+	const const char *	wantstr,
+	const size_t		wantlen,
+	const lkerr_t		expect_code,
+	const char *		expect_str)
+{
+	const char * gslua = "\
+t1 = \"1\" \
+t2 = { empty = \"\", [\"2\"] = \"two\" }  \
+t3 = { k1 = { k2 = \"thirty three\", b3 = false } } \
+t4 = { f = function (x) return \"t4 path=\"..x end } \
+t5 = function (x) return false end \
+t6 = { [\"\"] = false } \
+justright = function (x) for i=1, 5 do f=i end return \"just right!\" end \
+toolong = function (x) for f=1,1000 do end end \
+badrun = function (x) print() end \
+local hidden = \"no\" \
+";
+	char desc[128];
+	snprintf(desc, sizeof(desc), "get_string('%s')", path);
+	printf("%s = '%s'/%zu", desc, wantstr, wantlen);
+	if (LK_OK != expect_code) {
+		printf("; expect code %s '%s'",
+			err_to_str(expect_code), expect_str);
+	}
+	printf("\n");
+
+	lkonf_t * lk = lkonf_construct();
+	assert(lk && "lkonf_construct returned 0");
+
+	const lkerr_t rls = lkonf_load_string(lk, gslua);
+	ensure_result(lk, rls, "load_string gslua", LK_OK, "");
+
+		/* limit to 100 instructions; after load */
+	const lkerr_t sil = lkonf_set_instruction_limit(lk, 100);
+	ensure_result(lk, sil, "set_instruction_limit(lk, 100)", LK_OK, "");
+
+	const char * gotstr = 0;
+	size_t gotlen = -wantlen;
+	const lkerr_t res = lkonf_get_string(lk, path, &gotstr, &gotlen);
+	ensure_result(lk, res, desc, expect_code, expect_str);
+	if (LK_OK == expect_code) {
+		assert(wantlen == gotlen);
+		assert(streq(wantstr, gotstr));
+	} else {
+		assert(-wantlen == gotlen);	/* didn't change */
+	}
+
+	lkonf_destruct(lk);
+}
+
+int
+test_get_string(void)
+{
+	printf("lkonf_get_string()\n");
+
+	/* fail: load null kconf_t */
+	{
+		assert(LK_LKONF_NULL == lkonf_get_string(0, 0, 0, 0));
+	}
+
+	/* fail: null ovalue */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+
+		const lkerr_t res = lkonf_get_string(lk, "", 0, 0);
+		ensure_result(lk, res,
+			"get_string(lk, \"\", 0, 0)",
+			LK_ARG_BAD, "oValue NULL");
+
+		lkonf_destruct(lk);
+	}
+
+	/* fail: null path */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+
+		const char * v;
+		const lkerr_t res = lkonf_get_string(lk, 0, &v, 0);
+		ensure_result(lk, res,
+			"get_integer(lk, 0, &v)", LK_ARG_BAD, "iPath NULL");
+
+		lkonf_destruct(lk);
+	}
+
+	/* pass: t1 */
+	exercise_get_string("t1", "1", 1, LK_OK, "");
+
+	/* pass: top-level key 'missing' not set */
+	exercise_get_string("missing", "", 0, LK_VALUE_NIL, "");
+
+	/* pass: t2.empty */
+	exercise_get_string("t2.empty", "", 0, LK_OK, "");
+
+	/* pass: t2.2 */
+	exercise_get_string("t2.2", "two", 3, LK_OK, "");
+
+	/* pass: t3.k1.k2 */
+	exercise_get_string("t3.k1.k2", "thirty three", 12, LK_OK, "");
+
+	/* pass: t3.k1.absent not set */
+	exercise_get_string("t3.k1.absent", "", 0, LK_VALUE_NIL, "");
+
+	/* pass: t3.k1. */
+	exercise_get_string("t3.k1.", "", 0, LK_KEY_BAD,
+		"Empty component in: t3.k1.");
+
+	/* fail: t3.k1.k2.k4 */
+	exercise_get_string("t3.k1.k2.k4", "", 0,
+		LK_KEY_BAD, "Not a table: t3.k1.k2");
+
+	/* fail: t3.k1.b3 (not a string)  */
+	exercise_get_string("t3.k1.b3", "", 0,
+		LK_VALUE_BAD, "Not a string: t3.k1.b3");
+
+	/* fail: t3.k.k2 */
+	exercise_get_string("t3.k.k2", "", 0, LK_KEY_BAD, "Not a table: t3.k");
+
+	/* fail: t3.12345.3 */
+	exercise_get_string("t3.12345.3", "", 0,
+		LK_KEY_BAD, "Not a table: t3.12345");
+
+	/* pass: t4.f function returning int */
+	exercise_get_string("t4.f", "t4 path=t4.f", 12, LK_OK, "");
+
+	/* fail: t4.f. (trailing .) */
+	exercise_get_string("t4.f.", "", 4, LK_KEY_BAD, "Not a table: t4.f");
+
+	/* fail: t5 function not returning int */
+	exercise_get_string("t5", "", 0, LK_VALUE_BAD, "Not a string: t5");
+
+	/* fail: t6..k2 - empty key */
+	exercise_get_string("t6..k2", "", 6,
+		LK_KEY_BAD, "Empty component in: t6..k2");
+
+	/* fail: t6...k2 */
+	exercise_get_string("t6...k2", "", 0,
+		LK_KEY_BAD, "Empty component in: t6...k2");
+
+	/* fail: "" */
+	exercise_get_string("", "", 0, LK_KEY_BAD, "Empty path");
+
+	/* fail: "." */
+	exercise_get_string(".", "", 0, LK_KEY_BAD, "Empty component in: .");
+
+	/* fail: toolong takes too long */
+	exercise_get_string("toolong", "", 0,
+		LK_CALL_CHUNK, "Instruction count exceeded");
+
+	/* fail: badrun calls unknown symbol */
+	exercise_get_string("badrun", "", 0,
+		LK_CALL_CHUNK,
+		"[string \"t1 = \"1\" t2 = { empty = \"\", [\"2\"] = \"two\" }...\"]:1: attempt to call global 'print' (a nil value)"),
+
+	/* pass: justright */
+	exercise_get_string("justright", "just right!", 11, LK_OK, "");
+
+	/* fail: hidden */
+	exercise_get_string("hidden", "", 0, LK_VALUE_NIL, "");
+
+	return EXIT_SUCCESS;
+}
+
 /**
  * Mapping of test name to TestFlags and function to execute.
  */
@@ -521,7 +689,8 @@ const struct
 	{ "load_file",		TF_load_file,	test_load_file },
 	{ "load_string",	TF_load_string,	test_load_string },
 	{ "instruction_limit",	TF_instruction_limit, test_instruction_limit },
-	{ "get_integer",	TF_get_integer, test_get_integer },
+	{ "get_integer",	TF_get_integer,	test_get_integer },
+	{ "get_string",		TF_get_string,	test_get_string },
 	{ 0,			0,		0 },
 };
 
