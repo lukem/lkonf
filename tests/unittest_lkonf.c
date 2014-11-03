@@ -421,41 +421,46 @@ test_get_integer(void)
 	exercise_get_integer("t3.k1.k2", 33, LK_OK, "");
 
 	/* pass: t3.k1. */
-	exercise_get_integer("t3.k1.", 0, LK_KEY_BAD, "Empty key");
+	exercise_get_integer("t3.k1.", 0, LK_KEY_BAD,
+		"Empty component in: t3.k1.");
 
 	/* fail: t3.k1.k2.k4 */
-	exercise_get_integer("t3.k1.k2.k4", 33, LK_KEY_BAD, "Not a table: k2");
+	exercise_get_integer("t3.k1.k2.k4", 33,
+		LK_KEY_BAD, "Not a table: t3.k1.k2");
 
 	/* fail: t3.k1.b3 (not an integer)  */
 	exercise_get_integer("t3.k1.b3", 0,
 		LK_VALUE_BAD, "Not an integer: t3.k1.b3");
 
 	/* fail: t3.k.k2 */
-	exercise_get_integer("t3.k.k2", 0, LK_KEY_BAD, "Not a table: k");
+	exercise_get_integer("t3.k.k2", 0, LK_KEY_BAD, "Not a table: t3.k");
 
 	/* fail: t3.12345.3 */
-	exercise_get_integer("t3.12345.3", 0, LK_KEY_BAD, "Not a table: 12345");
+	exercise_get_integer("t3.12345.3", 0,
+		LK_KEY_BAD, "Not a table: t3.12345");
 
 	/* pass: t4.f function returning int */
 	exercise_get_integer("t4.f", 4, LK_OK, "");
 
-	/* fail: t4.f. */
-	exercise_get_integer("t4.f.", 4, LK_KEY_BAD, "Not a table: f");
+	/* fail: t4.f. (trailing .) */
+	exercise_get_integer("t4.f.", 4, LK_KEY_BAD, "Not a table: t4.f");
 
 	/* fail: t5 function not returning int */
 	exercise_get_integer("t5", 0, LK_VALUE_BAD, "Not an integer: t5");
 
 	/* fail: t6..k2 - empty key */
-	exercise_get_integer("t6..k2", 6, LK_KEY_BAD, "Empty key");
+	exercise_get_integer("t6..k2", 6,
+		LK_KEY_BAD, "Empty component in: t6..k2");
 
 	/* fail: t6...k2 */
-	exercise_get_integer("t6...k2", 0, LK_KEY_BAD, "Empty key");
+	exercise_get_integer("t6...k2", 0,
+		LK_KEY_BAD, "Empty component in: t6...k2");
 
 	/* fail: "" */
-	exercise_get_integer("", -5, LK_KEY_BAD, "Empty key");
+	exercise_get_integer("", -5, LK_KEY_BAD, "Empty path");
 
 	/* fail: "." */
-	exercise_get_integer(".", -5, LK_KEY_BAD, "Empty key");
+	exercise_get_integer(".", -5, LK_KEY_BAD, "Empty component in: .");
 
 	/* pass: x */
 	exercise_get_integer("x", 1, LK_OK, "");
@@ -465,16 +470,18 @@ test_get_integer(void)
 		99, LK_OK, "");
 
 	/* fail: t7. */
-	exercise_get_integer("t7.", 777, LK_KEY_BAD, "Empty key");
+	exercise_get_integer("t7.", 7,
+		LK_KEY_BAD, "Empty component in: t7.");
 
 	/* fail: .t8 */
-	exercise_get_integer(".t8", 777, LK_KEY_BAD, "Empty key");
+	exercise_get_integer(".t8", 8,
+		LK_KEY_BAD, "Empty component in: .t8");
 
 	/* fail: t */
 	exercise_get_integer("t", 0, LK_VALUE_BAD, "Not an integer: t");
 
 	/* fail: t. */
-	exercise_get_integer("t.", 0, LK_KEY_BAD, "Empty key");
+	exercise_get_integer("t.", 0, LK_KEY_BAD, "Empty component in: t.");
 
 	/* fail: t.k */
 	exercise_get_integer("t.k", 0, LK_VALUE_BAD, "Not an integer: t.k");

@@ -6,35 +6,30 @@
 
 /**
  * Push next key to stack.
- * If no key currently pushed (*iLen == 0), first key is pushed.
  * If next key is empty, no key is pushed.
- * @param[in]		iLc	lkonf_t
- * @param[in]		iPath	Pointer to key path to parse ("a.bb.c")
- * @param[in,out]	ioLen	Length of previous key. First call must be 0.
- *				On return, length of returned key.
- * Returns			Pointer to pushed key.
+ * @param	iLc	lkonf_t
+ * @param	iPath	Pointer to key path to parse ("a.bb.c")
+ * Returns		Pointer to end of key.
  */
 static const char *
-push_next_key(lkonf_t * iLc, const char * iPath, size_t * ioLen)
+push_next_key(lkonf_t * iLc, const char * iPath)
 {
 	assert(iLc);
 	assert(iPath);
-	assert(ioLen);
 
-	if (*ioLen) {
-			/* Move to next key */
-		iPath += *ioLen;
-		if ('.' == *iPath)
-			++iPath;
+	if ('.' == *iPath) {
+		++iPath;
 	}
 
-	*ioLen = strcspn(iPath, ".");
-
-	if (*ioLen) {
-		lua_pushlstring(iLc->state, iPath, *ioLen);
+	const size_t len = strcspn(iPath, ".");
+	if (!len) {
+		return 0;
+	}
+	if (len) {
+		lua_pushlstring(iLc->state, iPath, len);
 	}
 
-	return iPath;
+	return iPath + len;
 }
 
 
@@ -49,6 +44,15 @@ lki_find_table_by_path(lkonf_t * iLc, const char * iPath)
 		return lki_set_error(iLc, LK_ARG_BAD, "iPath NULL");
 	}
 
+	if (! *iPath) {
+		return lki_set_error(iLc, LK_KEY_BAD, "Empty path");
+	}
+
+	if ('.' == *iPath) {
+		return lki_set_error_item(iLc, LK_KEY_BAD,
+			"Empty component in", iPath);
+	}
+
 		/* Push globals table onto stack. */
 #if 502 > LUA_VERSION_NUM
 	lua_pushvalue(iLc->state, LUA_GLOBALSINDEX);
@@ -57,28 +61,29 @@ lki_find_table_by_path(lkonf_t * iLc, const char * iPath)
 #endif
 
 		/* Push first key. */
-	const char *	cur = iPath;
-	size_t		len = 0;
-	cur = push_next_key(iLc, cur, &len);		/* S: t k */
-	if (! len) {
-		return lki_set_error(iLc, LK_KEY_BAD, "Empty key");
+	const char * end = push_next_key(iLc, iPath);	/* S: t k */
+	if (! end) {
+		return lki_set_error_item(iLc, LK_KEY_BAD,
+			"Empty component in", iPath);
 	}
 
 	lua_gettable(iLc->state, -2);			/* S: t t[k] */
 	lua_remove(iLc->state, -2);			/* S: t[k] */
 
 		/* Iterate through remaining keys until EOS or empty key. */
-	while (cur[len]) {
+	while (*end) {
 		if (! lua_istable(iLc->state, -1)) {
 			char path[sizeof(iLc->error_string)];
-			snprintf(path, sizeof(path), "%.*s", (int)len, cur);
+			snprintf(path, sizeof(path), "%.*s",
+				(int)(end - iPath), iPath);
 			return lki_set_error_item(
 				iLc, LK_KEY_BAD, "Not a table", path);
 		}
 
-		cur = push_next_key(iLc, cur, &len);	/* S: t[k] k2 */
-		if (! len) {
-			return lki_set_error(iLc, LK_KEY_BAD, "Empty key");
+		end = push_next_key(iLc, end);		/* S: t[k] k2 */
+		if (! end) {
+			return lki_set_error_item(iLc, LK_KEY_BAD,
+				"Empty component in", iPath);
 		}
 
 		lua_gettable(iLc->state, -2);		/* S: t[k] t[k][k2] */
