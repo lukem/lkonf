@@ -67,7 +67,6 @@ ensure_result(
 			desc,
 			code, err_to_str(code),
 			expect_code, err_to_str(expect_code));
-		assert(code == expect_code);
 	}
 	const lkerr_t gec = lkonf_get_error_code(lk);
 	if (code != gec) {
@@ -75,14 +74,15 @@ ensure_result(
 			desc,
 			code, err_to_str(code),
 			gec, err_to_str(gec));
-		assert(code == gec);
 	}
 	const char * lk_errstr = lkonf_get_error_string(lk);
 	if (! streq(lk_errstr, expect_str)) {
-		fprintf(stderr, "%s: errstr '%s' != expected '%s'\n",
+		fprintf(stderr, "%s: errstr '%s' != expect_code '%s'\n",
 			desc, lk_errstr, expect_str);
-		assert(0 && "errstr != expected");
 	}
+	assert(code == expect_code);
+	assert(code == gec);
+	assert(streq(lk_errstr, expect_str) && "errstr != expect_str");
 }
 
 
@@ -336,25 +336,29 @@ t7 = { [\"\"] = 777 } \
 x = 1 \
 t = {} \
 loooooooooooooooooooooooooooong = { x = { yyyyyy = 99 }} \
+justright = function (x) local f for i=1, 5 do f=i end return f end \
+toolong = function (x) for f=1,1000 do end end \
+badrun = function (x) print() end \
+local hidden = 1 \
 ";
 	char desc[128];
-
+	snprintf(desc, sizeof(desc), "get_integer('%s')", path);
 	if (LK_OK == expect_code) {
-		snprintf(desc, sizeof(desc),
-			"get_integer('%s') = %" PRId64,
-			path, (int64_t)wanted);
+		printf("%s = %" PRId64 "\n", desc, (int64_t)wanted);
 	} else {
-		snprintf(desc, sizeof(desc),
-			"get_integer('%s') fail; code %s '%s'",
-			path, err_to_str(expect_code), expect_str);
+		printf("%s fail; code %s '%s'\n",
+			desc, err_to_str(expect_code), expect_str);
 	}
-	printf("%s\n", desc);
 
 	lkonf_t * lk = lkonf_construct();
 	assert(lk && "lkonf_construct returned 0");
 
 	const lkerr_t rls = lkonf_load_string(lk, gilua);
 	ensure_result(lk, rls, "load_string gilua", LK_OK, "");
+
+		/* limit to 100 instructions; after load */
+	const lkerr_t sil = lkonf_set_instruction_limit(lk, 100);
+	ensure_result(lk, sil, "set_instruction_limit(lk, 100)", LK_OK, "");
 
 	lua_Integer v = -1;
 	const lkerr_t res = lkonf_get_integer(lk, path, &v);
@@ -471,6 +475,21 @@ test_get_integer(void)
 
 	/* fail: t.k */
 	exercise_get_integer("t.k", 0, LK_VALUE_BAD, "Not an integer: t.k");
+
+	/* fail: toolong takes too long */
+	exercise_get_integer("toolong", 0,
+		LK_CALL_CHUNK, "Instruction count exceeded");
+
+	/* fail: badrun calls unknown symbol */
+	exercise_get_integer("badrun", 0,
+		LK_CALL_CHUNK, "[string \"t1 = 1 t2 = { k1 = 2 } t3 = { k1 = { k2 = 3...\"]:1: attempt to call global 'print' (a nil value)");
+
+	/* pass: justright */
+	exercise_get_integer("justright", 5, LK_OK, "");
+
+	/* fail: hidden */
+	exercise_get_integer("hidden", 0,
+		LK_VALUE_BAD, "Not an integer: hidden");
 
 	return EXIT_SUCCESS;
 }
