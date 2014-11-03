@@ -1,6 +1,7 @@
 #include <lkonf.h>
 
 #include <assert.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,6 +17,7 @@ enum TestFlags
 	TF_load_file		= 1<<2,
 	TF_load_string		= 1<<3,
 	TF_instruction_limit	= 1<<4,
+	TF_get_integer		= 1<<5,
 };
 
 
@@ -32,6 +34,8 @@ err_to_str(const lkerr_t code)
 		case LK_ARG_BAD:	return "LK_ARG_BAD";
 		case LK_LOAD_CHUNK:	return "LK_LOAD_CHUNK";
 		case LK_CALL_CHUNK:	return "LK_CALL_CHUNK";
+		case LK_KEY_BAD:	return "LK_KEY_BAD";
+		case LK_VALUE_BAD:	return "LK_VALUE_BAD";
 	}
 	return "<unknown>";
 }
@@ -136,7 +140,7 @@ test_load_file(void)
 {
 	printf("lkonf_load_file()\n");
 
-	/* fail: load null kconf_t: fail */
+	/* fail: load null kconf_t */
 	{
 		const lkerr_t res = lkonf_load_file(0, 0);
 		assert(LK_LKONF_NULL == res);
@@ -165,7 +169,7 @@ test_load_string(void)
 {
 	printf("lkonf_load_string()\n");
 
-	/* fail: load null kconf_t: fail */
+	/* fail: load null kconf_t */
 	{
 		assert(LK_LKONF_NULL == lkonf_load_string(0, 0));
 	}
@@ -233,9 +237,10 @@ test_instruction_limit(void)
 {
 	printf("lkonf_set_instruction_limit()\n");
 
-	/* fail: load null kconf_t: fail */
+	/* fail: load null kconf_t */
 	{
-		assert(LK_LKONF_NULL == lkonf_load_string(0, 0));
+		assert(-1 == lkonf_get_instruction_limit(0));
+		assert(LK_LKONF_NULL == lkonf_set_instruction_limit(0, 0));
 	}
 
 	/* fail: set_instruction_limit < 0 */
@@ -313,6 +318,163 @@ test_instruction_limit(void)
 	return EXIT_SUCCESS;
 }
 
+void
+exercise_get_integer(
+	const char *		path,
+	const lua_Integer	wanted,
+	const lkerr_t		expect_code,
+	const char *		expect_str)
+{
+	const char * gilua = "\
+t1 = 1 \
+t2 = { k1 = 2 } \
+t3 = { k1 = { k2 = 33, b3 = false } } \
+t4 = { f = function (x) return 4 end } \
+t5 = function (x) return false end \
+t6 = { [\"\"] = { k2 = 6 } } \
+t7 = { [\"\"] = 777 } \
+x = 1 \
+t = {} \
+loooooooooooooooooooooooooooong = { x = { yyyyyy = 99 }} \
+";
+	char desc[128];
+
+	if (LK_OK == expect_code) {
+		snprintf(desc, sizeof(desc),
+			"get_integer('%s') = %" PRId64,
+			path, (int64_t)wanted);
+	} else {
+		snprintf(desc, sizeof(desc),
+			"get_integer('%s') fail; code %s '%s'",
+			path, err_to_str(expect_code), expect_str);
+	}
+	printf("%s\n", desc);
+
+	lkonf_t * lk = lkonf_construct();
+	assert(lk && "lkonf_construct returned 0");
+
+	const lkerr_t rls = lkonf_load_string(lk, gilua);
+	ensure_result(lk, rls, "load_string gilua", LK_OK, "");
+
+	lua_Integer v = -1;
+	const lkerr_t res = lkonf_get_integer(lk, path, &v);
+	ensure_result(lk, res, desc, expect_code, expect_str);
+	if (LK_OK == expect_code) {
+		assert(wanted == v);
+	} else {
+		assert(-1 == v);	/* didn't change */
+	}
+
+	lkonf_destruct(lk);
+}
+
+int
+test_get_integer(void)
+{
+	printf("lkonf_get_integer()\n");
+
+	/* fail: load null kconf_t */
+	{
+		assert(LK_LKONF_NULL == lkonf_get_integer(0, 0, 0));
+	}
+
+	/* fail: null ovalue */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+
+		const lkerr_t res = lkonf_get_integer(lk, "", 0);
+		ensure_result(lk, res,
+			"get_integer(lk, \"\", 0)", LK_ARG_BAD, "oValue NULL");
+
+		lkonf_destruct(lk);
+	}
+
+	/* fail: null path */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+
+		lua_Integer v = -1;
+		const lkerr_t res = lkonf_get_integer(lk, 0, &v);
+		ensure_result(lk, res,
+			"get_integer(lk, 0, &v)", LK_ARG_BAD, "iPath NULL");
+
+		lkonf_destruct(lk);
+	}
+
+	/* pass: t1 */
+	exercise_get_integer("t1", 1, LK_OK, "");
+
+	/* fail: missing top-level key */
+	exercise_get_integer("missing", 0,
+		LK_VALUE_BAD, "Not an integer: missing");
+
+	/* pass: t2.k1 */
+	exercise_get_integer("t2.k1", 2, LK_OK, "");
+
+	/* pass: t3.k1.k2 */
+	exercise_get_integer("t3.k1.k2", 33, LK_OK, "");
+
+	/* fail: t3.k1.k2. */
+	exercise_get_integer("t3.k1.k2.", 33, LK_KEY_BAD, "Not a table: k2");
+
+	/* fail: t3.k1.b3 (not an integer)  */
+	exercise_get_integer("t3.k1.b3", 0,
+		LK_VALUE_BAD, "Not an integer: t3.k1.b3");
+
+	/* fail: t3.k.k2 */
+	exercise_get_integer("t3.k.k2", 0, LK_KEY_BAD, "Not a table: k");
+
+	/* fail: t3.12345.3 */
+	exercise_get_integer("t3.12345.3", 0, LK_KEY_BAD, "Not a table: 12345");
+
+	/* pass: t4.f function returning int */
+	exercise_get_integer("t4.f", 4, LK_OK, "");
+
+	/* fail: t4.f. */
+	exercise_get_integer("t4.f.", 4, LK_KEY_BAD, "Not a table: f");
+
+	/* fail: t5 function not returning int */
+	exercise_get_integer("t5", 0, LK_VALUE_BAD, "Not an integer: t5");
+
+	/* fail: t6..k2 - empty key */
+	exercise_get_integer("t6..k2", 6, LK_KEY_BAD, "Empty key");
+
+	/* fail: t6...k2 */
+	exercise_get_integer("t6...k2", 0, LK_KEY_BAD, "Empty key");
+
+	/* fail: "" */
+	exercise_get_integer("", -5, LK_KEY_BAD, "Empty key");
+
+	/* fail: "." */
+	exercise_get_integer(".", -5, LK_KEY_BAD, "Empty key");
+
+	/* pass: x */
+	exercise_get_integer("x", 1, LK_OK, "");
+
+	/* pass: loooooooooooooooooooooooooooong.x.yyyyyy */
+	exercise_get_integer("loooooooooooooooooooooooooooong.x.yyyyyy",
+		99, LK_OK, "");
+
+	/* fail: t7. */
+	exercise_get_integer("t7.", 777, LK_KEY_BAD, "Empty key");
+
+	/* fail: .t8 */
+	exercise_get_integer(".t8", 777, LK_KEY_BAD, "Empty key");
+
+	/* fail: t */
+	exercise_get_integer("t", 0, LK_VALUE_BAD, "Not an integer: t");
+
+	/* fail: t. */
+	exercise_get_integer("t.", 0, LK_KEY_BAD, "Empty key");
+
+	/* fail: t.k */
+	exercise_get_integer("t.k", 0, LK_VALUE_BAD, "Not an integer: t.k");
+
+	return EXIT_SUCCESS;
+}
+
 
 /**
  * Mapping of test name to TestFlags and function to execute.
@@ -328,6 +490,7 @@ const struct
 	{ "load_file",		TF_load_file,	test_load_file },
 	{ "load_string",	TF_load_string,	test_load_string },
 	{ "instruction_limit",	TF_instruction_limit, test_instruction_limit },
+	{ "get_integer",	TF_get_integer, test_get_integer },
 	{ 0,			0,		0 },
 };
 

@@ -145,4 +145,10 @@ LUA_API void
 lki_maskcount_exceeded(lua_State * iState, lua_Debug * iArg);
 
 
+/**
+ * Find table by path.
+ */
+LUA_API lkerr_t
+lki_find_table_by_path(lkonf_t * iLc, const char * iPath);
+
 #endif /* LKONF_INTERNAL_H */

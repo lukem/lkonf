@@ -57,6 +57,8 @@ typedef enum
 	LK_ARG_BAD		= 3,	/** Method argument is bad */
 	LK_LOAD_CHUNK		= 4,	/** Can't load chunk. */
 	LK_CALL_CHUNK		= 5,	/** Can't call chunk. */
+	LK_KEY_BAD		= 6,	/** Key/path-component not a table. */
+	LK_VALUE_BAD		= 7,	/** Value of incorrect type. */
 } lkerr_t;
 
 
@@ -165,6 +167,24 @@ lkonf_get_instruction_limit(lkonf_t * iLc);
  */
 LUA_API lkerr_t
 lkonf_set_instruction_limit(lkonf_t * iLc, const int iLimit);
+
+
+	/*
+	 * Value retrieval.
+	 */
+
+/**
+ * Get integer value at iPath.
+ * The value at iPath must be either an integer
+ * or a function that returns an integer when called as function(iPath).
+ * @param	iLc	lkonf_t.
+ * @param	iPath	String of the form "table[.table[. ...]].key".
+ * @param[out]	oValue	Result.
+ * @return	Error code, or LK_OK if oValue and oValLen populated.
+ * @todo Default handling? Or lkerr_t LK_NIL ?
+ */
+LUA_API lkerr_t
+lkonf_get_integer(lkonf_t * iLc, const char * iPath, lua_Integer * oValue);
 
 
 /*
