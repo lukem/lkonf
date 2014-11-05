@@ -17,8 +17,9 @@ enum TestFlags
 	TF_load_file		= 1<<2,
 	TF_load_string		= 1<<3,
 	TF_instruction_limit	= 1<<4,
-	TF_get_integer		= 1<<5,
-	TF_get_string		= 1<<6,
+	TF_get_double		= 1<<5,
+	TF_get_integer		= 1<<6,
+	TF_get_string		= 1<<7,
 };
 
 
@@ -80,7 +81,7 @@ ensure_result(
 	}
 	const char * lk_errstr = lkonf_get_error_string(lk);
 	if (! streq(lk_errstr, expect_str)) {
-		fprintf(stderr, "%s: errstr '%s' != expect_code '%s'\n",
+		fprintf(stderr, "%s: errstr '%s' != expect_str '%s'\n",
 			desc, lk_errstr, expect_str);
 	}
 	assert(code == expect_code);
@@ -320,6 +321,195 @@ test_instruction_limit(void)
 
 	return EXIT_SUCCESS;
 }
+
+
+void
+exercise_get_double(
+	const char *	path,
+	const double	wanted,
+	const lkerr_t	expect_code,
+	const char *	expect_str)
+{
+	const char * gdlua = "\
+t1 = 1 \
+t2 = { k1 = 2.714 } \
+t3 = { k1 = { k2 = 3.1415, b3 = false } } \
+t4 = { f = function (x) return -4 end } \
+t5 = function (x) return false end \
+t6 = { [\"\"] = { k2 = 6.001 } } \
+t7 = { [\"\"] = 777.0 } \
+x = 0.5 \
+t = {} \
+loooooooooooooooooooooooooooong = { x = { yyyyyy = 99.999 }} \
+justright = function (x) local f for i=1, 5 do f=i end return f-0.1 end \
+toolong = function (x) for f=1,1000 do end end \
+badrun = function (x) print() end \
+local hidden = 1 \
+";
+	char desc[128];
+	snprintf(desc, sizeof(desc), "get_double('%s')", path);
+	printf("%s = %g", desc, wanted);
+	if (LK_OK != expect_code) {
+		printf("; expect code %s '%s'",
+			err_to_str(expect_code), expect_str);
+	}
+	printf("\n");
+
+	lkonf_t * lk = lkonf_construct();
+	assert(lk && "lkonf_construct returned 0");
+
+	const lkerr_t rls = lkonf_load_string(lk, gdlua);
+	ensure_result(lk, rls, "load_string gdlua", LK_OK, "");
+
+		/* limit to 100 instructions; after load */
+	const lkerr_t sil = lkonf_set_instruction_limit(lk, 100);
+	ensure_result(lk, sil, "set_instruction_limit(lk, 100)", LK_OK, "");
+
+	double v = -wanted;
+	const lkerr_t res = lkonf_get_double(lk, path, &v);
+	ensure_result(lk, res, desc, expect_code, expect_str);
+	if (LK_OK == expect_code) {
+		assert(wanted == v);
+	} else {
+		assert(-wanted == v);	/* didn't change */
+	}
+
+	lkonf_destruct(lk);
+}
+
+int
+test_get_double(void)
+{
+	printf("lkonf_get_double()\n");
+
+	/* fail: load null kconf_t */
+	{
+		assert(LK_LKONF_NULL == lkonf_get_double(0, 0, 0));
+	}
+
+	/* fail: null ovalue */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+
+		const lkerr_t res = lkonf_get_double(lk, "", 0);
+		ensure_result(lk, res,
+			"get_double(lk, \"\", 0)", LK_ARG_BAD, "oValue NULL");
+
+		lkonf_destruct(lk);
+	}
+
+	/* fail: null path */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+
+		double v = -1;
+		const lkerr_t res = lkonf_get_double(lk, 0, &v);
+		ensure_result(lk, res,
+			"get_double(lk, 0, &v)", LK_ARG_BAD, "iPath NULL");
+
+		lkonf_destruct(lk);
+	}
+
+	/* pass: t1 */
+	exercise_get_double("t1", 1.0, LK_OK, "");
+
+	/* pass: top-level key 'missing' not set */
+	exercise_get_double("missing", 5, LK_VALUE_NIL, "");
+
+	/* pass: t2.k1 */
+	exercise_get_double("t2.k1", 2.714, LK_OK, "");
+
+	/* pass: t3.k1.k2 */
+	exercise_get_double("t3.k1.k2", 3.1415, LK_OK, "");
+
+	/* pass: t3.k1.absent not set */
+	exercise_get_double("t3.k1.absent", 5, LK_VALUE_NIL, "");
+
+	/* pass: t3.k1. */
+	exercise_get_double("t3.k1.", 0, LK_KEY_BAD,
+		"Empty component in: t3.k1.");
+
+	/* fail: t3.k1.k2.k4 */
+	exercise_get_double("t3.k1.k2.k4", 33,
+		LK_KEY_BAD, "Not a table: t3.k1.k2");
+
+	/* fail: t3.k1.b3 (not a double)  */
+	exercise_get_double("t3.k1.b3", 0,
+		LK_VALUE_BAD, "Not a double: t3.k1.b3");
+
+	/* fail: t3.k.k2 */
+	exercise_get_double("t3.k.k2", 0, LK_KEY_BAD, "Not a table: t3.k");
+
+	/* fail: t3.12345.3 */
+	exercise_get_double("t3.12345.3", 0,
+		LK_KEY_BAD, "Not a table: t3.12345");
+
+	/* pass: t4.f function returning int */
+	exercise_get_double("t4.f", -4, LK_OK, "");
+
+	/* fail: t4.f. (trailing .) */
+	exercise_get_double("t4.f.", 4, LK_KEY_BAD, "Not a table: t4.f");
+
+	/* fail: t5 function not returning int */
+	exercise_get_double("t5", 0, LK_VALUE_BAD, "Not a double: t5");
+
+	/* fail: t6..k2 - empty key */
+	exercise_get_double("t6..k2", 6,
+		LK_KEY_BAD, "Empty component in: t6..k2");
+
+	/* fail: t6...k2 */
+	exercise_get_double("t6...k2", 0,
+		LK_KEY_BAD, "Empty component in: t6...k2");
+
+	/* fail: "" */
+	exercise_get_double("", -5, LK_KEY_BAD, "Empty path");
+
+	/* fail: "." */
+	exercise_get_double(".", -5, LK_KEY_BAD, "Empty component in: .");
+
+	/* pass: x */
+	exercise_get_double("x", 0.5, LK_OK, "");
+
+	/* pass: loooooooooooooooooooooooooooong.x.yyyyyy */
+	exercise_get_double("loooooooooooooooooooooooooooong.x.yyyyyy",
+		99.999, LK_OK, "");
+
+	/* fail: t7. */
+	exercise_get_double("t7.", 7,
+		LK_KEY_BAD, "Empty component in: t7.");
+
+	/* fail: .t8 */
+	exercise_get_double(".t8", 8,
+		LK_KEY_BAD, "Empty component in: .t8");
+
+	/* fail: t */
+	exercise_get_double("t", 0, LK_VALUE_BAD, "Not a double: t");
+
+	/* fail: t. */
+	exercise_get_double("t.", 0, LK_KEY_BAD, "Empty component in: t.");
+
+	/* pass: t.k nil VALUE */
+	exercise_get_double("t.k", 999, LK_VALUE_NIL, "");
+
+	/* fail: toolong takes too long */
+	exercise_get_double("toolong", 0,
+		LK_CALL_CHUNK, "Instruction count exceeded");
+
+	/* fail: badrun calls unknown symbol */
+	exercise_get_double("badrun", -1,
+		LK_CALL_CHUNK, "[string \"t1 = 1 t2 = { k1 = 2.714 } t3 = { k1 = { k2...\"]:1: attempt to call global 'print' (a nil value)");
+
+	/* pass: justright */
+	exercise_get_double("justright", 4.9, LK_OK, "");
+
+	/* fail: hidden */
+	exercise_get_double("hidden", 0, LK_VALUE_NIL, "");
+
+	return EXIT_SUCCESS;
+}
+
 
 void
 exercise_get_integer(
@@ -692,6 +882,7 @@ const struct
 	{ "load_file",		TF_load_file,	test_load_file },
 	{ "load_string",	TF_load_string,	test_load_string },
 	{ "instruction_limit",	TF_instruction_limit, test_instruction_limit },
+	{ "get_double",		TF_get_double,	test_get_double },
 	{ "get_integer",	TF_get_integer,	test_get_integer },
 	{ "get_string",		TF_get_string,	test_get_string },
 	{ 0,			0,		0 },

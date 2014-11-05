@@ -1,0 +1,5 @@
+AT_SETUP([get_double])
+
+AT_CHECK([unittest_lkonf get_double], [0], [ignore])
+
+AT_CLEANUP()
