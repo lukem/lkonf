@@ -35,6 +35,8 @@
 extern "C" {
 #endif
 
+#include <stddef.h>
+
 #include <lua.h>
 
 	/*
