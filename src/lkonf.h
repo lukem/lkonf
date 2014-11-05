@@ -164,7 +164,7 @@ LUA_API int
 lkonf_get_instruction_limit(lkonf_t * iLk);
 
 /**
- * Set the current instruction limit.
+ * Set the instruction limit.
  * @param iLk		lkonf_t.
  * @param iLimit	Limit to set.  0 is no limit.
  * @return 		Error code, or LK_OK if ok.
