@@ -178,6 +178,18 @@ lkonf_set_instruction_limit(lkonf_t * iLc, const int iLimit);
 	 */
 
 /**
+ * Get double value at iPath.
+ * The value at iPath must be either a double
+ * or a function that returns a double when called as function(iPath).
+ * @param	iLc	lkonf_t.
+ * @param	iPath	String of the form "[table[.table[...]].]key".
+ * @param[out]	oValue	Result.
+ * @return	Error code, or LK_OK if oValue populated.
+ */
+LUA_API lkerr_t
+lkonf_get_double(lkonf_t * iLc, const char * iPath, double * oValue);
+
+/**
  * Get integer value at iPath.
  * The value at iPath must be either an integer
  * or a function that returns an integer when called as function(iPath).
@@ -214,11 +226,9 @@ lkonf_get_string(
  * TODO
  *	- sandbox manipulation
  *	- get_boolean
- *	- get_double
  *	- get_TYPE { "key", "key", ...} variations
  *	- isFunction()
  *	- helpers to call functions and extract results
- *	- path walker
  *	- internal protected wrappers for lua_*() per
  *		https://github.com/jmmv/lutok/blob/master/state.cpp
  */
