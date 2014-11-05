@@ -1,0 +1,216 @@
+.\"
+.\" Copyright (c) 2014 Luke Mewburn <Luke@Mewburn.net>
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+.\" OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+.\" IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+.\" INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+.\" BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+.\" OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+.\" ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+.\" TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+.\" USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.\"
+.Dd November 6, 2014
+.Os
+.Dt LKONF 3
+.Sh NAME
+.Nm lkonf
+.Nd use Lua as configuration for C applications.
+.Sh LIBRARY
+.Lb lkonf
+.Sh SYNOPSIS
+.In lkonf.h
+.Ft "lkonf_t *"
+.Fn lkonf_construct "void"
+.Ft void
+.Fn lkonf_destruct "lkonf_t * iLk"
+.Ft "lua_State *"
+.Fn lkonf_get_lua_State "lkonf_t * iLk"
+.Ft lkerr_t
+.Fn lkonf_get_error_code "lkonf_t * iLk"
+.Ft lkerr_t
+.Fn lkonf_get_error_string "lkonf_t * iLk"
+.Ft lkerr_t
+.Fn lkonf_load_file "lkonf_t * iLk" "const char * iFile"
+.Ft lkerr_t
+.Fn lkonf_load_string "lkonf_t * iLk" "const char * iString"
+.Ft int
+.Fn lkonf_get_instruction_limit "lkonf_t * iLk"
+.Ft lkerr_t
+.Fn lkonf_set_instruction_limit "lkonf_t * iLk" "const int iLimit"
+.Ft lkerr_t
+.Fn lkonf_get_double "lkonf_t * iLk" "const char * iPath" "double * oValue"
+.Ft lkerr_t
+.Fn lkonf_get_integer "lkonf_t * iLk" "const char * iPath" "lua_Integer * oValue"
+.Ft lkerr_t
+.Fn lkonf_get_string "lkonf_t * iLk" "const char * iPath" "char ** oValue" "size_t * oLen"
+.
+.Sh DESCRIPTION
+The
+.Nm
+library provides an interface for C applications to obtain configuration
+from sandboxed Lua files or strings.
+.Pp
+These functions are available in the
+.Nm liblkonf
+library (which needs the
+.Nm liblua
+library).
+Programs should be linked with
+.Fl lkonf llua .
+.
+.Sh COMMON TYPES
+.Nm
+provides various data types:
+.Bl -tag
+.It Fa lkonf_t
+Opaque type used by the
+.Nm
+functions.
+.It Fa lkerr_t
+Enumeration for error codes.
+.El
+.
+.Sh OBJECT AND ERROR MANAGEMENT FUNCTIONS
+The following functions are available to manage
+.Fa lkonf_t
+construction and destruction and to access error state:
+.Bl -tag -width 4n
+.It Fn lkonf_construct
+Construct an
+.Fa lkonf_t .
+The internal Lua state is created with
+.Fn luaL_newstate .
+If there was an error constructing the Lua state, the error code will be set.
+Returns the
+.Fa lkonf_t
+created with default parameters, or
+.Dv 0
+on failure.
+.It Fn lkonf_destruct
+Destroy an
+.Fa lkonf_t .
+.It Fn lkonf_get_lua_State
+Returns the Lua state used by
+.Fa iLk .
+This may be useful for manipulating the sandbox,
+adjusting panic functions, etc.
+If iLk is 0 or there's a fault in the internal state, returns
+.Dv 0 .
+.It Fn lkonf_get_error_code
+Returns the error code from the most recent
+.Fa lkonf_t
+operation (if any), or
+.Dv LK_LKONF_NULL
+if
+.Fa iLk
+is
+.Dv 0 .
+.It Fn lkonf_get_error_string
+Returns the error string from the most recent
+.Fa lkonf_t
+operation (if any), or
+.Dv 0
+if
+.Fa iLk
+is
+.Dv 0 .
+.El
+.
+.Sh LOAD AND SANDBOX FUNCTIONS
+.Bl -tag -width 4n
+.It Fn lkonf_load_file
+Load file as a Lua chunk and execute in the sandbox.
+Returns error code, or
+.Dv LK_OK
+if ok.
+.It Fn lkonf_load_string
+Load string as a Lua chunk and execute in the sandbox.
+Returns error code, or
+.Dv LK_OK
+if ok.
+.It Fn lkonf_get_instruction_limit
+Get the current instruction limit.
+Returns the instruction limit, or
+.Dv -1
+if
+.Fa iLk
+is
+.Dv 0 .
+.It Fn lkonf_set_instruction_limit
+Set the instruction limit.
+Returns error code, or
+.Dv LK_OK
+if ok.
+.El
+.
+.Sh VALUE RETRIEVAL FUNCTIONS
+.Bl -tag -width 4n
+.It Fn lkonf_get_double
+Get double value at
+.Fa iPath .
+The value at
+.Fa iPath
+must be either a double
+or a function that returns a double when called as
+.Fn function "iPath" .
+Returns error code, or
+.Dv LK_OK
+if
+.Fa oValue
+populated.
+.It Fn lkonf_get_integer
+Get integer value at
+.Fa iPath .
+The value at
+.Fa iPath
+must be either an integer
+or a function that returns an integer when called as
+.Fn function "iPath" .
+Returns error code, or
+.Dv LK_OK
+if
+.Fa oValue
+populated.
+.It Fn lkonf_get_string
+Get string value at
+.Fa iPath .
+The value at
+.Fa iPath
+must be either a string
+or a function that returns a string when called as
+.Fn function "iPath" .
+Returns error code, or
+.Dv LK_OK
+if
+.Fa oValue
+(and possibly
+.Fa oLen )
+populated.
+.El
+.
+.\"XXX.Sh EXAMPLES
+.\"XXX: provide some examples
+.Sh SEE ALSO
+.Xr lua 1
+.Sh HISTORY
+The
+.Nm
+library first appeared in 2014.
+.Sh AUTHORS
+The
+.Nm
+library was written by Luke Mewburn.
+Marc Balmer contributed design ideas.

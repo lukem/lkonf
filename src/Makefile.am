@@ -36,3 +36,6 @@ liblkonf_la_CPPFLAGS = \
 liblkonf_la_LDFLAGS = \
 	-version-info 0:0:0 \
 	$(LUA_LIBS)
+
+man3_MANS = \
+	lkonf.3
