@@ -92,7 +92,7 @@ lkonf_destruct(lkonf_t * iLk);
 /**
  * Access internal Lua state.
  * @param iLk	lkonf_t to use.
- * @return	Lua state used by lkonf_t. This may be useful for
+ * @return	Lua state used by iLk. This may be useful for
  *		manipulating the sandbox, adjusting panic functions, etc.
  *		If iLk is 0 or there's a fault in the internal state,
  *		returns 0.
@@ -121,7 +121,7 @@ lkonf_get_error_code(lkonf_t * iLk);
 /**
  * Error string from most recent lkonf operation, if any.
  * @param iLk	lkonf_t to use.
- * @return	Error string. 0 is no error, or iLk is 0.
+ * @return	Error string, or 0 if iLk is 0.
  */
 LUA_API const char *
 lkonf_get_error_string(lkonf_t * iLk);
