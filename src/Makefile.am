@@ -39,3 +39,6 @@ liblkonf_la_LDFLAGS = \
 
 man3_MANS = \
 	lkonf.3
+
+EXTRA_DIST = \
+	$(man3_MANS)
