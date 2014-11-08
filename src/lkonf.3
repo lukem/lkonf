@@ -196,7 +196,8 @@ Returns error code, or
 .Dv LK_OK
 if
 .Fa oValue
-(and possibly
+(and if it is not
+.Dv NULL ,
 .Fa oLen )
 populated.
 .El
@@ -208,7 +209,7 @@ populated.
 .Sh HISTORY
 The
 .Nm
-library first appeared in 2014.
+library was released in 2014.
 .Sh AUTHORS
 The
 .Nm
