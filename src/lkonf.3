@@ -51,6 +51,8 @@
 .Ft lkerr_t
 .Fn lkonf_set_instruction_limit "lkonf_t * iLk" "const int iLimit"
 .Ft lkerr_t
+.Fn lkonf_get_boolean "lkonf_t * iLk" "const char * iPath" "bool * oValue"
+.Ft lkerr_t
 .Fn lkonf_get_double "lkonf_t * iLk" "const char * iPath" "double * oValue"
 .Ft lkerr_t
 .Fn lkonf_get_integer "lkonf_t * iLk" "const char * iPath" "lua_Integer * oValue"
@@ -158,6 +160,19 @@ if ok.
 .
 .Sh VALUE RETRIEVAL FUNCTIONS
 .Bl -tag -width 4n
+.It Fn lkonf_get_boolean
+Get boolean value at
+.Fa iPath .
+The value at
+.Fa iPath
+must be either a boolean
+or a function that returns a boolean when called as
+.Fn function "iPath" .
+Returns error code, or
+.Dv LK_OK
+if
+.Fa oValue
+populated.
 .It Fn lkonf_get_double
 Get double value at
 .Fa iPath .

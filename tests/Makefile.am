@@ -32,6 +32,7 @@ TESTSUITE_DEPS = \
 TESTSUITE_DEPS += \
 	construct.at \
 	destruct.at \
+	get_boolean.at \
 	get_double.at \
 	get_integer.at \
 	get_string.at \

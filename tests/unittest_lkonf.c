@@ -17,9 +17,10 @@ enum TestFlags
 	TF_load_file		= 1<<2,
 	TF_load_string		= 1<<3,
 	TF_instruction_limit	= 1<<4,
-	TF_get_double		= 1<<5,
-	TF_get_integer		= 1<<6,
-	TF_get_string		= 1<<7,
+	TF_get_boolean		= 1<<5,
+	TF_get_double		= 1<<6,
+	TF_get_integer		= 1<<7,
+	TF_get_string		= 1<<8,
 };
 
 
@@ -324,6 +325,194 @@ test_instruction_limit(void)
 
 
 void
+exercise_get_boolean(
+	const char *	path,
+	const bool	wanted,
+	const lkerr_t	expect_code,
+	const char *	expect_str)
+{
+	const char * gblua = "\
+t1 = true \
+t2 = { k1 = false, } \
+t3 = { k1 = { k2 = 3.1415, b3 = false } } \
+t4 = { f = function (x) return true end } \
+t5 = function (x) return 55 end \
+t6 = { [\"\"] = { k2 = 6.001 } } \
+t7 = { [\"\"] = 777.0 } \
+x = true \
+t = {} \
+loooooooooooooooooooooooooooong = { x = { yyyyyy = true }} \
+justright = function (x) local f for i=1, 5 do f=i end return true end \
+toolong = function (x) for f=1,1000 do end end \
+badrun = function (x) print() end \
+local hidden = 1 \
+";
+	char desc[128];
+	snprintf(desc, sizeof(desc), "get_boolean('%s')", path);
+	printf("%s = %d", desc, wanted);
+	if (LK_OK != expect_code) {
+		printf("; expect code %s '%s'",
+			err_to_str(expect_code), expect_str);
+	}
+	printf("\n");
+
+	lkonf_t * lk = lkonf_construct();
+	assert(lk && "lkonf_construct returned 0");
+
+	const lkerr_t rls = lkonf_load_string(lk, gblua);
+	ensure_result(lk, rls, "load_string gblua", LK_OK, "");
+
+		/* limit to 100 instructions; after load */
+	const lkerr_t sil = lkonf_set_instruction_limit(lk, 100);
+	ensure_result(lk, sil, "set_instruction_limit(lk, 100)", LK_OK, "");
+
+	bool v = !wanted;
+	const lkerr_t res = lkonf_get_boolean(lk, path, &v);
+	ensure_result(lk, res, desc, expect_code, expect_str);
+	if (LK_OK == expect_code) {
+		assert(wanted == v);
+	} else {
+		assert(!wanted == v);	/* didn't change */
+	}
+
+	lkonf_destruct(lk);
+}
+
+int
+test_get_boolean(void)
+{
+	printf("lkonf_get_boolean()\n");
+
+	/* fail: load null kconf_t */
+	{
+		assert(LK_LKONF_NULL == lkonf_get_boolean(0, 0, 0));
+	}
+
+	/* fail: null ovalue */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+
+		const lkerr_t res = lkonf_get_boolean(lk, "", 0);
+		ensure_result(lk, res,
+			"get_boolean(lk, \"\", 0)", LK_ARG_BAD, "oValue NULL");
+
+		lkonf_destruct(lk);
+	}
+
+	/* fail: null path */
+	{
+		lkonf_t * lk = lkonf_construct();
+		assert(lk && "lkonf_construct returned 0");
+
+		bool v = false;
+		const lkerr_t res = lkonf_get_boolean(lk, 0, &v);
+		ensure_result(lk, res,
+			"get_boolean(lk, 0, &v)", LK_ARG_BAD, "iPath NULL");
+
+		lkonf_destruct(lk);
+	}
+
+	/* pass: t1 */
+	exercise_get_boolean("t1", true, LK_OK, "");
+
+	/* pass: top-level key 'missing' not set */
+	exercise_get_boolean("missing", true, LK_VALUE_NIL, "");
+
+	/* pass: t2.k1 */
+	exercise_get_boolean("t2.k1", false, LK_OK, "");
+
+	/* pass: t3.k1.b3 */
+	exercise_get_boolean("t3.k1.b3", false, LK_OK, "");
+
+	/* pass: t3.k1.absent not set */
+	exercise_get_boolean("t3.k1.absent", true, LK_VALUE_NIL, "");
+
+	/* pass: t3.k1. */
+	exercise_get_boolean("t3.k1.", false, LK_KEY_BAD,
+		"Empty component in: t3.k1.");
+
+	/* fail: t3.k1.k2.k4 */
+	exercise_get_boolean("t3.k1.k2.k4", true,
+		LK_KEY_BAD, "Not a table: t3.k1.k2");
+
+	/* fail: t3.k1.k2 (not a boolean)  */
+	exercise_get_boolean("t3.k1.k2", false,
+		LK_VALUE_BAD, "Not a boolean: t3.k1.k2");
+
+	/* fail: t3.k.k2 */
+	exercise_get_boolean("t3.k.k2", false, LK_KEY_BAD, "Not a table: t3.k");
+
+	/* fail: t3.12345.3 */
+	exercise_get_boolean("t3.12345.3", false,
+		LK_KEY_BAD, "Not a table: t3.12345");
+
+	/* pass: t4.f function returning boolean */
+	exercise_get_boolean("t4.f", true, LK_OK, "");
+
+	/* fail: t4.f. (trailing .) */
+	exercise_get_boolean("t4.f.", true, LK_KEY_BAD, "Not a table: t4.f");
+
+	/* fail: t5 function not returning boolean */
+	exercise_get_boolean("t5", false, LK_VALUE_BAD, "Not a boolean: t5");
+
+	/* fail: t6..k2 - empty key */
+	exercise_get_boolean("t6..k2", true,
+		LK_KEY_BAD, "Empty component in: t6..k2");
+
+	/* fail: t6...k2 */
+	exercise_get_boolean("t6...k2", false,
+		LK_KEY_BAD, "Empty component in: t6...k2");
+
+	/* fail: "" */
+	exercise_get_boolean("", false, LK_KEY_BAD, "Empty path");
+
+	/* fail: "." */
+	exercise_get_boolean(".", false, LK_KEY_BAD, "Empty component in: .");
+
+	/* pass: x */
+	exercise_get_boolean("x", true, LK_OK, "");
+
+	/* pass: loooooooooooooooooooooooooooong.x.yyyyyy */
+	exercise_get_boolean("loooooooooooooooooooooooooooong.x.yyyyyy",
+		true, LK_OK, "");
+
+	/* fail: t7. */
+	exercise_get_boolean("t7.", true,
+		LK_KEY_BAD, "Empty component in: t7.");
+
+	/* fail: .t8 */
+	exercise_get_boolean(".t8", true,
+		LK_KEY_BAD, "Empty component in: .t8");
+
+	/* fail: t */
+	exercise_get_boolean("t", false, LK_VALUE_BAD, "Not a boolean: t");
+
+	/* fail: t. */
+	exercise_get_boolean("t.", false, LK_KEY_BAD, "Empty component in: t.");
+
+	/* pass: t.k nil VALUE */
+	exercise_get_boolean("t.k", true, LK_VALUE_NIL, "");
+
+	/* fail: toolong takes too long */
+	exercise_get_boolean("toolong", true,
+		LK_CALL_CHUNK, "Instruction count exceeded");
+
+	/* fail: badrun calls unknown symbol */
+	exercise_get_boolean("badrun", false,
+		LK_CALL_CHUNK, "[string \"t1 = true t2 = { k1 = false, } t3 = { k1 = ...\"]:1: attempt to call global 'print' (a nil value)");
+
+	/* pass: justright */
+	exercise_get_boolean("justright", true, LK_OK, "");
+
+	/* fail: hidden */
+	exercise_get_boolean("hidden", true, LK_VALUE_NIL, "");
+
+	return EXIT_SUCCESS;
+}
+
+
+void
 exercise_get_double(
 	const char *	path,
 	const double	wanted,
@@ -446,13 +635,13 @@ test_get_double(void)
 	exercise_get_double("t3.12345.3", 0,
 		LK_KEY_BAD, "Not a table: t3.12345");
 
-	/* pass: t4.f function returning int */
+	/* pass: t4.f function returning double */
 	exercise_get_double("t4.f", -4, LK_OK, "");
 
 	/* fail: t4.f. (trailing .) */
 	exercise_get_double("t4.f.", 4, LK_KEY_BAD, "Not a table: t4.f");
 
-	/* fail: t5 function not returning int */
+	/* fail: t5 function not returning double */
 	exercise_get_double("t5", 0, LK_VALUE_BAD, "Not a double: t5");
 
 	/* fail: t6..k2 - empty key */
@@ -634,13 +823,13 @@ test_get_integer(void)
 	exercise_get_integer("t3.12345.3", 0,
 		LK_KEY_BAD, "Not a table: t3.12345");
 
-	/* pass: t4.f function returning int */
+	/* pass: t4.f function returning integer */
 	exercise_get_integer("t4.f", 4, LK_OK, "");
 
 	/* fail: t4.f. (trailing .) */
 	exercise_get_integer("t4.f.", 4, LK_KEY_BAD, "Not a table: t4.f");
 
-	/* fail: t5 function not returning int */
+	/* fail: t5 function not returning integer */
 	exercise_get_integer("t5", 0, LK_VALUE_BAD, "Not an integer: t5");
 
 	/* fail: t6..k2 - empty key */
@@ -827,13 +1016,13 @@ test_get_string(void)
 	exercise_get_string("t3.12345.3", "", 0,
 		LK_KEY_BAD, "Not a table: t3.12345");
 
-	/* pass: t4.f function returning int */
+	/* pass: t4.f function returning string */
 	exercise_get_string("t4.f", "t4 path=t4.f", 12, LK_OK, "");
 
 	/* fail: t4.f. (trailing .) */
 	exercise_get_string("t4.f.", "", 4, LK_KEY_BAD, "Not a table: t4.f");
 
-	/* fail: t5 function not returning int */
+	/* fail: t5 function not returning string */
 	exercise_get_string("t5", "", 0, LK_VALUE_BAD, "Not a string: t5");
 
 	/* fail: t6..k2 - empty key */
@@ -882,6 +1071,7 @@ const struct
 	{ "load_file",		TF_load_file,	test_load_file },
 	{ "load_string",	TF_load_string,	test_load_string },
 	{ "instruction_limit",	TF_instruction_limit, test_instruction_limit },
+	{ "get_boolean",	TF_get_boolean,	test_get_boolean },
 	{ "get_double",		TF_get_double,	test_get_double },
 	{ "get_integer",	TF_get_integer,	test_get_integer },
 	{ "get_string",		TF_get_string,	test_get_string },

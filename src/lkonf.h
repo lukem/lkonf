@@ -4,7 +4,7 @@
 /*
  * Copyright (c) 2014 Luke Mewburn <Luke@Mewburn.net>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -13,7 +13,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -29,12 +29,13 @@
 /**
  * @file
  * Use Lua as configuration for C applications.
- */ 
+ */
 
 #ifdef  __cplusplus
 extern "C" {
 #endif
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #include <lua.h>
@@ -178,6 +179,18 @@ lkonf_set_instruction_limit(lkonf_t * iLk, const int iLimit);
 	 */
 
 /**
+ * Get boolean value at iPath.
+ * The value at iPath must be either a boolean
+ * or a function that returns a boolean when called as function(iPath).
+ * @param	iLk	lkonf_t.
+ * @param	iPath	String of the form "[table[.table[...]].]key".
+ * @param[out]	oValue	Result.
+ * @return	Error code, or LK_OK if oValue populated.
+ */
+LUA_API lkerr_t
+lkonf_get_boolean(lkonf_t * iLk, const char * iPath, bool * oValue);
+
+/**
  * Get double value at iPath.
  * The value at iPath must be either a double
  * or a function that returns a double when called as function(iPath).
@@ -225,7 +238,6 @@ lkonf_get_string(
 /*
  * TODO
  *	- sandbox manipulation
- *	- get_boolean
  *	- get_TYPE { "key", "key", ...} variations
  *	- isFunction()
  *	- helpers to call functions and extract results

@@ -1,0 +1,5 @@
+AT_SETUP([get_boolean])
+
+AT_CHECK([unittest_lkonf get_boolean], [0], [ignore])
+
+AT_CLEANUP()
