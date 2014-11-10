@@ -81,8 +81,9 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(man3dir)" \
 LTLIBRARIES = $(lib_LTLIBRARIES)
 liblkonf_la_LIBADD =
 am_liblkonf_la_OBJECTS = liblkonf_la-construct.lo \
-	liblkonf_la-destruct.lo liblkonf_la-get_double.lo \
-	liblkonf_la-get_error_code.lo liblkonf_la-get_error_string.lo \
+	liblkonf_la-destruct.lo liblkonf_la-get_boolean.lo \
+	liblkonf_la-get_double.lo liblkonf_la-get_error_code.lo \
+	liblkonf_la-get_error_string.lo \
 	liblkonf_la-get_instruction_limit.lo \
 	liblkonf_la-get_integer.lo liblkonf_la-get_lua_State.lo \
 	liblkonf_la-get_string.lo liblkonf_la-load_file.lo \
@@ -260,11 +261,11 @@ noinst_HEADERS = \
 	internal.h
 
 lib_LTLIBRARIES = liblkonf.la
-liblkonf_la_SOURCES = construct.c destruct.c get_double.c \
-	get_error_code.c get_error_string.c get_instruction_limit.c \
-	get_integer.c get_lua_State.c get_string.c load_file.c \
-	load_string.c set_instruction_limit.c call_chunk.c \
-	find_table.c set_error.c state_entry_exit.c
+liblkonf_la_SOURCES = construct.c destruct.c get_boolean.c \
+	get_double.c get_error_code.c get_error_string.c \
+	get_instruction_limit.c get_integer.c get_lua_State.c \
+	get_string.c load_file.c load_string.c set_instruction_limit.c \
+	call_chunk.c find_table.c set_error.c state_entry_exit.c
 liblkonf_la_CPPFLAGS = \
 	-I$(srcdir) \
 	$(LUA_CFLAGS)
@@ -357,6 +358,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-construct.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-destruct.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-find_table.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_boolean.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_double.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_error_code.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_error_string.Plo@am__quote@
@@ -409,6 +411,14 @@ liblkonf_la-destruct.lo: destruct.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='destruct.c' object='liblkonf_la-destruct.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-destruct.lo `test -f 'destruct.c' || echo '$(srcdir)/'`destruct.c
+
+liblkonf_la-get_boolean.lo: get_boolean.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-get_boolean.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-get_boolean.Tpo -c -o liblkonf_la-get_boolean.lo `test -f 'get_boolean.c' || echo '$(srcdir)/'`get_boolean.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-get_boolean.Tpo $(DEPDIR)/liblkonf_la-get_boolean.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='get_boolean.c' object='liblkonf_la-get_boolean.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-get_boolean.lo `test -f 'get_boolean.c' || echo '$(srcdir)/'`get_boolean.c
 
 liblkonf_la-get_double.lo: get_double.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-get_double.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-get_double.Tpo -c -o liblkonf_la-get_double.lo `test -f 'get_double.c' || echo '$(srcdir)/'`get_double.c
