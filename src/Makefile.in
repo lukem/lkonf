@@ -87,7 +87,9 @@ am_liblkonf_la_OBJECTS = liblkonf_la-construct.lo \
 	liblkonf_la-get_instruction_limit.lo \
 	liblkonf_la-get_integer.lo liblkonf_la-get_lua_State.lo \
 	liblkonf_la-get_string.lo liblkonf_la-getkey_boolean.lo \
-	liblkonf_la-load_file.lo liblkonf_la-load_string.lo \
+	liblkonf_la-getkey_double.lo liblkonf_la-getkey_integer.lo \
+	liblkonf_la-getkey_string.lo liblkonf_la-load_file.lo \
+	liblkonf_la-load_string.lo \
 	liblkonf_la-set_instruction_limit.lo liblkonf_la-call_chunk.lo \
 	liblkonf_la-find_table_by_keys.lo \
 	liblkonf_la-find_table_by_path.lo liblkonf_la-set_error.lo \
@@ -265,7 +267,8 @@ lib_LTLIBRARIES = liblkonf.la
 liblkonf_la_SOURCES = construct.c destruct.c get_boolean.c \
 	get_double.c get_error_code.c get_error_string.c \
 	get_instruction_limit.c get_integer.c get_lua_State.c \
-	get_string.c getkey_boolean.c load_file.c load_string.c \
+	get_string.c getkey_boolean.c getkey_double.c getkey_integer.c \
+	getkey_string.c load_file.c load_string.c \
 	set_instruction_limit.c call_chunk.c find_table_by_keys.c \
 	find_table_by_path.c set_error.c state_entry_exit.c
 liblkonf_la_CPPFLAGS = \
@@ -370,6 +373,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_lua_State.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_string.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-getkey_boolean.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-getkey_double.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-getkey_integer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-getkey_string.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-load_file.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-load_string.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-set_error.Plo@am__quote@
@@ -487,6 +493,30 @@ liblkonf_la-getkey_boolean.lo: getkey_boolean.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='getkey_boolean.c' object='liblkonf_la-getkey_boolean.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-getkey_boolean.lo `test -f 'getkey_boolean.c' || echo '$(srcdir)/'`getkey_boolean.c
+
+liblkonf_la-getkey_double.lo: getkey_double.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-getkey_double.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-getkey_double.Tpo -c -o liblkonf_la-getkey_double.lo `test -f 'getkey_double.c' || echo '$(srcdir)/'`getkey_double.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-getkey_double.Tpo $(DEPDIR)/liblkonf_la-getkey_double.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='getkey_double.c' object='liblkonf_la-getkey_double.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-getkey_double.lo `test -f 'getkey_double.c' || echo '$(srcdir)/'`getkey_double.c
+
+liblkonf_la-getkey_integer.lo: getkey_integer.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-getkey_integer.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-getkey_integer.Tpo -c -o liblkonf_la-getkey_integer.lo `test -f 'getkey_integer.c' || echo '$(srcdir)/'`getkey_integer.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-getkey_integer.Tpo $(DEPDIR)/liblkonf_la-getkey_integer.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='getkey_integer.c' object='liblkonf_la-getkey_integer.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-getkey_integer.lo `test -f 'getkey_integer.c' || echo '$(srcdir)/'`getkey_integer.c
+
+liblkonf_la-getkey_string.lo: getkey_string.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-getkey_string.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-getkey_string.Tpo -c -o liblkonf_la-getkey_string.lo `test -f 'getkey_string.c' || echo '$(srcdir)/'`getkey_string.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-getkey_string.Tpo $(DEPDIR)/liblkonf_la-getkey_string.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='getkey_string.c' object='liblkonf_la-getkey_string.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-getkey_string.lo `test -f 'getkey_string.c' || echo '$(srcdir)/'`getkey_string.c
 
 liblkonf_la-load_file.lo: load_file.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-load_file.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-load_file.Tpo -c -o liblkonf_la-load_file.lo `test -f 'load_file.c' || echo '$(srcdir)/'`load_file.c
