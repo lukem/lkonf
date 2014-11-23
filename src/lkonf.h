@@ -303,15 +303,6 @@ lkonf_getkey_string(
 	size_t *	oLen);
 
 
-/*
- * TODO
- *	- sandbox manipulation
- *	- isFunction()
- *	- helpers to call functions and extract results
- *	- internal protected wrappers for lua_*() per
- *		https://github.com/jmmv/lutok/blob/master/state.cpp
- */
-
 #ifdef  __cplusplus
 } /* extern "C" */
 #endif

@@ -1,0 +1,23 @@
+method to convert lkonf_keys -> string for diag?
+
+support integer key lookup via path?
+e.g,
+	t = {
+		[1]	= "one",
+		["2"]	= "two too",
+	}
+path "t.1" should find "one".
+currently only "t.2" will be found
+
+sandbox:
+	apis to setup & manipulate
+	use in lki_call_chunk()
+
+isFunction()
+
+helpers to call functions and extract results
+
+internal protected wrappers for lua_*() per
+	https://github.com/jmmv/lutok/blob/master/state.cpp
+
+integrate doxygen into configure.ac (etc)
