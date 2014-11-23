@@ -3,7 +3,7 @@
 #include <assert.h>
 
 lkerr_t
-lki_state_entry(lkonf_t * iLc)
+lki_state_entry(lkonf_context * iLc)
 {
 	if (! iLc) {
 		return LK_LKONF_NULL;
@@ -22,7 +22,7 @@ lki_state_entry(lkonf_t * iLc)
 }
 
 lkerr_t
-lki_state_exit(lkonf_t * iLc)
+lki_state_exit(lkonf_context * iLc)
 {
 	if (! iLc) {
 		return LK_LKONF_NULL;

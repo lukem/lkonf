@@ -32,32 +32,32 @@
 .Lb lkonf
 .Sh SYNOPSIS
 .In lkonf.h
-.Ft "lkonf_t *"
+.Ft "lkonf_context *"
 .Fn lkonf_construct "void"
 .Ft void
-.Fn lkonf_destruct "lkonf_t * iLk"
+.Fn lkonf_destruct "lkonf_context * iLc"
 .Ft "lua_State *"
-.Fn lkonf_get_lua_State "lkonf_t * iLk"
+.Fn lkonf_get_lua_State "lkonf_context * iLc"
 .Ft lkerr_t
-.Fn lkonf_get_error_code "lkonf_t * iLk"
+.Fn lkonf_get_error_code "lkonf_context * iLc"
 .Ft lkerr_t
-.Fn lkonf_get_error_string "lkonf_t * iLk"
+.Fn lkonf_get_error_string "lkonf_context * iLc"
 .Ft lkerr_t
-.Fn lkonf_load_file "lkonf_t * iLk" "const char * iFile"
+.Fn lkonf_load_file "lkonf_context * iLc" "const char * iFile"
 .Ft lkerr_t
-.Fn lkonf_load_string "lkonf_t * iLk" "const char * iString"
+.Fn lkonf_load_string "lkonf_context * iLc" "const char * iString"
 .Ft int
-.Fn lkonf_get_instruction_limit "lkonf_t * iLk"
+.Fn lkonf_get_instruction_limit "lkonf_context * iLc"
 .Ft lkerr_t
-.Fn lkonf_set_instruction_limit "lkonf_t * iLk" "const int iLimit"
+.Fn lkonf_set_instruction_limit "lkonf_context * iLc" "const int iLimit"
 .Ft lkerr_t
-.Fn lkonf_get_boolean "lkonf_t * iLk" "const char * iPath" "bool * oValue"
+.Fn lkonf_get_boolean "lkonf_context * iLc" "const char * iPath" "bool * oValue"
 .Ft lkerr_t
-.Fn lkonf_get_double "lkonf_t * iLk" "const char * iPath" "double * oValue"
+.Fn lkonf_get_double "lkonf_context * iLc" "const char * iPath" "double * oValue"
 .Ft lkerr_t
-.Fn lkonf_get_integer "lkonf_t * iLk" "const char * iPath" "lua_Integer * oValue"
+.Fn lkonf_get_integer "lkonf_context * iLc" "const char * iPath" "lua_Integer * oValue"
 .Ft lkerr_t
-.Fn lkonf_get_string "lkonf_t * iLk" "const char * iPath" "char ** oValue" "size_t * oLen"
+.Fn lkonf_get_string "lkonf_context * iLc" "const char * iPath" "char ** oValue" "size_t * oLen"
 .
 .Sh DESCRIPTION
 The
@@ -77,7 +77,7 @@ Programs should be linked with
 .Nm
 provides various data types:
 .Bl -tag
-.It Fa lkonf_t
+.It Fa lkonf_context
 Opaque type used by the
 .Nm
 functions.
@@ -87,46 +87,46 @@ Enumeration for error codes.
 .
 .Sh OBJECT AND ERROR MANAGEMENT FUNCTIONS
 The following functions are available to manage
-.Fa lkonf_t
+.Fa lkonf_context
 construction and destruction and to access error state:
 .Bl -tag -width 4n
 .It Fn lkonf_construct
 Construct an
-.Fa lkonf_t .
+.Fa lkonf_context .
 The internal Lua state is created with
 .Fn luaL_newstate .
 If there was an error constructing the Lua state, the error code will be set.
 Returns the
-.Fa lkonf_t
+.Fa lkonf_context
 created with default parameters, or
 .Dv 0
 on failure.
 .It Fn lkonf_destruct
 Destroy an
-.Fa lkonf_t .
+.Fa lkonf_context .
 .It Fn lkonf_get_lua_State
 Returns the Lua state used by
-.Fa iLk .
+.Fa iLc .
 This may be useful for manipulating the sandbox,
 adjusting panic functions, etc.
-If iLk is 0 or there's a fault in the internal state, returns
+If iLc is 0 or there's a fault in the internal state, returns
 .Dv 0 .
 .It Fn lkonf_get_error_code
 Returns the error code from the most recent
-.Fa lkonf_t
+.Fa lkonf_context
 operation (if any), or
 .Dv LK_LKONF_NULL
 if
-.Fa iLk
+.Fa iLc
 is
 .Dv 0 .
 .It Fn lkonf_get_error_string
 Returns the error string from the most recent
-.Fa lkonf_t
+.Fa lkonf_context
 operation (if any), or
 .Dv 0
 if
-.Fa iLk
+.Fa iLc
 is
 .Dv 0 .
 .El
@@ -148,7 +148,7 @@ Get the current instruction limit.
 Returns the instruction limit, or
 .Dv -1
 if
-.Fa iLk
+.Fa iLc
 is
 .Dv 0 .
 .It Fn lkonf_set_instruction_limit

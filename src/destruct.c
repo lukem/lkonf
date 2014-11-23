@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 void
-lkonf_destruct(lkonf_t * iLc)
+lkonf_destruct(lkonf_context * iLc)
 {
 	if (! iLc) {
 		return;

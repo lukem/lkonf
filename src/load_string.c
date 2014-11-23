@@ -3,7 +3,7 @@
 #include <lauxlib.h>
 
 lkerr_t
-lkonf_load_string(lkonf_t * iLc, const char * iString)
+lkonf_load_string(lkonf_context * iLc, const char * iString)
 {
 	if (! iLc) {
 		return LK_LKONF_NULL;

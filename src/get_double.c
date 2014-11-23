@@ -1,7 +1,7 @@
 #include "internal.h"
 
 LUA_API lkerr_t
-lkonf_get_double(lkonf_t * iLc, const char * iPath, double * oValue)
+lkonf_get_double(lkonf_context * iLc, const char * iPath, double * oValue)
 {
 	if (! iLc) {
 		return LK_LKONF_NULL;

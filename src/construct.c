@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-lkonf_t *
+lkonf_context *
 lkonf_construct(void)
 {
-	lkonf_t * lc = 0;
+	lkonf_context * lc = 0;
 
 	lc = calloc(1, sizeof(*lc));
 	if (! lc) {

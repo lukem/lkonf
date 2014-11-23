@@ -90,7 +90,7 @@ streq(const char * lhs, const char * rhs)
  */
 void
 ensure_result(
-	lkonf_t *	lk,
+	lkonf_context *	lc,
 	const lkerr_t	code,
 	const char *	desc,
 	const lkerr_t	expect_code,
@@ -102,14 +102,14 @@ ensure_result(
 			code, err_to_str(code),
 			expect_code, err_to_str(expect_code));
 	}
-	const lkerr_t gec = lkonf_get_error_code(lk);
+	const lkerr_t gec = lkonf_get_error_code(lc);
 	if (code != gec) {
 		fprintf(stderr, "%s: code %d (%s) != get_error_code %d (%s)\n",
 			desc,
 			code, err_to_str(code),
 			gec, err_to_str(gec));
 	}
-	const char * lk_errstr = lkonf_get_error_string(lk);
+	const char * lk_errstr = lkonf_get_error_string(lc);
 	if (! streq(lk_errstr, expect_str)) {
 		fprintf(stderr, "%s: errstr '%s' != expect_str '%s'\n",
 			desc, lk_errstr, expect_str);
@@ -125,22 +125,22 @@ test_construct(void)
 {
 	printf("lkonf_construct()\n");
 
-	/* construct lkonf_t, confirm initial state */
+	/* construct lkonf_context, confirm initial state */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
-		const lkerr_t errcode = lkonf_get_error_code(lk);
+		const lkerr_t errcode = lkonf_get_error_code(lc);
 		assert(LK_OK == errcode && "errcode != LK_OK");
 
-		const char * errstr = lkonf_get_error_string(lk);
+		const char * errstr = lkonf_get_error_string(lc);
 		assert(0 != errstr && "errstr == 0");
 		assert(0 == errstr[0] && "errstr[0] not empty");
 
-		lua_State * ls = lkonf_get_lua_State(lk);
+		lua_State * ls = lkonf_get_lua_State(lc);
 		assert(0 != ls && "lua_State == 0");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	return EXIT_SUCCESS;
@@ -152,12 +152,12 @@ test_destruct(void)
 {
 	printf("lkonf_destruct()\n");
 
-	/* destruct a default lkonf_t */
+	/* destruct a default lkonf_context */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* destruct a NULL pointer (should be a no-op) */
@@ -184,14 +184,14 @@ test_load_file(void)
 
 	/* fail: load with filename null pointer */
 	{
-		lkonf_t * lk = lkonf_construct();
+		lkonf_context * lc = lkonf_construct();
 
-		assert(lk && "lkonf_construct returned 0");
-		const lkerr_t res = lkonf_load_file(lk, 0);
-		ensure_result(lk, res,
-			"load_file(lk, 0)", LK_ARG_BAD, "iFile NULL");
+		assert(lc && "lkonf_construct returned 0");
+		const lkerr_t res = lkonf_load_file(lc, 0);
+		ensure_result(lc, res,
+			"load_file(lc, 0)", LK_ARG_BAD, "iFile NULL");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	return EXIT_SUCCESS;
@@ -212,53 +212,53 @@ test_load_string(void)
 
 	/* fail: load with string null pointer */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
-		const lkerr_t res = lkonf_load_string(lk, 0);
-		ensure_result(lk, res,
-			"load_string(lk, 0)", LK_ARG_BAD, "iString NULL");
+		const lkerr_t res = lkonf_load_string(lc, 0);
+		ensure_result(lc, res,
+			"load_string(lc, 0)", LK_ARG_BAD, "iString NULL");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* fail: LK_LOAD_CHUNK syntax error in string */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
-		const lkerr_t res = lkonf_load_string(lk, "junk");
-		ensure_result(lk, res,
-			"load_string(lk, \"junk\")",
+		const lkerr_t res = lkonf_load_string(lc, "junk");
+		ensure_result(lc, res,
+			"load_string(lc, \"junk\")",
 			LK_LOAD_CHUNK,
 			"[string \"junk\"]:1: '=' expected near '<eof>'");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* fail: LK_CALL_CHUNK run-time error in string */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
-		const lkerr_t res = lkonf_load_string(lk, "junk()");
-		ensure_result(lk, res,
-			"load_string(lk, \"junk()\")",
+		const lkerr_t res = lkonf_load_string(lc, "junk()");
+		ensure_result(lc, res,
+			"load_string(lc, \"junk()\")",
 			LK_CALL_CHUNK,
 			"[string \"junk()\"]:1: attempt to call global 'junk' (a nil value)");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* pass: "t=1" */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
-		const lkerr_t res = lkonf_load_string(lk, "t=1");
-		ensure_result(lk, res, "load_string(lk, \"t=1\")", LK_OK, "");
+		const lkerr_t res = lkonf_load_string(lc, "t=1");
+		ensure_result(lc, res, "load_string(lc, \"t=1\")", LK_OK, "");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 /* TODO: sandbox tests */
@@ -279,74 +279,74 @@ test_instruction_limit(void)
 
 	/* fail: set_instruction_limit < 0 */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
-		const lkerr_t res = lkonf_set_instruction_limit(lk, -2);
-		ensure_result(lk, res,
-			"set_instruction_limit(lk, -2)",
+		const lkerr_t res = lkonf_set_instruction_limit(lc, -2);
+		ensure_result(lc, res,
+			"set_instruction_limit(lc, -2)",
 			LK_ARG_BAD, "iLimit < 0");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* pass: set & get */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
 		const int	limit = 10;
 
-		const lkerr_t sil = lkonf_set_instruction_limit(lk, limit);
-		ensure_result(lk, sil,
-			"set_instruction_limit(lk, 10)", LK_OK, "");
+		const lkerr_t sil = lkonf_set_instruction_limit(lc, limit);
+		ensure_result(lc, sil,
+			"set_instruction_limit(lc, 10)", LK_OK, "");
 
-		const int gil = lkonf_get_instruction_limit(lk);
+		const int gil = lkonf_get_instruction_limit(lc);
 		assert(limit == gil);
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* pass: long loop, no limit */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
 		const int	limit = 0;
 		const char *	expr = "for i=1, 1000 do end";
 
-		const lkerr_t sil = lkonf_set_instruction_limit(lk, limit);
+		const lkerr_t sil = lkonf_set_instruction_limit(lc, limit);
 		assert(LK_OK == sil);
 
-		const lkerr_t res = lkonf_load_string(lk, expr);
-		ensure_result(lk, res, expr,
+		const lkerr_t res = lkonf_load_string(lc, expr);
+		ensure_result(lc, res, expr,
 			LK_OK, "");
 
-		const int gil = lkonf_get_instruction_limit(lk);
+		const int gil = lkonf_get_instruction_limit(lc);
 		assert(limit == gil);
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* pass: long loop, limited and terminated */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
 		const int	limit = 100;
 		const char *	expr = "for i=1, 1000 do end";
 
-		const lkerr_t sil = lkonf_set_instruction_limit(lk, limit);
+		const lkerr_t sil = lkonf_set_instruction_limit(lc, limit);
 		assert(LK_OK == sil);
 
-		const lkerr_t res = lkonf_load_string(lk, expr);
-		ensure_result(lk, res, expr,
+		const lkerr_t res = lkonf_load_string(lc, expr);
+		ensure_result(lc, res, expr,
 			LK_CALL_CHUNK, "Instruction count exceeded");
 
-		const int gil = lkonf_get_instruction_limit(lk);
+		const int gil = lkonf_get_instruction_limit(lc);
 		assert(limit == gil);
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	return EXIT_SUCCESS;
@@ -402,32 +402,32 @@ exercise_get_boolean(
 	}
 	printf("\n");
 
-	lkonf_t * lk = lkonf_construct();
-	assert(lk && "lkonf_construct returned 0");
+	lkonf_context * lc = lkonf_construct();
+	assert(lc && "lkonf_construct returned 0");
 
-	const lkerr_t rls = lkonf_load_string(lk, test_luastr);
-	ensure_result(lk, rls, "load_string", LK_OK, "");
+	const lkerr_t rls = lkonf_load_string(lc, test_luastr);
+	ensure_result(lc, rls, "load_string", LK_OK, "");
 
 		/* limit to 100 instructions; after load */
-	const lkerr_t sil = lkonf_set_instruction_limit(lk, 100);
-	ensure_result(lk, sil, "set_instruction_limit(lk, 100)", LK_OK, "");
+	const lkerr_t sil = lkonf_set_instruction_limit(lc, 100);
+	ensure_result(lc, sil, "set_instruction_limit(lc, 100)", LK_OK, "");
 
 	bool v = !wanted;
 	lkerr_t res = LK_LKONF_NULL;
 	if (keys) {
-		res = lkonf_getkey_boolean(lk, keys, &v);
+		res = lkonf_getkey_boolean(lc, keys, &v);
 	} else {
-		res = lkonf_get_boolean(lk, path, &v);
+		res = lkonf_get_boolean(lc, path, &v);
 	}
 
-	ensure_result(lk, res, desc, expect_code, expect_str);
+	ensure_result(lc, res, desc, expect_code, expect_str);
 	if (LK_OK == expect_code) {
 		assert(wanted == v);
 	} else {
 		assert(!wanted == v);	/* didn't change */
 	}
 
-	lkonf_destruct(lk);
+	lkonf_destruct(lc);
 }
 
 int
@@ -442,27 +442,27 @@ test_get_boolean(void)
 
 	/* fail: null ovalue */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
-		const lkerr_t res = lkonf_get_boolean(lk, "", 0);
-		ensure_result(lk, res,
-			"get_boolean(lk, \"\", 0)", LK_ARG_BAD, "oValue NULL");
+		const lkerr_t res = lkonf_get_boolean(lc, "", 0);
+		ensure_result(lc, res,
+			"get_boolean(lc, \"\", 0)", LK_ARG_BAD, "oValue NULL");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* fail: null path */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
 		bool v = false;
-		const lkerr_t res = lkonf_get_boolean(lk, 0, &v);
-		ensure_result(lk, res,
-			"get_boolean(lk, 0, &v)", LK_ARG_BAD, "iPath NULL");
+		const lkerr_t res = lkonf_get_boolean(lc, 0, &v);
+		ensure_result(lc, res,
+			"get_boolean(lc, 0, &v)", LK_ARG_BAD, "iPath NULL");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* pass: b1 */
@@ -579,42 +579,42 @@ test_getkey_boolean(void)
 
 	/* fail: null oValue */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
-		const lkerr_t res = lkonf_getkey_boolean(lk,
+		const lkerr_t res = lkonf_getkey_boolean(lc,
 			(lkonf_keys){ 0 }, 0);
-		ensure_result(lk, res, "getkey_boolean(lk, {0}, 0)",
+		ensure_result(lc, res, "getkey_boolean(lc, {0}, 0)",
 			LK_ARG_BAD, "oValue NULL");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* fail: null iKeys */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
 		bool v = false;
-		const lkerr_t res = lkonf_getkey_boolean(lk, 0, &v);
-		ensure_result(lk, res, "getkey_boolean(lk, 0, &v)",
+		const lkerr_t res = lkonf_getkey_boolean(lc, 0, &v);
+		ensure_result(lc, res, "getkey_boolean(lc, 0, &v)",
 			LK_ARG_BAD, "iKeys NULL");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* fail: empty iKeys */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
 		bool v = false;
-		const lkerr_t res = lkonf_getkey_boolean(lk,
+		const lkerr_t res = lkonf_getkey_boolean(lc,
 			(lkonf_keys){ 0 }, &v);
-		ensure_result(lk, res, "getkey_boolean(lk, {0}, &v)",
+		ensure_result(lc, res, "getkey_boolean(lc, {0}, &v)",
 			LK_KEY_BAD, "Empty keys");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* pass: b1 */
@@ -742,26 +742,26 @@ exercise_get_double(
 	}
 	printf("\n");
 
-	lkonf_t * lk = lkonf_construct();
-	assert(lk && "lkonf_construct returned 0");
+	lkonf_context * lc = lkonf_construct();
+	assert(lc && "lkonf_construct returned 0");
 
-	const lkerr_t rls = lkonf_load_string(lk, test_luastr);
-	ensure_result(lk, rls, "load_string", LK_OK, "");
+	const lkerr_t rls = lkonf_load_string(lc, test_luastr);
+	ensure_result(lc, rls, "load_string", LK_OK, "");
 
 		/* limit to 100 instructions; after load */
-	const lkerr_t sil = lkonf_set_instruction_limit(lk, 100);
-	ensure_result(lk, sil, "set_instruction_limit(lk, 100)", LK_OK, "");
+	const lkerr_t sil = lkonf_set_instruction_limit(lc, 100);
+	ensure_result(lc, sil, "set_instruction_limit(lc, 100)", LK_OK, "");
 
 	double v = -wanted;
-	const lkerr_t res = lkonf_get_double(lk, path, &v);
-	ensure_result(lk, res, desc, expect_code, expect_str);
+	const lkerr_t res = lkonf_get_double(lc, path, &v);
+	ensure_result(lc, res, desc, expect_code, expect_str);
 	if (LK_OK == expect_code) {
 		assert(wanted == v);
 	} else {
 		assert(-wanted == v);	/* didn't change */
 	}
 
-	lkonf_destruct(lk);
+	lkonf_destruct(lc);
 }
 
 int
@@ -776,27 +776,27 @@ test_get_double(void)
 
 	/* fail: null ovalue */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
-		const lkerr_t res = lkonf_get_double(lk, "", 0);
-		ensure_result(lk, res,
-			"get_double(lk, \"\", 0)", LK_ARG_BAD, "oValue NULL");
+		const lkerr_t res = lkonf_get_double(lc, "", 0);
+		ensure_result(lc, res,
+			"get_double(lc, \"\", 0)", LK_ARG_BAD, "oValue NULL");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* fail: null path */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
 		double v = -1;
-		const lkerr_t res = lkonf_get_double(lk, 0, &v);
-		ensure_result(lk, res,
-			"get_double(lk, 0, &v)", LK_ARG_BAD, "iPath NULL");
+		const lkerr_t res = lkonf_get_double(lc, 0, &v);
+		ensure_result(lc, res,
+			"get_double(lc, 0, &v)", LK_ARG_BAD, "iPath NULL");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* pass: d1 */
@@ -914,26 +914,26 @@ exercise_get_integer(
 	}
 	printf("\n");
 
-	lkonf_t * lk = lkonf_construct();
-	assert(lk && "lkonf_construct returned 0");
+	lkonf_context * lc = lkonf_construct();
+	assert(lc && "lkonf_construct returned 0");
 
-	const lkerr_t rls = lkonf_load_string(lk, test_luastr);
-	ensure_result(lk, rls, "load_string", LK_OK, "");
+	const lkerr_t rls = lkonf_load_string(lc, test_luastr);
+	ensure_result(lc, rls, "load_string", LK_OK, "");
 
 		/* limit to 100 instructions; after load */
-	const lkerr_t sil = lkonf_set_instruction_limit(lk, 100);
-	ensure_result(lk, sil, "set_instruction_limit(lk, 100)", LK_OK, "");
+	const lkerr_t sil = lkonf_set_instruction_limit(lc, 100);
+	ensure_result(lc, sil, "set_instruction_limit(lc, 100)", LK_OK, "");
 
 	lua_Integer v = -wanted;
-	const lkerr_t res = lkonf_get_integer(lk, path, &v);
-	ensure_result(lk, res, desc, expect_code, expect_str);
+	const lkerr_t res = lkonf_get_integer(lc, path, &v);
+	ensure_result(lc, res, desc, expect_code, expect_str);
 	if (LK_OK == expect_code) {
 		assert(wanted == v);
 	} else {
 		assert(-wanted == v);	/* didn't change */
 	}
 
-	lkonf_destruct(lk);
+	lkonf_destruct(lc);
 }
 
 int
@@ -948,27 +948,27 @@ test_get_integer(void)
 
 	/* fail: null ovalue */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
-		const lkerr_t res = lkonf_get_integer(lk, "", 0);
-		ensure_result(lk, res,
-			"get_integer(lk, \"\", 0)", LK_ARG_BAD, "oValue NULL");
+		const lkerr_t res = lkonf_get_integer(lc, "", 0);
+		ensure_result(lc, res,
+			"get_integer(lc, \"\", 0)", LK_ARG_BAD, "oValue NULL");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* fail: null path */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
 		lua_Integer v = -1;
-		const lkerr_t res = lkonf_get_integer(lk, 0, &v);
-		ensure_result(lk, res,
-			"get_integer(lk, 0, &v)", LK_ARG_BAD, "iPath NULL");
+		const lkerr_t res = lkonf_get_integer(lc, 0, &v);
+		ensure_result(lc, res,
+			"get_integer(lc, 0, &v)", LK_ARG_BAD, "iPath NULL");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* pass: i1 */
@@ -1087,20 +1087,20 @@ exercise_get_string(
 	}
 	printf("\n");
 
-	lkonf_t * lk = lkonf_construct();
-	assert(lk && "lkonf_construct returned 0");
+	lkonf_context * lc = lkonf_construct();
+	assert(lc && "lkonf_construct returned 0");
 
-	const lkerr_t rls = lkonf_load_string(lk, test_luastr);
-	ensure_result(lk, rls, "load_string", LK_OK, "");
+	const lkerr_t rls = lkonf_load_string(lc, test_luastr);
+	ensure_result(lc, rls, "load_string", LK_OK, "");
 
 		/* limit to 100 instructions; after load */
-	const lkerr_t sil = lkonf_set_instruction_limit(lk, 100);
-	ensure_result(lk, sil, "set_instruction_limit(lk, 100)", LK_OK, "");
+	const lkerr_t sil = lkonf_set_instruction_limit(lc, 100);
+	ensure_result(lc, sil, "set_instruction_limit(lc, 100)", LK_OK, "");
 
 	char * gotstr = 0;
 	size_t gotlen = -wantlen;
-	const lkerr_t res = lkonf_get_string(lk, path, &gotstr, &gotlen);
-	ensure_result(lk, res, desc, expect_code, expect_str);
+	const lkerr_t res = lkonf_get_string(lc, path, &gotstr, &gotlen);
+	ensure_result(lc, res, desc, expect_code, expect_str);
 	if (LK_OK == expect_code) {
 		assert(wantlen == gotlen);
 		assert(streq(wantstr, gotstr));
@@ -1110,7 +1110,7 @@ exercise_get_string(
 		assert(-wantlen == gotlen);	/* didn't change */
 	}
 
-	lkonf_destruct(lk);
+	lkonf_destruct(lc);
 }
 
 int
@@ -1125,28 +1125,28 @@ test_get_string(void)
 
 	/* fail: null ovalue */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
-		const lkerr_t res = lkonf_get_string(lk, "", 0, 0);
-		ensure_result(lk, res,
-			"get_string(lk, \"\", 0, 0)",
+		const lkerr_t res = lkonf_get_string(lc, "", 0, 0);
+		ensure_result(lc, res,
+			"get_string(lc, \"\", 0, 0)",
 			LK_ARG_BAD, "oValue NULL");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* fail: null path */
 	{
-		lkonf_t * lk = lkonf_construct();
-		assert(lk && "lkonf_construct returned 0");
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
 
 		char * v = 0;
-		const lkerr_t res = lkonf_get_string(lk, 0, &v, 0);
-		ensure_result(lk, res,
-			"get_integer(lk, 0, &v)", LK_ARG_BAD, "iPath NULL");
+		const lkerr_t res = lkonf_get_string(lc, 0, &v, 0);
+		ensure_result(lc, res,
+			"get_integer(lc, 0, &v)", LK_ARG_BAD, "iPath NULL");
 
-		lkonf_destruct(lk);
+		lkonf_destruct(lc);
 	}
 
 	/* pass: s1 */

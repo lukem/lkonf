@@ -7,12 +7,12 @@
 /**
  * Push next key to stack.
  * If next key is empty, no key is pushed.
- * @param	iLc	lkonf_t
+ * @param	iLc	lkonf_context
  * @param	iPath	Pointer to key path to parse ("a.bb.c")
  * Returns		Pointer to end of key.
  */
 static const char *
-push_next_key(lkonf_t * iLc, const char * iPath)
+push_next_key(lkonf_context * iLc, const char * iPath)
 {
 	assert(iLc);
 	assert(iPath);
@@ -34,7 +34,7 @@ push_next_key(lkonf_t * iLc, const char * iPath)
 
 
 lkerr_t
-lki_find_table_by_path(lkonf_t * iLc, const char * iPath)
+lki_find_table_by_path(lkonf_context * iLc, const char * iPath)
 {
 	if (! iLc) {
 		return LK_LKONF_NULL;

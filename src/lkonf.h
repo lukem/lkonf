@@ -46,9 +46,9 @@ extern "C" {
 
 
 /**
- * Opaque type for lkonf_t.
+ * Opaque type for lkonf_context.
  */
-typedef struct lkonf_s lkonf_t;
+typedef struct lkonf_s lkonf_context;
 
 
 /**
@@ -57,7 +57,7 @@ typedef struct lkonf_s lkonf_t;
 typedef enum
 {
 	LK_OK			= 0,	/** No error. */
-	LK_LKONF_NULL		= 1,	/** lkonf_t is NULL. */
+	LK_LKONF_NULL		= 1,	/** lkonf_context is NULL. */
 	LK_STATE_NULL		= 2,	/** Lua state is NULL. */
 	LK_ARG_BAD		= 3,	/** Method argument is bad */
 	LK_LOAD_CHUNK		= 4,	/** Can't load chunk. */
@@ -76,64 +76,64 @@ typedef const char * const	lkonf_keys[];
 
 
 	/*
-	 * lkonf_t object management.
+	 * lkonf_context object management.
 	 */
 
 
 /**
- * Construct an lkonf_t.
+ * Construct an lkonf_context.
  * The internal Lua state is created with luaL_newstate().
  * If there was an error constructing the Lua state, the error code will be set.
- * @return lkonf_t created with default parameters, or 0 on failure.
+ * @return lkonf_context created with default parameters, or 0 on failure.
  */
-LUA_API lkonf_t *
+LUA_API lkonf_context *
 lkonf_construct(void);
 
 
 /**
- * Destruct an lkonf_t.
- * @param iLk	lkonf_t to destroy.
+ * Destruct an lkonf_context.
+ * @param iLc	lkonf_context to destroy.
  */
 LUA_API void
-lkonf_destruct(lkonf_t * iLk);
+lkonf_destruct(lkonf_context * iLc);
 
 
 /**
  * Access internal Lua state.
- * @param iLk	lkonf_t to use.
- * @return	Lua state used by iLk. This may be useful for
+ * @param iLc	lkonf_context to use.
+ * @return	Lua state used by iLc. This may be useful for
  *		manipulating the sandbox, adjusting panic functions, etc.
- *		If iLk is 0 or there's a fault in the internal state,
+ *		If iLc is 0 or there's a fault in the internal state,
  *		returns 0.
  *
- * @note Closing the Lua state underneath lkonf_t will result in undefined
+ * @note Closing the Lua state underneath lkonf_context will result in undefined
  * behaviour.
  */
 LUA_API lua_State *
-lkonf_get_lua_State(lkonf_t * iLk);
+lkonf_get_lua_State(lkonf_context * iLc);
 
 
 	/*
-	 * lkonf_t error management.
+	 * lkonf_context error management.
 	 */
 
 
 /**
- * Error code from most recent lkonf_t operation, if any.
- * @param iLk	lkonf_t to use.
- * @return	Error code, or LK_LKONF_NULL if iLk is 0.
+ * Error code from most recent lkonf_context operation, if any.
+ * @param iLc	lkonf_context to use.
+ * @return	Error code, or LK_LKONF_NULL if iLc is 0.
  */
 LUA_API lkerr_t
-lkonf_get_error_code(lkonf_t * iLk);
+lkonf_get_error_code(lkonf_context * iLc);
 
 
 /**
  * Error string from most recent lkonf operation, if any.
- * @param iLk	lkonf_t to use.
- * @return	Error string, or 0 if iLk is 0.
+ * @param iLc	lkonf_context to use.
+ * @return	Error string, or 0 if iLc is 0.
  */
 LUA_API const char *
-lkonf_get_error_string(lkonf_t * iLk);
+lkonf_get_error_string(lkonf_context * iLc);
 
 
 	/*
@@ -142,22 +142,22 @@ lkonf_get_error_string(lkonf_t * iLk);
 
 /**
  * Load file as a Lua chunk and execute in the sandbox.
- * @param iLk	lkonf_t.
+ * @param iLc	lkonf_context.
  * @param iFile	Filename
  * @return 	Error code, or LK_OK if ok.
  */
 LUA_API lkerr_t
-lkonf_load_file(lkonf_t * iLk, const char * iFile);
+lkonf_load_file(lkonf_context * iLc, const char * iFile);
 
 
 /**
  * Load string as a Lua chunk and execute in the sandbox.
- * @param iLk		lkonf_t.
+ * @param iLc		lkonf_context.
  * @param iString	String to load.
  * @return 		Error code, or LK_OK if ok.
  */
 LUA_API lkerr_t
-lkonf_load_string(lkonf_t * iLk, const char * iString);
+lkonf_load_string(lkonf_context * iLc, const char * iString);
 
 
 	/*
@@ -166,21 +166,21 @@ lkonf_load_string(lkonf_t * iLk, const char * iString);
 
 /**
  * Get the current instruction limit.
- * @param iLk	lkonf_t.
- * @return	Instruct limit in iLk. -1 if iLk is 0.
+ * @param iLc	lkonf_context.
+ * @return	Instruct limit in iLc. -1 if iLc is 0.
  */
 LUA_API int
-lkonf_get_instruction_limit(lkonf_t * iLk);
+lkonf_get_instruction_limit(lkonf_context * iLc);
 
 
 /**
  * Set the instruction limit.
- * @param iLk		lkonf_t.
+ * @param iLc		lkonf_context.
  * @param iLimit	Limit to set.  0 is no limit.
  * @return 		Error code, or LK_OK if ok.
  */
 LUA_API lkerr_t
-lkonf_set_instruction_limit(lkonf_t * iLk, const int iLimit);
+lkonf_set_instruction_limit(lkonf_context * iLc, const int iLimit);
 
 
 	/*
@@ -191,51 +191,51 @@ lkonf_set_instruction_limit(lkonf_t * iLk, const int iLimit);
  * Get boolean value at iPath.
  * The value at iPath must be either a boolean
  * or a function that returns a boolean when called as function(iPath).
- * @param	iLk	lkonf_t.
+ * @param	iLc	lkonf_context.
  * @param	iPath	String of the form "[table[.table[...]].]key".
  * @param[out]	oValue	Result.
  * @return	Error code, or LK_OK if oValue populated.
  */
 LUA_API lkerr_t
-lkonf_get_boolean(lkonf_t * iLk, const char * iPath, bool * oValue);
+lkonf_get_boolean(lkonf_context * iLc, const char * iPath, bool * oValue);
 
 /**
  * Get boolean value at iKeys.
  * The value at iKeys must be either a boolean
  * or a function that returns a boolean when called as function(iKeys[last]).
- * @param	iLk	lkonf_t.
+ * @param	iLc	lkonf_context.
  * @param	iKeys	Keys to traverse; array terminated with NULL key.
  * @param[out]	oValue	Result.
  * @return	Error code, or LK_OK if oValue populated.
  */
 LUA_API lkerr_t
-lkonf_getkey_boolean(lkonf_t * iLk, lkonf_keys iKeys, bool * oValue);
+lkonf_getkey_boolean(lkonf_context * iLc, lkonf_keys iKeys, bool * oValue);
 
 
 /**
  * Get double value at iPath.
  * The value at iPath must be either a double
  * or a function that returns a double when called as function(iPath).
- * @param	iLk	lkonf_t.
+ * @param	iLc	lkonf_context.
  * @param	iPath	String of the form "[table[.table[...]].]key".
  * @param[out]	oValue	Result.
  * @return	Error code, or LK_OK if oValue populated.
  */
 LUA_API lkerr_t
-lkonf_get_double(lkonf_t * iLk, const char * iPath, double * oValue);
+lkonf_get_double(lkonf_context * iLc, const char * iPath, double * oValue);
 
 
 /**
  * Get integer value at iPath.
  * The value at iPath must be either an integer
  * or a function that returns an integer when called as function(iPath).
- * @param	iLk	lkonf_t.
+ * @param	iLc	lkonf_context.
  * @param	iPath	String of the form "[table[.table[...]].]key".
  * @param[out]	oValue	Result.
  * @return	Error code, or LK_OK if oValue populated.
  */
 LUA_API lkerr_t
-lkonf_get_integer(lkonf_t * iLk, const char * iPath, lua_Integer * oValue);
+lkonf_get_integer(lkonf_context * iLc, const char * iPath, lua_Integer * oValue);
 
 
 /**
@@ -243,7 +243,7 @@ lkonf_get_integer(lkonf_t * iLk, const char * iPath, lua_Integer * oValue);
  * The value at iPath must be either a string
  * or a function that returns a string when called as function(iPath).
  * Coercion from other types is not supported.
- * @param	iLk	lkonf_t.
+ * @param	iLc	lkonf_context.
  * @param	iPath	String of the form "[table[.table[...]].]key".
  * @param[out]	oValue	Result string. Caller must free if return is LK_OK.
  *			Is nul ('\0') terminated, but may contain nul
@@ -253,7 +253,7 @@ lkonf_get_integer(lkonf_t * iLk, const char * iPath, lua_Integer * oValue);
  */
 LUA_API lkerr_t
 lkonf_get_string(
-	lkonf_t *	iLk,
+	lkonf_context *	iLc,
 	const char *	iPath,
 	char **		oValue,
 	size_t *	oLen);

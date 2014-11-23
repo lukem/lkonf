@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 void
-lki_reset_error(lkonf_t * iLc)
+lki_reset_error(lkonf_context * iLc)
 {
 	assert(iLc && "iLc NULL");
 
@@ -14,7 +14,7 @@ lki_reset_error(lkonf_t * iLc)
 }
 
 lkerr_t
-lki_set_error(lkonf_t * iLc, lkerr_t iCode, const char * iString)
+lki_set_error(lkonf_context * iLc, lkerr_t iCode, const char * iString)
 {
 	assert(iLc && "iLc NULL");
 
@@ -26,7 +26,7 @@ lki_set_error(lkonf_t * iLc, lkerr_t iCode, const char * iString)
 
 lkerr_t
 lki_set_error_item(
-	lkonf_t *	iLc,
+	lkonf_context *	iLc,
 	lkerr_t		iCode,
 	const char *	iString,
 	const char *	iItem)
@@ -41,7 +41,7 @@ lki_set_error_item(
 }
 
 lkerr_t
-lki_set_error_from_state(lkonf_t * iLc, lkerr_t iCode)
+lki_set_error_from_state(lkonf_context * iLc, lkerr_t iCode)
 {
 	return lki_set_error(iLc, iCode, lua_tostring(iLc->state, -1));
 }

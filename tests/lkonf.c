@@ -18,10 +18,10 @@ streq(const char * lhs, const char * rhs)
 }
 
 /**
- * Execute cmd (as "file" or "string") with arg in lkonf_t.
+ * Execute cmd (as "file" or "string") with arg in lkonf_context.
  */
 int
-command(lkonf_t * lkonf, const int limit, const char * cmd, const char * arg)
+command(lkonf_context * lkonf, const int limit, const char * cmd, const char * arg)
 {
 	lkerr_t lerr = lkonf_set_instruction_limit(lkonf, limit);
 	if (LK_OK != lerr) {
@@ -111,9 +111,9 @@ main(int argc, char * argv[])
 		return usage(progname);
 	}
 
-	lkonf_t * lkonf = lkonf_construct();
+	lkonf_context * lkonf = lkonf_construct();
 	if (! lkonf) {
-		fprintf(stderr, "%s: Can't construct lkonf_t\n", progname);
+		fprintf(stderr, "%s: Can't construct lkonf_context\n", progname);
 		return EXIT_FAILURE;
 	}
 

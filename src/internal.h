@@ -28,7 +28,7 @@
 
 /**
  * @file
- * lkonf_t internals.
+ * lkonf_context internals.
  * Do not include directly.
  */ 
 
@@ -36,7 +36,7 @@
 
 
 /**
- * lkonf_t implementation object.
+ * lkonf_context implementation object.
  */
 struct lkonf_s
 {
@@ -72,28 +72,28 @@ struct lkonf_s
 
 
 /**
- * Reset the lkonf_t error code and clear the error string.
+ * Reset the lkonf_context error code and clear the error string.
  * @warning Asserts that iLc is not 0.
  */
 LUA_API void
-lki_reset_error(lkonf_t * iLc);
+lki_reset_error(lkonf_context * iLc);
 
 /**
- * Set the lkonf_t error code and string.
+ * Set the lkonf_context error code and string.
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
 LUA_API lkerr_t
-lki_set_error(lkonf_t * iLc, lkerr_t iCode, const char * iString);
+lki_set_error(lkonf_context * iLc, lkerr_t iCode, const char * iString);
 
 /**
- * Set the lkonf_t error code and string.
+ * Set the lkonf_context error code and string.
  * Error string is of the form: iString + ": " + iItem.
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
 LUA_API lkerr_t
-lki_set_error_item(lkonf_t * iLc, lkerr_t iCode, const char * iString,
+lki_set_error_item(lkonf_context * iLc, lkerr_t iCode, const char * iString,
 	const char * iItem);
 
 /*k
@@ -102,7 +102,7 @@ lki_set_error_item(lkonf_t * iLc, lkerr_t iCode, const char * iString,
  * @warning Asserts that iLc is not 0.
  */
 LUA_API lkerr_t
-lki_set_error_from_state(lkonf_t * iLc, lkerr_t iCode);
+lki_set_error_from_state(lkonf_context * iLc, lkerr_t iCode);
 
 
 /**
@@ -114,7 +114,7 @@ lki_set_error_from_state(lkonf_t * iLc, lkerr_t iCode);
  * @returns Error state if not ok.
  */
 LUA_API lkerr_t
-lki_state_entry(lkonf_t * iLc);
+lki_state_entry(lkonf_context * iLc);
 
 /**
  * State exit validation and cleanup.
@@ -123,7 +123,7 @@ lki_state_entry(lkonf_t * iLc);
  * @warning Asserts that the Lua stack hasn't gone below the depth.
  */
 LUA_API lkerr_t
-lki_state_exit(lkonf_t * iLc);
+lki_state_exit(lkonf_context * iLc);
 
 
 /**
@@ -136,7 +136,7 @@ lki_state_exit(lkonf_t * iLc);
  * @todo sandbox
  */
 LUA_API lkerr_t
-lki_call_chunk(lkonf_t * iLc, const int iNumArgs, const int iNumResults);
+lki_call_chunk(lkonf_context * iLc, const int iNumArgs, const int iNumResults);
 
 /**
  * Raise lua error for maskcount exceeded.
@@ -149,12 +149,12 @@ lki_maskcount_exceeded(lua_State * iState, lua_Debug * iArg);
  * Find table by path.
  */
 LUA_API lkerr_t
-lki_find_table_by_path(lkonf_t * iLc, const char * iPath);
+lki_find_table_by_path(lkonf_context * iLc, const char * iPath);
 
 /**
  * Find table by keys.
  */
 LUA_API lkerr_t
-lki_find_table_by_keys(lkonf_t * iLc, lkonf_keys iKeys);
+lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys);
 
 #endif /* LKONF_INTERNAL_H */

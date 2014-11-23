@@ -4,7 +4,7 @@
 #include <lauxlib.h>
 
 lkerr_t
-lki_call_chunk(lkonf_t * iLc, const int iNumArgs, const int iNumResults)
+lki_call_chunk(lkonf_context * iLc, const int iNumArgs, const int iNumResults)
 {
 	assert(iLc);
 	assert(iLc->state);

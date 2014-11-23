@@ -1,7 +1,7 @@
 #include "internal.h"
 
 lua_State *
-lkonf_get_lua_State(lkonf_t * iLc)
+lkonf_get_lua_State(lkonf_context * iLc)
 {
 	if (! iLc) {
 		return 0;

@@ -1,7 +1,7 @@
 #include "internal.h"
 
 lkerr_t
-lki_find_table_by_keys(lkonf_t * iLc, lkonf_keys iKeys)
+lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys)
 {
 	if (! iLc) {
 		return LK_LKONF_NULL;
