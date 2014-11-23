@@ -57,9 +57,15 @@
 .Ft lkerr_t
 .Fn lkonf_get_double "lkonf_context * iLc" "const char * iPath" "double * oValue"
 .Ft lkerr_t
+.Fn lkonf_getkey_double "lkonf_context * iLc" "lkonf_keys iKeys" "double * oValue"
+.Ft lkerr_t
 .Fn lkonf_get_integer "lkonf_context * iLc" "const char * iPath" "lua_Integer * oValue"
 .Ft lkerr_t
+.Fn lkonf_getkey_integer "lkonf_context * iLc" "lkonf_keys iKeys" "lua_Integer * oValue"
+.Ft lkerr_t
 .Fn lkonf_get_string "lkonf_context * iLc" "const char * iPath" "char ** oValue" "size_t * oLen"
+.Ft lkerr_t
+.Fn lkonf_getkey_string "lkonf_context * iLc" "lkonf_keys iKeys" "char ** oValue" "size_t * oLen"
 .
 .Sh DESCRIPTION
 The
@@ -78,11 +84,13 @@ Programs should be linked with
 .Sh COMMON TYPES
 .Nm
 provides various data types:
-.Bl -tag
+.Bl -tag -width "lkonf_context "
 .It Fa lkonf_context
 Opaque type used by the
 .Nm
 functions.
+.It Fa lkonf_keys
+Array of table keys.
 .It Fa lkerr_t
 Enumeration for error codes.
 .El
@@ -175,32 +183,14 @@ Returns error code, or
 if
 .Fa oValue
 populated.
-.It Fn lkonf_get_double
-Get double value at
-.Fa iPath .
-The value at
-.Fa iPath
-must be either a double
-or a function that returns a double when called as
-.Fn function "iPath" .
-Returns error code, or
-.Dv LK_OK
-if
-.Fa oValue
-populated.
 .It Fn lkonf_getkey_boolean
-Get boolean value at
+As
+.Fn lkonf_get_boolean
+except using
+.Ft lkonf_keys
+instead of a path,
+and the function is called with the last key in
 .Fa iKeys .
-The value at
-.Fa iKeys
-must be either a boolean
-or a function that returns a boolean when called as
-.Fn function "iKeys[#iKeys]" .
-Returns error code, or
-.Dv LK_OK
-if
-.Fa oValue
-populated.
 .It Fn lkonf_get_double
 Get double value at
 .Fa iPath .
@@ -214,6 +204,14 @@ Returns error code, or
 if
 .Fa oValue
 populated.
+.It Fn lkonf_getkey_double
+As
+.Fn lkonf_get_double
+except using
+.Ft lkonf_keys
+instead of a path,
+and the function is called with the last key in
+.Fa iKeys .
 .It Fn lkonf_get_integer
 Get integer value at
 .Fa iPath .
@@ -227,6 +225,14 @@ Returns error code, or
 if
 .Fa oValue
 populated.
+.It Fn lkonf_getkey_integer
+As
+.Fn lkonf_get_integer
+except using
+.Ft lkonf_keys
+instead of a path,
+and the function is called with the last key in
+.Fa iKeys .
 .It Fn lkonf_get_string
 Get string value at
 .Fa iPath .
@@ -243,6 +249,14 @@ if
 .Dv NULL ,
 .Fa oLen )
 populated.
+.It Fn lkonf_getkeys_string
+As
+.Fn lkonf_get_string
+except using
+.Ft lkonf_keys
+instead of a path,
+and the function is called with the last key in
+.Fa iKeys .
 .El
 .
 .\"XXX.Sh EXAMPLES
@@ -252,7 +266,7 @@ populated.
 .Sh HISTORY
 The
 .Nm
-library was released in 2014.
+library was first released in 2014.
 .Sh AUTHORS
 The
 .Nm

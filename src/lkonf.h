@@ -224,6 +224,18 @@ lkonf_getkey_boolean(lkonf_context * iLc, lkonf_keys iKeys, bool * oValue);
 LUA_API lkerr_t
 lkonf_get_double(lkonf_context * iLc, const char * iPath, double * oValue);
 
+/**
+ * Get double value at iKeys.
+ * The value at iKeys must be either a double
+ * or a function that returns a double when called as function(iKeys[last]).
+ * @param	iLc	lkonf_context.
+ * @param	iKeys	Keys to traverse; array terminated with NULL key.
+ * @param[out]	oValue	Result.
+ * @return	Error code, or LK_OK if oValue populated.
+ */
+LUA_API lkerr_t
+lkonf_getkey_double(lkonf_context * iLc, lkonf_keys iKeys, double * oValue);
+
 
 /**
  * Get integer value at iPath.
@@ -236,6 +248,18 @@ lkonf_get_double(lkonf_context * iLc, const char * iPath, double * oValue);
  */
 LUA_API lkerr_t
 lkonf_get_integer(lkonf_context * iLc, const char * iPath, lua_Integer * oValue);
+
+/**
+ * Get integer value at iKeys.
+ * The value at iKeys must be either an integer
+ * or a function that returns an integer when called as function(iKeys[last]).
+ * @param	iLc	lkonf_context.
+ * @param	iKeys	Keys to traverse; array terminated with NULL key.
+ * @param[out]	oValue	Result.
+ * @return	Error code, or LK_OK if oValue populated.
+ */
+LUA_API lkerr_t
+lkonf_getkey_integer(lkonf_context * iLc, lkonf_keys iKeys, lua_Integer * oValue);
 
 
 /**
@@ -258,11 +282,30 @@ lkonf_get_string(
 	char **		oValue,
 	size_t *	oLen);
 
+/**
+ * Get string value at iKeys.
+ * The value at iKeys must be either a string
+ * or a function that returns a string when called as function(iKeys[last]).
+ * Coercion from other types is not supported.
+ * @param	iLc	lkonf_context.
+ * @param	iKeys	Keys to traverse; array terminated with NULL key.
+ * @param[out]	oValue	Result string. Caller must free if return is LK_OK.
+ *			Is nul ('\0') terminated, but may contain nul
+ *			characters; use oLen to obtain the full length.
+ * @param[out]	oLen	Length of oValue, if oLen is not NULL.
+ * @return	Error code, or LK_OK if oValue (and possibly oLen) populated.
+ */
+LUA_API lkerr_t
+lkonf_getkey_string(
+	lkonf_context *	iLc,
+	lkonf_keys	iKeys,
+	char **		oValue,
+	size_t *	oLen);
+
 
 /*
  * TODO
  *	- sandbox manipulation
- *	- get_TYPE { "key", "key", ...} variations
  *	- isFunction()
  *	- helpers to call functions and extract results
  *	- internal protected wrappers for lua_*() per

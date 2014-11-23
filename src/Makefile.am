@@ -21,6 +21,9 @@ liblkonf_la_SOURCES = \
 	get_lua_State.c \
 	get_string.c \
 	getkey_boolean.c \
+	getkey_double.c \
+	getkey_integer.c \
+	getkey_string.c \
 	load_file.c \
 	load_string.c \
 	set_instruction_limit.c
