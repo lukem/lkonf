@@ -21,3 +21,8 @@ internal protected wrappers for lua_*() per
 	https://github.com/jmmv/lutok/blob/master/state.cpp
 
 integrate doxygen into configure.ac (etc)
+
+unittest_lkonf and testsuite
+	getkey_double
+	getkey_integer
+	getkey_string
