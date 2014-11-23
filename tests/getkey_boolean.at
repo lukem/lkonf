@@ -1,0 +1,5 @@
+AT_SETUP([getkey_boolean])
+
+AT_CHECK([unittest_lkonf getkey_boolean], [0], [ignore])
+
+AT_CLEANUP()
