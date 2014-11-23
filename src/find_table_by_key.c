@@ -1,7 +1,7 @@
 #include "internal.h"
 
 lkerr_t
-lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys)
+lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys, size_t * oMatch)
 {
 	if (! iLc) {
 		return LK_LKONF_NULL;
@@ -42,6 +42,10 @@ lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys)
 		lua_pushstring(iLc->state, iKeys[ki]);	/* S: t[k] k2 */
 		lua_gettable(iLc->state, -2);		/* S: t[k] t[k][k2] */
 		lua_remove(iLc->state, -2);		/* S: t[k][k2] */
+	}
+
+	if (oMatch) {
+		*oMatch = ki - 1;
 	}
 
 	return LK_OK;

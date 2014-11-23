@@ -172,12 +172,14 @@ lki_find_table_by_path(lkonf_context * iLc, const char * iPath);
 /**
  * Find table by keys.
  * Sets error state appropriately.
- * @param iLc Context.
- * @param iKeys Table keys to traverse.
+ * @param iLc		Context.
+ * @param iKeys		Table keys to traverse.
+ * @param[out] oMatch	If not NULL, set to last index processed if LK_OK.
+ *			Unchanged on error.
  * @return Error code.
  * @todo document possible error codes and strings?
  */
 LUA_API lkerr_t
-lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys);
+lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys, size_t * oMatch);
 
 #endif /* LKONF_INTERNAL_H */

@@ -16,13 +16,13 @@ lkonf_getkey_boolean(lkonf_context * iLc, lkonf_keys iKeys, bool * oValue)
 		return lki_state_exit(iLc);
 	}
 
-	if (LK_OK != lki_find_table_by_keys(iLc, iKeys)) {
+	size_t last = 0;
+	if (LK_OK != lki_find_table_by_keys(iLc, iKeys, &last)) {
 		return lki_state_exit(iLc);
 	}
 
 	if (lua_isfunction(iLc->state, -1)) {
-// TODO concat iKeys? use last key ?
-		lua_pushstring(iLc->state, iKeys[0]);
+		lua_pushstring(iLc->state, iKeys[last]);
 		if (LK_OK != lki_call_chunk(iLc, 1, 1)) {
 			return lki_state_exit(iLc);
 		}
@@ -34,8 +34,8 @@ lkonf_getkey_boolean(lkonf_context * iLc, lkonf_keys iKeys, bool * oValue)
 	}
 
 	if (LUA_TBOOLEAN != lua_type(iLc->state, -1)) {
-// TODO concat iKeys? use last key ?
-		lki_set_error_item(iLc, LK_VALUE_BAD, "Not a boolean", iKeys[0]);
+		lki_set_error_item(iLc, LK_VALUE_BAD, "Not a boolean",
+			iKeys[last]);
 		return lki_state_exit(iLc);
 	}
 

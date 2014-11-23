@@ -673,7 +673,7 @@ test_getkey_boolean(void)
 	/* fail: t3.t.i3 (not a boolean)  */
 	exercise_get_boolean("t3 t i3",
 		(lkonf_keys){"t3", "t", "i3", 0},
-		false, LK_VALUE_BAD, "Not a boolean: t3");
+		false, LK_VALUE_BAD, "Not a boolean: i3");
 
 	/* fail: t3.k.k2 */
 	exercise_get_boolean("t3 k k2",
@@ -696,7 +696,7 @@ test_getkey_boolean(void)
 
 	/* fail: tf.i function not returning boolean */
 	exercise_get_boolean("tf i", (lkonf_keys){"tf", "i", 0},
-		false, LK_VALUE_BAD, "Not a boolean: tf");
+		false, LK_VALUE_BAD, "Not a boolean: i");
 
 	/* pass: t6 "" k2 - missing key k2 */
 	exercise_get_boolean("t6 \"\" k2", (lkonf_keys){"t6", "", "k2", 0},
@@ -724,7 +724,7 @@ test_getkey_boolean(void)
 
 	/* fail: t7 "" - not a bool */
 	exercise_get_boolean("t7 \"\"", (lkonf_keys){"t7", "", 0},
-		true, LK_VALUE_BAD, "Not a boolean: t7");
+		true, LK_VALUE_BAD, "Not a boolean: ");
 
 	/* fail: "" t8 */
 	exercise_get_boolean("\"\" t8", (lkonf_keys){"", "t8", 0},
