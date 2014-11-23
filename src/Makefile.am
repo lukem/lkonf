@@ -20,6 +20,7 @@ liblkonf_la_SOURCES = \
 	get_integer.c \
 	get_lua_State.c \
 	get_string.c \
+	getkey_boolean.c \
 	load_file.c \
 	load_string.c \
 	set_instruction_limit.c
@@ -27,6 +28,7 @@ liblkonf_la_SOURCES = \
 liblkonf_la_SOURCES += \
 	call_chunk.c \
 	find_table.c \
+	find_table_by_key.c \
 	set_error.c \
 	state_entry_exit.c
 

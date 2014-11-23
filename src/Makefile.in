@@ -86,11 +86,11 @@ am_liblkonf_la_OBJECTS = liblkonf_la-construct.lo \
 	liblkonf_la-get_error_string.lo \
 	liblkonf_la-get_instruction_limit.lo \
 	liblkonf_la-get_integer.lo liblkonf_la-get_lua_State.lo \
-	liblkonf_la-get_string.lo liblkonf_la-load_file.lo \
-	liblkonf_la-load_string.lo \
+	liblkonf_la-get_string.lo liblkonf_la-getkey_boolean.lo \
+	liblkonf_la-load_file.lo liblkonf_la-load_string.lo \
 	liblkonf_la-set_instruction_limit.lo liblkonf_la-call_chunk.lo \
-	liblkonf_la-find_table.lo liblkonf_la-set_error.lo \
-	liblkonf_la-state_entry_exit.lo
+	liblkonf_la-find_table.lo liblkonf_la-find_table_by_key.lo \
+	liblkonf_la-set_error.lo liblkonf_la-state_entry_exit.lo
 liblkonf_la_OBJECTS = $(am_liblkonf_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -264,8 +264,9 @@ lib_LTLIBRARIES = liblkonf.la
 liblkonf_la_SOURCES = construct.c destruct.c get_boolean.c \
 	get_double.c get_error_code.c get_error_string.c \
 	get_instruction_limit.c get_integer.c get_lua_State.c \
-	get_string.c load_file.c load_string.c set_instruction_limit.c \
-	call_chunk.c find_table.c set_error.c state_entry_exit.c
+	get_string.c getkey_boolean.c load_file.c load_string.c \
+	set_instruction_limit.c call_chunk.c find_table.c \
+	find_table_by_key.c set_error.c state_entry_exit.c
 liblkonf_la_CPPFLAGS = \
 	-I$(srcdir) \
 	$(LUA_CFLAGS)
@@ -358,6 +359,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-construct.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-destruct.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-find_table.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-find_table_by_key.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_boolean.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_double.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_error_code.Plo@am__quote@
@@ -366,6 +368,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_integer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_lua_State.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-get_string.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-getkey_boolean.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-load_file.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-load_string.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblkonf_la-set_error.Plo@am__quote@
@@ -476,6 +479,14 @@ liblkonf_la-get_string.lo: get_string.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-get_string.lo `test -f 'get_string.c' || echo '$(srcdir)/'`get_string.c
 
+liblkonf_la-getkey_boolean.lo: getkey_boolean.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-getkey_boolean.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-getkey_boolean.Tpo -c -o liblkonf_la-getkey_boolean.lo `test -f 'getkey_boolean.c' || echo '$(srcdir)/'`getkey_boolean.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-getkey_boolean.Tpo $(DEPDIR)/liblkonf_la-getkey_boolean.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='getkey_boolean.c' object='liblkonf_la-getkey_boolean.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-getkey_boolean.lo `test -f 'getkey_boolean.c' || echo '$(srcdir)/'`getkey_boolean.c
+
 liblkonf_la-load_file.lo: load_file.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-load_file.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-load_file.Tpo -c -o liblkonf_la-load_file.lo `test -f 'load_file.c' || echo '$(srcdir)/'`load_file.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-load_file.Tpo $(DEPDIR)/liblkonf_la-load_file.Plo
@@ -515,6 +526,14 @@ liblkonf_la-find_table.lo: find_table.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='find_table.c' object='liblkonf_la-find_table.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-find_table.lo `test -f 'find_table.c' || echo '$(srcdir)/'`find_table.c
+
+liblkonf_la-find_table_by_key.lo: find_table_by_key.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-find_table_by_key.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-find_table_by_key.Tpo -c -o liblkonf_la-find_table_by_key.lo `test -f 'find_table_by_key.c' || echo '$(srcdir)/'`find_table_by_key.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblkonf_la-find_table_by_key.Tpo $(DEPDIR)/liblkonf_la-find_table_by_key.Plo
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='find_table_by_key.c' object='liblkonf_la-find_table_by_key.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o liblkonf_la-find_table_by_key.lo `test -f 'find_table_by_key.c' || echo '$(srcdir)/'`find_table_by_key.c
 
 liblkonf_la-set_error.lo: set_error.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblkonf_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT liblkonf_la-set_error.lo -MD -MP -MF $(DEPDIR)/liblkonf_la-set_error.Tpo -c -o liblkonf_la-set_error.lo `test -f 'set_error.c' || echo '$(srcdir)/'`set_error.c

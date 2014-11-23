@@ -44,10 +44,12 @@ extern "C" {
 	 * Types.
 	 */
 
+
 /**
  * Opaque type for lkonf_t.
  */
 typedef struct lkonf_s lkonf_t;
+
 
 /**
  * Error codes.
@@ -65,6 +67,12 @@ typedef enum
 	LK_VALUE_NIL		= 8,	/** Value is NIL. */
 	LK_MALLOC_FAILURE	= 10,	/** Can't allocate memory. */
 } lkerr_t;
+
+
+/**
+ * Array of keys.
+ */
+typedef const char * const	lkonf_keys[];
 
 
 	/*
@@ -164,6 +172,7 @@ lkonf_load_string(lkonf_t * iLk, const char * iString);
 LUA_API int
 lkonf_get_instruction_limit(lkonf_t * iLk);
 
+
 /**
  * Set the instruction limit.
  * @param iLk		lkonf_t.
@@ -191,6 +200,19 @@ LUA_API lkerr_t
 lkonf_get_boolean(lkonf_t * iLk, const char * iPath, bool * oValue);
 
 /**
+ * Get boolean value at iKeys.
+ * The value at iKeys must be either a boolean
+ * or a function that returns a boolean when called as function(iKeys[last]).
+ * @param	iLk	lkonf_t.
+ * @param	iKeys	Keys to traverse; array terminated with NULL key.
+ * @param[out]	oValue	Result.
+ * @return	Error code, or LK_OK if oValue populated.
+ */
+LUA_API lkerr_t
+lkonf_getkey_boolean(lkonf_t * iLk, lkonf_keys iKeys, bool * oValue);
+
+
+/**
  * Get double value at iPath.
  * The value at iPath must be either a double
  * or a function that returns a double when called as function(iPath).
@@ -201,6 +223,7 @@ lkonf_get_boolean(lkonf_t * iLk, const char * iPath, bool * oValue);
  */
 LUA_API lkerr_t
 lkonf_get_double(lkonf_t * iLk, const char * iPath, double * oValue);
+
 
 /**
  * Get integer value at iPath.
@@ -213,6 +236,7 @@ lkonf_get_double(lkonf_t * iLk, const char * iPath, double * oValue);
  */
 LUA_API lkerr_t
 lkonf_get_integer(lkonf_t * iLk, const char * iPath, lua_Integer * oValue);
+
 
 /**
  * Get string value at iPath.

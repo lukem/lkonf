@@ -151,4 +151,10 @@ lki_maskcount_exceeded(lua_State * iState, lua_Debug * iArg);
 LUA_API lkerr_t
 lki_find_table_by_path(lkonf_t * iLc, const char * iPath);
 
+/**
+ * Find table by keys.
+ */
+LUA_API lkerr_t
+lki_find_table_by_keys(lkonf_t * iLc, lkonf_keys iKeys);
+
 #endif /* LKONF_INTERNAL_H */
