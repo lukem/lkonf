@@ -3,7 +3,7 @@ README
 
 lkonf provides an interface to use Lua as configuration for C applications.
 
-This is lkonf 0.3.
+This is lkonf 0.4.
 
 This is a work in progress.
 
