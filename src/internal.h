@@ -73,6 +73,7 @@ struct lkonf_context_s
 
 /**
  * Reset the lkonf_context error code and clear the error string.
+ * @param iLc Context.
  * @warning Asserts that iLc is not 0.
  */
 LUA_API void
@@ -80,6 +81,9 @@ lki_reset_error(lkonf_context * iLc);
 
 /**
  * Set the lkonf_context error code and string.
+ * @param iLc Context.
+ * @param iCode Error code.
+ * @param iString Error string.
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
@@ -89,6 +93,10 @@ lki_set_error(lkonf_context * iLc, lkerr_t iCode, const char * iString);
 /**
  * Set the lkonf_context error code and string.
  * Error string is of the form: iString + ": " + iItem.
+ * @param iLc Context.
+ * @param iCode Error code.
+ * @param iString Error string.
+ * @param iItem Item text.
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
@@ -96,8 +104,10 @@ LUA_API lkerr_t
 lki_set_error_item(lkonf_context * iLc, lkerr_t iCode, const char * iString,
 	const char * iItem);
 
-/*k
+/**
  * Set the error code to iCode and error string to the string at Lua stack top.
+ * @param iLc Context.
+ * @param iCode Error code.
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
@@ -111,7 +121,8 @@ lki_set_error_from_state(lkonf_context * iLc, lkerr_t iCode);
  * and to remember Lua stack position.
  * The Lua stack will be reset to this point by lkonf_state_exit().
  * Also resets the error state if ok.
- * @returns Error state if not ok.
+ * @param iLc Context.
+ * @return Error code.
  */
 LUA_API lkerr_t
 lki_state_entry(lkonf_context * iLc);
@@ -119,7 +130,8 @@ lki_state_entry(lkonf_context * iLc);
 /**
  * State exit validation and cleanup.
  * Call on exit from public methods that have called lkonf_state_entry().
- * Returns the current error code of the iLc.
+ * @param iLc Context.
+ * @return Current error code of iLc.
  * @warning Asserts that the Lua stack hasn't gone below the depth.
  */
 LUA_API lkerr_t
@@ -133,6 +145,7 @@ lki_state_exit(lkonf_context * iLc);
  * @param iLc		Context.
  * @param iNumArgs	Number of arguments.
  * @param iNumResults	Number of results.
+ * @return Error code.
  * @todo sandbox
  */
 LUA_API lkerr_t
@@ -147,12 +160,22 @@ lki_maskcount_exceeded(lua_State * iState, lua_Debug * iArg);
 
 /**
  * Find table by path.
+ * Sets error state appropriately.
+ * @param iLc Context.
+ * @param iPath Path of "."-separated table keys to traverse.
+ * @return Error code.
+ * @todo document possible error codes and strings?
  */
 LUA_API lkerr_t
 lki_find_table_by_path(lkonf_context * iLc, const char * iPath);
 
 /**
  * Find table by keys.
+ * Sets error state appropriately.
+ * @param iLc Context.
+ * @param iKeys Table keys to traverse.
+ * @return Error code.
+ * @todo document possible error codes and strings?
  */
 LUA_API lkerr_t
 lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys);
