@@ -27,8 +27,8 @@ liblkonf_la_SOURCES = \
 
 liblkonf_la_SOURCES += \
 	call_chunk.c \
-	find_table.c \
-	find_table_by_key.c \
+	find_table_by_keys.c \
+	find_table_by_path.c \
 	set_error.c \
 	state_entry_exit.c
 
