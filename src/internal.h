@@ -38,7 +38,7 @@
 /**
  * lkonf_context implementation object.
  */
-struct lkonf_s
+struct lkonf_context_s
 {
 	/**
 	 * Lua state.

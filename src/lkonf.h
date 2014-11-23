@@ -48,7 +48,7 @@ extern "C" {
 /**
  * Opaque type for lkonf_context.
  */
-typedef struct lkonf_s lkonf_context;
+typedef struct lkonf_context_s lkonf_context;
 
 
 /**
