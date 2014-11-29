@@ -179,13 +179,13 @@ test_load_file(void)
 {
 	printf("lkonf_load_file()\n");
 
-	/* fail: load null kconf_t */
+	/* fail: load null lkonf_context */
 	{
 		const lkonf_error res = lkonf_load_file(0, 0);
 		assert(LK_LKONF_NULL == res);
 	}
 
-/* TODO: fail: load kconf_t with null state */
+/* TODO: fail: load lkonf_context with null state */
 
 	/* fail: load with filename null pointer */
 	{
@@ -208,12 +208,12 @@ test_load_string(void)
 {
 	printf("lkonf_load_string()\n");
 
-	/* fail: load null kconf_t */
+	/* fail: load null lkonf_context */
 	{
 		assert(LK_LKONF_NULL == lkonf_load_string(0, 0));
 	}
 
-/* TODO: fail: load kconf_t with null state */
+/* TODO: fail: load lkonf_context with null state */
 
 	/* fail: load with string null pointer */
 	{
@@ -276,7 +276,7 @@ test_instruction_limit(void)
 {
 	printf("lkonf_set_instruction_limit()\n");
 
-	/* fail: load null kconf_t */
+	/* fail: load null lkonf_context */
 	{
 		assert(-1 == lkonf_get_instruction_limit(0));
 		assert(LK_LKONF_NULL == lkonf_set_instruction_limit(0, 0));
@@ -443,7 +443,7 @@ test_get_boolean(void)
 {
 	printf("lkonf_get_boolean()\n");
 
-	/* fail: load null kconf_t */
+	/* fail: load null lkonf_context */
 	{
 		assert(LK_LKONF_NULL == lkonf_get_boolean(0, 0, 0));
 	}
@@ -591,7 +591,7 @@ test_getkey_boolean(void)
 {
 	printf("lkonf_getkey_boolean()\n");
 
-	/* fail: load null kconf_t */
+	/* fail: load null lkonf_context */
 	{
 		assert(LK_LKONF_NULL == lkonf_getkey_boolean(0, 0, 0));
 	}
@@ -808,7 +808,7 @@ test_get_double(void)
 {
 	printf("lkonf_get_double()\n");
 
-	/* fail: load null kconf_t */
+	/* fail: load null lkonf_context */
 	{
 		assert(LK_LKONF_NULL == lkonf_get_double(0, 0, 0));
 	}
@@ -987,7 +987,7 @@ test_get_integer(void)
 {
 	printf("lkonf_get_integer()\n");
 
-	/* fail: load null kconf_t */
+	/* fail: load null lkonf_context */
 	{
 		assert(LK_LKONF_NULL == lkonf_get_integer(0, 0, 0));
 	}
@@ -1174,7 +1174,7 @@ test_get_string(void)
 {
 	printf("lkonf_get_string()\n");
 
-	/* fail: load null kconf_t */
+	/* fail: load null lkonf_context */
 	{
 		assert(LK_LKONF_NULL == lkonf_get_string(0, 0, 0, 0));
 	}
