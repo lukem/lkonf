@@ -1,6 +1,6 @@
 #include "internal.h"
 
-lkerr_t
+lkonf_error
 lkonf_set_instruction_limit(lkonf_context * iLc, const int iLimit)
 {
 	if (! iLc) {

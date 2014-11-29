@@ -33,7 +33,7 @@ push_next_key(lkonf_context * iLc, const char * iPath)
 }
 
 
-lkerr_t
+lkonf_error
 lki_find_table_by_path(lkonf_context * iLc, const char * iPath)
 {
 	if (! iLc) {

@@ -38,33 +38,33 @@
 .Fn lkonf_destruct "lkonf_context * iLc"
 .Ft "lua_State *"
 .Fn lkonf_get_lua_State "lkonf_context * iLc"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_get_error_code "lkonf_context * iLc"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_get_error_string "lkonf_context * iLc"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_load_file "lkonf_context * iLc" "const char * iFile"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_load_string "lkonf_context * iLc" "const char * iString"
 .Ft int
 .Fn lkonf_get_instruction_limit "lkonf_context * iLc"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_set_instruction_limit "lkonf_context * iLc" "const int iLimit"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_get_boolean "lkonf_context * iLc" "const char * iPath" "bool * oValue"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_getkey_boolean "lkonf_context * iLc" "lkonf_keys iKeys" "bool * oValue"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_get_double "lkonf_context * iLc" "const char * iPath" "double * oValue"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_getkey_double "lkonf_context * iLc" "lkonf_keys iKeys" "double * oValue"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_get_integer "lkonf_context * iLc" "const char * iPath" "lua_Integer * oValue"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_getkey_integer "lkonf_context * iLc" "lkonf_keys iKeys" "lua_Integer * oValue"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_get_string "lkonf_context * iLc" "const char * iPath" "char ** oValue" "size_t * oLen"
-.Ft lkerr_t
+.Ft lkonf_error
 .Fn lkonf_getkey_string "lkonf_context * iLc" "lkonf_keys iKeys" "char ** oValue" "size_t * oLen"
 .
 .Sh DESCRIPTION
@@ -91,7 +91,7 @@ Opaque type used by the
 functions.
 .It Fa lkonf_keys
 Array of table keys.
-.It Fa lkerr_t
+.It Fa lkonf_error
 Enumeration for error codes.
 .El
 .

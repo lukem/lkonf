@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-LUA_API lkerr_t
+lkonf_error
 lkonf_getkey_string(
 	lkonf_context *	iLc,
 	lkonf_keys	iKeys,

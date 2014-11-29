@@ -66,7 +66,7 @@ typedef enum
 	LK_VALUE_BAD		= 7,	/** Value of incorrect type. */
 	LK_VALUE_NIL		= 8,	/** Value is NIL. */
 	LK_MALLOC_FAILURE	= 10,	/** Can't allocate memory. */
-} lkerr_t;
+} lkonf_error;
 
 
 /**
@@ -123,7 +123,7 @@ lkonf_get_lua_State(lkonf_context * iLc);
  * @param iLc	lkonf_context to use.
  * @return	Error code, or LK_LKONF_NULL if iLc is 0.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lkonf_get_error_code(lkonf_context * iLc);
 
 
@@ -146,7 +146,7 @@ lkonf_get_error_string(lkonf_context * iLc);
  * @param iFile	Filename
  * @return 	Error code, or LK_OK if ok.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lkonf_load_file(lkonf_context * iLc, const char * iFile);
 
 
@@ -156,7 +156,7 @@ lkonf_load_file(lkonf_context * iLc, const char * iFile);
  * @param iString	String to load.
  * @return 		Error code, or LK_OK if ok.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lkonf_load_string(lkonf_context * iLc, const char * iString);
 
 
@@ -179,7 +179,7 @@ lkonf_get_instruction_limit(lkonf_context * iLc);
  * @param iLimit	Limit to set.  0 is no limit.
  * @return 		Error code, or LK_OK if ok.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lkonf_set_instruction_limit(lkonf_context * iLc, const int iLimit);
 
 
@@ -196,7 +196,7 @@ lkonf_set_instruction_limit(lkonf_context * iLc, const int iLimit);
  * @param[out]	oValue	Result.
  * @return	Error code, or LK_OK if oValue populated.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lkonf_get_boolean(lkonf_context * iLc, const char * iPath, bool * oValue);
 
 /**
@@ -208,7 +208,7 @@ lkonf_get_boolean(lkonf_context * iLc, const char * iPath, bool * oValue);
  * @param[out]	oValue	Result.
  * @return	Error code, or LK_OK if oValue populated.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lkonf_getkey_boolean(lkonf_context * iLc, lkonf_keys iKeys, bool * oValue);
 
 
@@ -221,7 +221,7 @@ lkonf_getkey_boolean(lkonf_context * iLc, lkonf_keys iKeys, bool * oValue);
  * @param[out]	oValue	Result.
  * @return	Error code, or LK_OK if oValue populated.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lkonf_get_double(lkonf_context * iLc, const char * iPath, double * oValue);
 
 /**
@@ -233,7 +233,7 @@ lkonf_get_double(lkonf_context * iLc, const char * iPath, double * oValue);
  * @param[out]	oValue	Result.
  * @return	Error code, or LK_OK if oValue populated.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lkonf_getkey_double(lkonf_context * iLc, lkonf_keys iKeys, double * oValue);
 
 
@@ -246,7 +246,7 @@ lkonf_getkey_double(lkonf_context * iLc, lkonf_keys iKeys, double * oValue);
  * @param[out]	oValue	Result.
  * @return	Error code, or LK_OK if oValue populated.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lkonf_get_integer(lkonf_context * iLc, const char * iPath, lua_Integer * oValue);
 
 /**
@@ -258,7 +258,7 @@ lkonf_get_integer(lkonf_context * iLc, const char * iPath, lua_Integer * oValue)
  * @param[out]	oValue	Result.
  * @return	Error code, or LK_OK if oValue populated.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lkonf_getkey_integer(lkonf_context * iLc, lkonf_keys iKeys, lua_Integer * oValue);
 
 
@@ -275,7 +275,7 @@ lkonf_getkey_integer(lkonf_context * iLc, lkonf_keys iKeys, lua_Integer * oValue
  * @param[out]	oLen	Length of oValue, if oLen is not NULL.
  * @return	Error code, or LK_OK if oValue (and possibly oLen) populated.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lkonf_get_string(
 	lkonf_context *	iLc,
 	const char *	iPath,
@@ -295,7 +295,7 @@ lkonf_get_string(
  * @param[out]	oLen	Length of oValue, if oLen is not NULL.
  * @return	Error code, or LK_OK if oValue (and possibly oLen) populated.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lkonf_getkey_string(
 	lkonf_context *	iLc,
 	lkonf_keys	iKeys,

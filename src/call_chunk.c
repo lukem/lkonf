@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <lauxlib.h>
 
-lkerr_t
+lkonf_error
 lki_call_chunk(lkonf_context * iLc, const int iNumArgs, const int iNumResults)
 {
 	assert(iLc);

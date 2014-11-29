@@ -2,7 +2,7 @@
 
 #include <lauxlib.h>
 
-lkerr_t
+lkonf_error
 lkonf_load_file(lkonf_context * iLc, const char * iFile)
 {
 	if (! iLc) {

@@ -2,7 +2,7 @@
 
 #include <assert.h>
 
-lkerr_t
+lkonf_error
 lki_state_entry(lkonf_context * iLc)
 {
 	if (! iLc) {
@@ -21,7 +21,7 @@ lki_state_entry(lkonf_context * iLc)
 	return iLc->error_code;
 }
 
-lkerr_t
+lkonf_error
 lki_state_exit(lkonf_context * iLc)
 {
 	if (! iLc) {

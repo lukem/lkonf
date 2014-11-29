@@ -1,6 +1,6 @@
 #include "internal.h"
 
-lkerr_t
+lkonf_error
 lkonf_get_error_code(lkonf_context * iLc)
 {
 	if (! iLc) {

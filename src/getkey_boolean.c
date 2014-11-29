@@ -1,6 +1,6 @@
 #include "internal.h"
 
-LUA_API lkerr_t
+lkonf_error
 lkonf_getkey_boolean(lkonf_context * iLc, lkonf_keys iKeys, bool * oValue)
 {
 	if (! iLc) {

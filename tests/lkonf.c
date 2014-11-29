@@ -23,7 +23,7 @@ streq(const char * lhs, const char * rhs)
 int
 command(lkonf_context * lkonf, const int limit, const char * cmd, const char * arg)
 {
-	lkerr_t lerr = lkonf_set_instruction_limit(lkonf, limit);
+	lkonf_error lerr = lkonf_set_instruction_limit(lkonf, limit);
 	if (LK_OK != lerr) {
 		fprintf(stderr, "Can't set instruction limit %d: %s\n",
 			limit,

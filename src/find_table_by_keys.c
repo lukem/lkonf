@@ -1,6 +1,6 @@
 #include "internal.h"
 
-lkerr_t
+lkonf_error
 lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys, size_t * oMatch)
 {
 	if (! iLc) {

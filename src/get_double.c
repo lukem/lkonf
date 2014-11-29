@@ -1,6 +1,6 @@
 #include "internal.h"
 
-LUA_API lkerr_t
+lkonf_error
 lkonf_get_double(lkonf_context * iLc, const char * iPath, double * oValue)
 {
 	if (! iLc) {

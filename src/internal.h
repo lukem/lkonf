@@ -48,7 +48,7 @@ struct lkonf_context_s
 	/**
 	 * Current error code.
 	 */
-	lkerr_t		error_code;
+	lkonf_error	error_code;
 
 	/**
 	 * Current error string.
@@ -87,8 +87,8 @@ lki_reset_error(lkonf_context * iLc);
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
-LUA_API lkerr_t
-lki_set_error(lkonf_context * iLc, lkerr_t iCode, const char * iString);
+LUA_API lkonf_error
+lki_set_error(lkonf_context * iLc, lkonf_error iCode, const char * iString);
 
 /**
  * Set the lkonf_context error code and string.
@@ -100,8 +100,8 @@ lki_set_error(lkonf_context * iLc, lkerr_t iCode, const char * iString);
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
-LUA_API lkerr_t
-lki_set_error_item(lkonf_context * iLc, lkerr_t iCode, const char * iString,
+LUA_API lkonf_error
+lki_set_error_item(lkonf_context * iLc, lkonf_error iCode, const char * iString,
 	const char * iItem);
 
 /**
@@ -111,8 +111,8 @@ lki_set_error_item(lkonf_context * iLc, lkerr_t iCode, const char * iString,
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
-LUA_API lkerr_t
-lki_set_error_from_state(lkonf_context * iLc, lkerr_t iCode);
+LUA_API lkonf_error
+lki_set_error_from_state(lkonf_context * iLc, lkonf_error iCode);
 
 
 /**
@@ -124,7 +124,7 @@ lki_set_error_from_state(lkonf_context * iLc, lkerr_t iCode);
  * @param iLc Context.
  * @return Error code.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lki_state_entry(lkonf_context * iLc);
 
 /**
@@ -134,7 +134,7 @@ lki_state_entry(lkonf_context * iLc);
  * @return Current error code of iLc.
  * @warning Asserts that the Lua stack hasn't gone below the depth.
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lki_state_exit(lkonf_context * iLc);
 
 
@@ -148,7 +148,7 @@ lki_state_exit(lkonf_context * iLc);
  * @return Error code.
  * @todo sandbox
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lki_call_chunk(lkonf_context * iLc, const int iNumArgs, const int iNumResults);
 
 /**
@@ -166,7 +166,7 @@ lki_maskcount_exceeded(lua_State * iState, lua_Debug * iArg);
  * @return Error code.
  * @todo document possible error codes and strings?
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lki_find_table_by_path(lkonf_context * iLc, const char * iPath);
 
 /**
@@ -179,7 +179,7 @@ lki_find_table_by_path(lkonf_context * iLc, const char * iPath);
  * @return Error code.
  * @todo document possible error codes and strings?
  */
-LUA_API lkerr_t
+LUA_API lkonf_error
 lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys, size_t * oMatch);
 
 #endif /* LKONF_INTERNAL_H */

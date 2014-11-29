@@ -1,6 +1,6 @@
 #include "internal.h"
 
-LUA_API lkerr_t
+lkonf_error
 lkonf_get_integer(lkonf_context * iLc, const char * iPath, lua_Integer * oValue)
 {
 	if (! iLc) {
