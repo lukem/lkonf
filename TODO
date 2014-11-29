@@ -26,3 +26,10 @@ unittest_lkonf and testsuite
 	getkey_double
 	getkey_integer
 	getkey_string
+
+lkonf_error: refactor values similar to
+	https://github.com/google/google-api-cpp-client/blob/v0.1/src/googleapis/util/status.h
+?
+
+lkonf(3)
+	document error cods
