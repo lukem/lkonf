@@ -6,7 +6,7 @@ lkonf_error
 lkonf_load_file(lkonf_context * iLc, const char * iFile)
 {
 	if (! iLc) {
-		return LK_LKONF_NULL;
+		return LK_INVALID_ARGUMENT;
 	}
 
 	if (LK_OK != lki_state_entry(iLc)) {
@@ -14,12 +14,12 @@ lkonf_load_file(lkonf_context * iLc, const char * iFile)
 	}
 
 	if (! iFile) {
-		lki_set_error(iLc, LK_ARG_BAD, "iFile NULL");
+		lki_set_error(iLc, LK_INVALID_ARGUMENT, "iFile NULL");
 		return lki_state_exit(iLc);
 	}
 
 	if (luaL_loadfile(iLc->state, iFile)) {
-		lki_set_error_from_state(iLc, LK_LOAD_CHUNK);
+		lki_set_error_from_state(iLc, LK_LUA_ERROR);
 		return lki_state_exit(iLc);
 	}
 

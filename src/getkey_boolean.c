@@ -4,7 +4,7 @@ lkonf_error
 lkonf_getkey_boolean(lkonf_context * iLc, lkonf_keys iKeys, bool * oValue)
 {
 	if (! iLc) {
-		return LK_LKONF_NULL;
+		return LK_INVALID_ARGUMENT;
 	}
 
 	if (LK_OK != lki_state_entry(iLc)) {
@@ -12,7 +12,7 @@ lkonf_getkey_boolean(lkonf_context * iLc, lkonf_keys iKeys, bool * oValue)
 	}
 
 	if (! oValue) {
-		lki_set_error(iLc, LK_ARG_BAD, "oValue NULL");
+		lki_set_error(iLc, LK_INVALID_ARGUMENT, "oValue NULL");
 		return lki_state_exit(iLc);
 	}
 
@@ -29,13 +29,13 @@ lkonf_getkey_boolean(lkonf_context * iLc, lkonf_keys iKeys, bool * oValue)
 	}
 
 	if (LUA_TNIL == lua_type(iLc->state, -1)) {
-		lki_set_error(iLc, LK_VALUE_NIL, "");
+		lki_set_error(iLc, LK_NOT_FOUND, "");
 		return lki_state_exit(iLc);
 	}
 
 	if (LUA_TBOOLEAN != lua_type(iLc->state, -1)) {
-		lki_set_error_item(iLc, LK_VALUE_BAD, "Not a boolean",
-			iKeys[last]);
+		lki_set_error_item(iLc,
+			LK_OUT_OF_RANGE, "Not a boolean", iKeys[last]);
 		return lki_state_exit(iLc);
 	}
 

@@ -6,14 +6,15 @@ lkonf_error
 lki_state_entry(lkonf_context * iLc)
 {
 	if (! iLc) {
-		return LK_LKONF_NULL;
+		return LK_INVALID_ARGUMENT;
 	}
 
 	lki_reset_error(iLc);
 
 	iLc->depth = -1;
 	if (! iLc->state) {
-		return lki_set_error(iLc, LK_STATE_NULL, "Lua state null");
+		return lki_set_error(iLc,
+			LK_INVALID_ARGUMENT, "Lua state NULL");
 	}
 
 	iLc->depth = lua_gettop(iLc->state);
@@ -25,12 +26,13 @@ lkonf_error
 lki_state_exit(lkonf_context * iLc)
 {
 	if (! iLc) {
-		return LK_LKONF_NULL;
+		return LK_INVALID_ARGUMENT;
 	}
 
 	if (! iLc->state) {
 		if (! iLc->error_code) {
-			lki_set_error(iLc, LK_STATE_NULL, "Lua state null");
+			lki_set_error(iLc,
+				LK_INVALID_ARGUMENT, "Lua state NULL");
 		}
 		return iLc->error_code;
 	}

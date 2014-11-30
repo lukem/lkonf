@@ -65,16 +65,12 @@ const char *
 err_to_str(const lkonf_error code)
 {
 	switch (code) {
-		case LK_OK:		return "LK_OK";
-		case LK_LKONF_NULL:	return "LK_LKONF_NULL";
-		case LK_STATE_NULL:	return "LK_STATE_NULL";
-		case LK_ARG_BAD:	return "LK_ARG_BAD";
-		case LK_LOAD_CHUNK:	return "LK_LOAD_CHUNK";
-		case LK_CALL_CHUNK:	return "LK_CALL_CHUNK";
-		case LK_KEY_BAD:	return "LK_KEY_BAD";
-		case LK_VALUE_BAD:	return "LK_VALUE_BAD";
-		case LK_VALUE_NIL:	return "LK_VALUE_NIL";
-		case LK_MALLOC_FAILURE:	return "LK_MALLOC_FAILURE";
+		case LK_OK:			return "LK_OK";
+		case LK_INVALID_ARGUMENT:	return "LK_INVALID_ARGUMENT";
+		case LK_LUA_ERROR:		return "LK_LUA_ERROR";
+		case LK_NOT_FOUND:		return "LK_NOT_FOUND";
+		case LK_RESOURCE_EXHAUSTED:	return "LK_RESOURCE_EXHAUSTED";
+		case LK_OUT_OF_RANGE:	return "LK_OUT_OF_RANGE";
 	}
 	return "<unknown>";
 }
@@ -182,7 +178,7 @@ test_load_file(void)
 	/* fail: load null lkonf_context */
 	{
 		const lkonf_error res = lkonf_load_file(0, 0);
-		assert(LK_LKONF_NULL == res);
+		assert(LK_INVALID_ARGUMENT == res);
 	}
 
 /* TODO: fail: load lkonf_context with null state */
@@ -194,7 +190,7 @@ test_load_file(void)
 		assert(lc && "lkonf_construct returned 0");
 		const lkonf_error res = lkonf_load_file(lc, 0);
 		ensure_result(lc, res,
-			"load_file(lc, 0)", LK_ARG_BAD, "iFile NULL");
+			"load_file(lc, 0)", LK_INVALID_ARGUMENT, "iFile NULL");
 
 		lkonf_destruct(lc);
 	}
@@ -210,7 +206,7 @@ test_load_string(void)
 
 	/* fail: load null lkonf_context */
 	{
-		assert(LK_LKONF_NULL == lkonf_load_string(0, 0));
+		assert(LK_INVALID_ARGUMENT == lkonf_load_string(0, 0));
 	}
 
 /* TODO: fail: load lkonf_context with null state */
@@ -222,12 +218,13 @@ test_load_string(void)
 
 		const lkonf_error res = lkonf_load_string(lc, 0);
 		ensure_result(lc, res,
-			"load_string(lc, 0)", LK_ARG_BAD, "iString NULL");
+			"load_string(lc, 0)",
+			LK_INVALID_ARGUMENT, "iString NULL");
 
 		lkonf_destruct(lc);
 	}
 
-	/* fail: LK_LOAD_CHUNK syntax error in string */
+	/* fail: LK_LUA_ERROR syntax error in string */
 	{
 		lkonf_context * lc = lkonf_construct();
 		assert(lc && "lkonf_construct returned 0");
@@ -235,13 +232,13 @@ test_load_string(void)
 		const lkonf_error res = lkonf_load_string(lc, "junk");
 		ensure_result(lc, res,
 			"load_string(lc, \"junk\")",
-			LK_LOAD_CHUNK,
+			LK_LUA_ERROR,
 			"[string \"junk\"]:1: '=' expected near '<eof>'");
 
 		lkonf_destruct(lc);
 	}
 
-	/* fail: LK_CALL_CHUNK run-time error in string */
+	/* fail: LK_LUA_ERROR run-time error in string */
 	{
 		lkonf_context * lc = lkonf_construct();
 		assert(lc && "lkonf_construct returned 0");
@@ -249,7 +246,7 @@ test_load_string(void)
 		const lkonf_error res = lkonf_load_string(lc, "junk()");
 		ensure_result(lc, res,
 			"load_string(lc, \"junk()\")",
-			LK_CALL_CHUNK,
+			LK_LUA_ERROR,
 			"[string \"junk()\"]:1: attempt to call global 'junk' (a nil value)");
 
 		lkonf_destruct(lc);
@@ -279,7 +276,7 @@ test_instruction_limit(void)
 	/* fail: load null lkonf_context */
 	{
 		assert(-1 == lkonf_get_instruction_limit(0));
-		assert(LK_LKONF_NULL == lkonf_set_instruction_limit(0, 0));
+		assert(LK_INVALID_ARGUMENT == lkonf_set_instruction_limit(0, 0));
 	}
 
 	/* fail: set_instruction_limit < 0 */
@@ -290,7 +287,7 @@ test_instruction_limit(void)
 		const lkonf_error res = lkonf_set_instruction_limit(lc, -2);
 		ensure_result(lc, res,
 			"set_instruction_limit(lc, -2)",
-			LK_ARG_BAD, "iLimit < 0");
+			LK_INVALID_ARGUMENT, "iLimit < 0");
 
 		lkonf_destruct(lc);
 	}
@@ -346,7 +343,7 @@ test_instruction_limit(void)
 
 		const lkonf_error res = lkonf_load_string(lc, expr);
 		ensure_result(lc, res, expr,
-			LK_CALL_CHUNK, "Instruction count exceeded");
+			LK_LUA_ERROR, "Instruction count exceeded");
 
 		const int gil = lkonf_get_instruction_limit(lc);
 		assert(limit == gil);
@@ -418,7 +415,7 @@ exercise_get_boolean(
 	ensure_result(lc, sil, "set_instruction_limit(lc, 100)", LK_OK, "");
 
 	bool v = !wanted;
-	lkonf_error res = LK_LKONF_NULL;
+	lkonf_error res = LK_INVALID_ARGUMENT;
 	if (keys) {
 		res = lkonf_getkey_boolean(lc, keys, &v);
 	} else {
@@ -445,7 +442,7 @@ test_get_boolean(void)
 
 	/* fail: load null lkonf_context */
 	{
-		assert(LK_LKONF_NULL == lkonf_get_boolean(0, 0, 0));
+		assert(LK_INVALID_ARGUMENT == lkonf_get_boolean(0, 0, 0));
 	}
 
 	/* fail: null ovalue */
@@ -455,7 +452,8 @@ test_get_boolean(void)
 
 		const lkonf_error res = lkonf_get_boolean(lc, "", 0);
 		ensure_result(lc, res,
-			"get_boolean(lc, \"\", 0)", LK_ARG_BAD, "oValue NULL");
+			"get_boolean(lc, \"\", 0)",
+			LK_INVALID_ARGUMENT, "oValue NULL");
 
 		lkonf_destruct(lc);
 	}
@@ -468,7 +466,8 @@ test_get_boolean(void)
 		bool v = false;
 		const lkonf_error res = lkonf_get_boolean(lc, 0, &v);
 		ensure_result(lc, res,
-			"get_boolean(lc, 0, &v)", LK_ARG_BAD, "iPath NULL");
+			"get_boolean(lc, 0, &v)",
+			LK_INVALID_ARGUMENT, "iPath NULL");
 
 		lkonf_destruct(lc);
 	}
@@ -477,7 +476,7 @@ test_get_boolean(void)
 	exercise_get_boolean("b1", 0, true, LK_OK, "");
 
 	/* pass: top-level key 'missing' not set */
-	exercise_get_boolean("missing", 0, true, LK_VALUE_NIL, "");
+	exercise_get_boolean("missing", 0, true, LK_NOT_FOUND, "");
 
 	/* pass: t2.b */
 	exercise_get_boolean("t2.b", 0, false, LK_OK, "");
@@ -486,56 +485,57 @@ test_get_boolean(void)
 	exercise_get_boolean("t3.t.b3", 0, false, LK_OK, "");
 
 	/* pass: t3.t.absent not set */
-	exercise_get_boolean("t3.t.absent", 0, true, LK_VALUE_NIL, "");
+	exercise_get_boolean("t3.t.absent", 0, true, LK_NOT_FOUND, "");
 
 	/* fail: t3.t. */
 	exercise_get_boolean("t3.t.", 0, false,
-		LK_KEY_BAD, "Empty component in: t3.t.");
+		LK_OUT_OF_RANGE, "Empty component in: t3.t.");
 
 	/* fail: t3.t.b3.k4 */
 	exercise_get_boolean("t3.t.b3.k4", 0, true,
-		LK_KEY_BAD, "Not a table: t3.t.b3");
+		LK_OUT_OF_RANGE, "Not a table: t3.t.b3");
 
 	/* fail: t3.t.i3 (not a boolean)  */
 	exercise_get_boolean("t3.t.i3", 0, false,
-		LK_VALUE_BAD, "Not a boolean: t3.t.i3");
+		LK_OUT_OF_RANGE, "Not a boolean: t3.t.i3");
 
 	/* fail: t3.k.k2 */
 	exercise_get_boolean("t3.k.k2", 0, false,
-		LK_KEY_BAD, "Not a table: t3.k");
+		LK_OUT_OF_RANGE, "Not a table: t3.k");
 
 	/* fail: t3.12345.3 */
 	exercise_get_boolean("t3.12345.3", 0, false,
-		LK_KEY_BAD, "Not a table: t3.12345");
+		LK_OUT_OF_RANGE, "Not a table: t3.12345");
 
 	/* pass: tf.b function returning boolean */
 	exercise_get_boolean("tf.b", 0, true, LK_OK, "");
 
 	/* fail: tf.b. (trailing .) */
-	exercise_get_boolean("tf.b.", 0, true, LK_KEY_BAD, "Not a table: tf.b");
+	exercise_get_boolean("tf.b.", 0, true,
+		LK_OUT_OF_RANGE, "Not a table: tf.b");
 
 	/* fail: t5i function not returning boolean */
 	exercise_get_boolean("t5i", 0, false,
-		LK_VALUE_BAD, "Not a boolean: t5i");
+		LK_OUT_OF_RANGE, "Not a boolean: t5i");
 
 	/* fail: tf.i function not returning boolean */
 	exercise_get_boolean("tf.i", 0, false,
-		LK_VALUE_BAD, "Not a boolean: tf.i");
+		LK_OUT_OF_RANGE, "Not a boolean: tf.i");
 
 	/* fail: t6..k2 - empty key */
 	exercise_get_boolean("t6..k2", 0, true,
-		LK_KEY_BAD, "Empty component in: t6..k2");
+		LK_OUT_OF_RANGE, "Empty component in: t6..k2");
 
 	/* fail: t6 "." k2 - not a table "." */
 	exercise_get_boolean("t6...k2", 0, false,
-		LK_KEY_BAD, "Empty component in: t6...k2");
+		LK_OUT_OF_RANGE, "Empty component in: t6...k2");
 
 	/* fail: "" */
-	exercise_get_boolean("", 0, false, LK_KEY_BAD, "Empty path");
+	exercise_get_boolean("", 0, false, LK_OUT_OF_RANGE, "Empty path");
 
 	/* fail: "." */
 	exercise_get_boolean(".", 0, false,
-		LK_KEY_BAD, "Empty component in: .");
+		LK_OUT_OF_RANGE, "Empty component in: .");
 
 	/* pass: x */
 	exercise_get_boolean("b", 0, true, LK_OK, "");
@@ -546,42 +546,43 @@ test_get_boolean(void)
 
 	/* fail: t7. */
 	exercise_get_boolean("t7.", 0, true,
-		LK_KEY_BAD, "Empty component in: t7.");
+		LK_OUT_OF_RANGE, "Empty component in: t7.");
 
 	/* fail: .t8 */
 	exercise_get_boolean(".t8", 0, true,
-		LK_KEY_BAD, "Empty component in: .t8");
+		LK_OUT_OF_RANGE, "Empty component in: .t8");
 
 	/* fail: t9n.1 */
 /* TODO: fix path lookup to support integer lookup? */
-	exercise_get_boolean("t9n.1", 0, true, LK_VALUE_NIL, "");
+	exercise_get_boolean("t9n.1", 0, true, LK_NOT_FOUND, "");
 
 	/* pass: t9s.1 */
 	exercise_get_boolean("t9s.1", 0, true, LK_OK, "");
 
 	/* fail: t */
-	exercise_get_boolean("t", 0, false, LK_VALUE_BAD, "Not a boolean: t");
+	exercise_get_boolean("t", 0, false,
+		LK_OUT_OF_RANGE, "Not a boolean: t");
 
 	/* fail: t. */
 	exercise_get_boolean("t.", 0, false,
-		LK_KEY_BAD, "Empty component in: t.");
+		LK_OUT_OF_RANGE, "Empty component in: t.");
 
 	/* pass: t.k nil VALUE */
-	exercise_get_boolean("t.k", 0, true, LK_VALUE_NIL, "");
+	exercise_get_boolean("t.k", 0, true, LK_NOT_FOUND, "");
 
 	/* fail: toolong takes too long */
 	exercise_get_boolean("toolong", 0, true,
-		LK_CALL_CHUNK, "Instruction count exceeded");
+		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
 	exercise_get_boolean("badrun", 0, false,
-		LK_CALL_CHUNK, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
+		LK_LUA_ERROR, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
 
 	/* pass: jrb */
 	exercise_get_boolean("jrb", 0, true, LK_OK, "");
 
 	/* fail: hidden */
-	exercise_get_boolean("hidden", 0, true, LK_VALUE_NIL, "");
+	exercise_get_boolean("hidden", 0, true, LK_NOT_FOUND, "");
 
 	return EXIT_SUCCESS;
 }
@@ -593,7 +594,7 @@ test_getkey_boolean(void)
 
 	/* fail: load null lkonf_context */
 	{
-		assert(LK_LKONF_NULL == lkonf_getkey_boolean(0, 0, 0));
+		assert(LK_INVALID_ARGUMENT == lkonf_getkey_boolean(0, 0, 0));
 	}
 
 	/* fail: null oValue */
@@ -604,7 +605,7 @@ test_getkey_boolean(void)
 		const lkonf_error res = lkonf_getkey_boolean(lc,
 			(lkonf_keys){ 0 }, 0);
 		ensure_result(lc, res, "getkey_boolean(lc, {0}, 0)",
-			LK_ARG_BAD, "oValue NULL");
+			LK_INVALID_ARGUMENT, "oValue NULL");
 
 		lkonf_destruct(lc);
 	}
@@ -617,7 +618,7 @@ test_getkey_boolean(void)
 		bool v = false;
 		const lkonf_error res = lkonf_getkey_boolean(lc, 0, &v);
 		ensure_result(lc, res, "getkey_boolean(lc, 0, &v)",
-			LK_ARG_BAD, "iKeys NULL");
+			LK_INVALID_ARGUMENT, "iKeys NULL");
 
 		lkonf_destruct(lc);
 	}
@@ -631,7 +632,7 @@ test_getkey_boolean(void)
 		const lkonf_error res = lkonf_getkey_boolean(lc,
 			(lkonf_keys){ 0 }, &v);
 		ensure_result(lc, res, "getkey_boolean(lc, {0}, &v)",
-			LK_KEY_BAD, "Empty keys");
+			LK_OUT_OF_RANGE, "Empty keys");
 
 		lkonf_destruct(lc);
 	}
@@ -641,7 +642,7 @@ test_getkey_boolean(void)
 
 	/* pass: top-level key 'missing' not set */
 	exercise_get_boolean("missing", (lkonf_keys){ "missing", 0 },
-		true, LK_VALUE_NIL, "");
+		true, LK_NOT_FOUND, "");
 
 	/* pass: t2.b */
 	exercise_get_boolean("t2 b", (lkonf_keys){"t2", "b", 0},
@@ -659,31 +660,31 @@ test_getkey_boolean(void)
 	/* pass: t3.t.absent not set */
 	exercise_get_boolean("t3 t absent",
 		(lkonf_keys){"t3", "t", "absent", 0},
-		true, LK_VALUE_NIL, "");
+		true, LK_NOT_FOUND, "");
 
 	/* pass: t3.t."" not set */
 	exercise_get_boolean("t3 t \"\"", (lkonf_keys){"t3", "t", "", 0},
-		true, LK_VALUE_NIL, "");
+		true, LK_NOT_FOUND, "");
 
 	/* fail: t3.t.b3.k4 */
 	exercise_get_boolean("t3 t b3 k4",
 		(lkonf_keys){"t3", "t", "b3", "k4", 0},
-		true, LK_KEY_BAD, "Not a table: b3");
+		true, LK_OUT_OF_RANGE, "Not a table: b3");
 
 	/* fail: t3.t.i3 (not a boolean)  */
 	exercise_get_boolean("t3 t i3",
 		(lkonf_keys){"t3", "t", "i3", 0},
-		false, LK_VALUE_BAD, "Not a boolean: i3");
+		false, LK_OUT_OF_RANGE, "Not a boolean: i3");
 
 	/* fail: t3.k.k2 */
 	exercise_get_boolean("t3 k k2",
 		(lkonf_keys){"t3", "k", "k2", 0},
-		false, LK_KEY_BAD, "Not a table: k");
+		false, LK_OUT_OF_RANGE, "Not a table: k");
 
 	/* fail: t3.12345.3 */
 	exercise_get_boolean("t3 12345 3",
 		(lkonf_keys){"t3", "12345", "3", 0},
-		false, LK_KEY_BAD, "Not a table: 12345");
+		false, LK_OUT_OF_RANGE, "Not a table: 12345");
 
 	/* pass: tf.b function returning boolean */
 	exercise_get_boolean("tf b", (lkonf_keys){"tf", "b", 0},
@@ -692,15 +693,15 @@ test_getkey_boolean(void)
 	/* fail: tf b "" (trailing .) */
 	exercise_get_boolean("tf b \"\"",
 		(lkonf_keys){"tf", "b", "", 0},
-		true, LK_KEY_BAD, "Not a table: b");
+		true, LK_OUT_OF_RANGE, "Not a table: b");
 
 	/* fail: tf.i function not returning boolean */
 	exercise_get_boolean("tf i", (lkonf_keys){"tf", "i", 0},
-		false, LK_VALUE_BAD, "Not a boolean: i");
+		false, LK_OUT_OF_RANGE, "Not a boolean: i");
 
 	/* pass: t6 "" k2 - missing key k2 */
 	exercise_get_boolean("t6 \"\" k2", (lkonf_keys){"t6", "", "k2", 0},
-		true, LK_VALUE_NIL, "");
+		true, LK_NOT_FOUND, "");
 
 	/* pass: t6 "." b */
 	exercise_get_boolean("t6 \".\" b", (lkonf_keys){"t6", ".", "b", 0},
@@ -708,11 +709,11 @@ test_getkey_boolean(void)
 
 	/* fail: "" empty key */
 	exercise_get_boolean("", (lkonf_keys){"", 0},
-		true, LK_KEY_BAD, "Empty top-level key");
+		true, LK_OUT_OF_RANGE, "Empty top-level key");
 
 	/* pass: "." absent */
 	exercise_get_boolean(".", (lkonf_keys){".", 0},
-		true, LK_VALUE_NIL, "");
+		true, LK_NOT_FOUND, "");
 
 	/* pass: x */
 	exercise_get_boolean("b", (lkonf_keys){"b", 0}, true, LK_OK, "");
@@ -724,39 +725,39 @@ test_getkey_boolean(void)
 
 	/* fail: t7 "" - not a bool */
 	exercise_get_boolean("t7 \"\"", (lkonf_keys){"t7", "", 0},
-		true, LK_VALUE_BAD, "Not a boolean: ");
+		true, LK_OUT_OF_RANGE, "Not a boolean: ");
 
 	/* fail: "" t8 */
 	exercise_get_boolean("\"\" t8", (lkonf_keys){"", "t8", 0},
-		true, LK_KEY_BAD, "Empty top-level key");
+		true, LK_OUT_OF_RANGE, "Empty top-level key");
 
 	/* fail: t */
 	exercise_get_boolean("t", (lkonf_keys){"t", 0},
-		false, LK_VALUE_BAD, "Not a boolean: t");
+		false, LK_OUT_OF_RANGE, "Not a boolean: t");
 
 	/* pass: t."" */
 	exercise_get_boolean("t.", (lkonf_keys){"t", "", 0},
-		true, LK_VALUE_NIL, "");
+		true, LK_NOT_FOUND, "");
 
 	/* pass: t.k nil VALUE */
 	exercise_get_boolean("t.k", (lkonf_keys){"t", "k", 0},
-		true, LK_VALUE_NIL, "");
+		true, LK_NOT_FOUND, "");
 
 	/* fail: toolong takes too long */
 	exercise_get_boolean("toolong", (lkonf_keys){"toolong", 0},
-		true, LK_CALL_CHUNK, "Instruction count exceeded");
+		true, LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
 	exercise_get_boolean("badrun", (lkonf_keys){"badrun", 0},
 		false,
-		LK_CALL_CHUNK, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
+		LK_LUA_ERROR, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
 
 	/* pass: jrb */
 	exercise_get_boolean("jrb", (lkonf_keys){"jrb", 0}, true, LK_OK, "");
 
 	/* fail: hidden */
 	exercise_get_boolean("hidden", (lkonf_keys){"hidden", 0},
-		true, LK_VALUE_NIL, "");
+		true, LK_NOT_FOUND, "");
 
 	return EXIT_SUCCESS;
 }
@@ -810,7 +811,7 @@ test_get_double(void)
 
 	/* fail: load null lkonf_context */
 	{
-		assert(LK_LKONF_NULL == lkonf_get_double(0, 0, 0));
+		assert(LK_INVALID_ARGUMENT == lkonf_get_double(0, 0, 0));
 	}
 
 	/* fail: null ovalue */
@@ -820,7 +821,8 @@ test_get_double(void)
 
 		const lkonf_error res = lkonf_get_double(lc, "", 0);
 		ensure_result(lc, res,
-			"get_double(lc, \"\", 0)", LK_ARG_BAD, "oValue NULL");
+			"get_double(lc, \"\", 0)",
+			LK_INVALID_ARGUMENT, "oValue NULL");
 
 		lkonf_destruct(lc);
 	}
@@ -833,7 +835,8 @@ test_get_double(void)
 		double v = -1;
 		const lkonf_error res = lkonf_get_double(lc, 0, &v);
 		ensure_result(lc, res,
-			"get_double(lc, 0, &v)", LK_ARG_BAD, "iPath NULL");
+			"get_double(lc, 0, &v)",
+			LK_INVALID_ARGUMENT, "iPath NULL");
 
 		lkonf_destruct(lc);
 	}
@@ -842,7 +845,7 @@ test_get_double(void)
 	exercise_get_double("d1", 1.01, LK_OK, "");
 
 	/* pass: top-level key 'missing' not set */
-	exercise_get_double("missing", 5, LK_VALUE_NIL, "");
+	exercise_get_double("missing", 5, LK_NOT_FOUND, "");
 
 	/* pass: t2.d */
 	exercise_get_double("t2.d", 2.714, LK_OK, "");
@@ -851,52 +854,52 @@ test_get_double(void)
 	exercise_get_double("t3.t.d3", 3.1415, LK_OK, "");
 
 	/* pass: t3.t.absent not set */
-	exercise_get_double("t3.t.absent", 5, LK_VALUE_NIL, "");
+	exercise_get_double("t3.t.absent", 5, LK_NOT_FOUND, "");
 
 	/* fail: t3.t. */
-	exercise_get_double("t3.t.", 0, LK_KEY_BAD,
-		"Empty component in: t3.t.");
+	exercise_get_double("t3.t.", 0,
+		LK_OUT_OF_RANGE, "Empty component in: t3.t.");
 
 	/* fail: t3.t.d3.k4 */
 	exercise_get_double("t3.t.d3.k4", 33,
-		LK_KEY_BAD, "Not a table: t3.t.d3");
+		LK_OUT_OF_RANGE, "Not a table: t3.t.d3");
 
 	/* fail: t3.t.b3 (not a double)  */
 	exercise_get_double("t3.t.b3", 0,
-		LK_VALUE_BAD, "Not a double: t3.t.b3");
+		LK_OUT_OF_RANGE, "Not a double: t3.t.b3");
 
 	/* fail: t3.k.d3 */
-	exercise_get_double("t3.k.d3", 0, LK_KEY_BAD, "Not a table: t3.k");
+	exercise_get_double("t3.k.d3", 0, LK_OUT_OF_RANGE, "Not a table: t3.k");
 
 	/* fail: t3.12345.3 */
 	exercise_get_double("t3.12345.3", 0,
-		LK_KEY_BAD, "Not a table: t3.12345");
+		LK_OUT_OF_RANGE, "Not a table: t3.12345");
 
 	/* pass: tf.d function returning double */
 	exercise_get_double("tf.d", -4.01, LK_OK, "");
 
 	/* fail: tf.d. (trailing .) */
-	exercise_get_double("tf.d.", 4, LK_KEY_BAD, "Not a table: tf.d");
+	exercise_get_double("tf.d.", 4, LK_OUT_OF_RANGE, "Not a table: tf.d");
 
 	/* fail: t5b function not returning double */
-	exercise_get_double("t5b", 0, LK_VALUE_BAD, "Not a double: t5b");
+	exercise_get_double("t5b", 0, LK_OUT_OF_RANGE, "Not a double: t5b");
 
 	/* fail: tf.s function not returning double */
-	exercise_get_double("tf.s", 0, LK_VALUE_BAD, "Not a double: tf.s");
+	exercise_get_double("tf.s", 0, LK_OUT_OF_RANGE, "Not a double: tf.s");
 
 	/* fail: t6..k2 - empty key */
 	exercise_get_double("t6..k2", 6,
-		LK_KEY_BAD, "Empty component in: t6..k2");
+		LK_OUT_OF_RANGE, "Empty component in: t6..k2");
 
 	/* fail: t6...k2 */
 	exercise_get_double("t6...k2", 0,
-		LK_KEY_BAD, "Empty component in: t6...k2");
+		LK_OUT_OF_RANGE, "Empty component in: t6...k2");
 
 	/* fail: "" */
-	exercise_get_double("", -5, LK_KEY_BAD, "Empty path");
+	exercise_get_double("", -5, LK_OUT_OF_RANGE, "Empty path");
 
 	/* fail: "." */
-	exercise_get_double(".", -5, LK_KEY_BAD, "Empty component in: .");
+	exercise_get_double(".", -5, LK_OUT_OF_RANGE, "Empty component in: .");
 
 	/* pass: d */
 	exercise_get_double("d", 0.5, LK_OK, "");
@@ -907,34 +910,34 @@ test_get_double(void)
 
 	/* fail: t7. */
 	exercise_get_double("t7.", 7,
-		LK_KEY_BAD, "Empty component in: t7.");
+		LK_OUT_OF_RANGE, "Empty component in: t7.");
 
 	/* fail: .t8 */
 	exercise_get_double(".t8", 8,
-		LK_KEY_BAD, "Empty component in: .t8");
+		LK_OUT_OF_RANGE, "Empty component in: .t8");
 
 	/* fail: t */
-	exercise_get_double("t", 0, LK_VALUE_BAD, "Not a double: t");
+	exercise_get_double("t", 0, LK_OUT_OF_RANGE, "Not a double: t");
 
 	/* fail: t. */
-	exercise_get_double("t.", 0, LK_KEY_BAD, "Empty component in: t.");
+	exercise_get_double("t.", 0, LK_OUT_OF_RANGE, "Empty component in: t.");
 
 	/* pass: t.k nil VALUE */
-	exercise_get_double("t.k", 999, LK_VALUE_NIL, "");
+	exercise_get_double("t.k", 999, LK_NOT_FOUND, "");
 
 	/* fail: toolong takes too long */
 	exercise_get_double("toolong", 0,
-		LK_CALL_CHUNK, "Instruction count exceeded");
+		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
 	exercise_get_double("badrun", -1,
-		LK_CALL_CHUNK, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
+		LK_LUA_ERROR, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
 
 	/* pass: jrd */
 	exercise_get_double("jrd", 4.9, LK_OK, "");
 
 	/* fail: hidden */
-	exercise_get_double("hidden", 0, LK_VALUE_NIL, "");
+	exercise_get_double("hidden", 0, LK_NOT_FOUND, "");
 
 	return EXIT_SUCCESS;
 }
@@ -989,7 +992,7 @@ test_get_integer(void)
 
 	/* fail: load null lkonf_context */
 	{
-		assert(LK_LKONF_NULL == lkonf_get_integer(0, 0, 0));
+		assert(LK_INVALID_ARGUMENT == lkonf_get_integer(0, 0, 0));
 	}
 
 	/* fail: null ovalue */
@@ -999,7 +1002,8 @@ test_get_integer(void)
 
 		const lkonf_error res = lkonf_get_integer(lc, "", 0);
 		ensure_result(lc, res,
-			"get_integer(lc, \"\", 0)", LK_ARG_BAD, "oValue NULL");
+			"get_integer(lc, \"\", 0)",
+			LK_INVALID_ARGUMENT, "oValue NULL");
 
 		lkonf_destruct(lc);
 	}
@@ -1012,7 +1016,8 @@ test_get_integer(void)
 		lua_Integer v = -1;
 		const lkonf_error res = lkonf_get_integer(lc, 0, &v);
 		ensure_result(lc, res,
-			"get_integer(lc, 0, &v)", LK_ARG_BAD, "iPath NULL");
+			"get_integer(lc, 0, &v)",
+			LK_INVALID_ARGUMENT, "iPath NULL");
 
 		lkonf_destruct(lc);
 	}
@@ -1021,7 +1026,7 @@ test_get_integer(void)
 	exercise_get_integer("i1", 1, LK_OK, "");
 
 	/* pass: top-level key 'missing' not set */
-	exercise_get_integer("missing", 5, LK_VALUE_NIL, "");
+	exercise_get_integer("missing", 5, LK_NOT_FOUND, "");
 
 	/* pass: t2.i */
 	exercise_get_integer("t2.i", 2, LK_OK, "");
@@ -1030,52 +1035,54 @@ test_get_integer(void)
 	exercise_get_integer("t3.t.i3", 33, LK_OK, "");
 
 	/* pass: t3.t.absent not set */
-	exercise_get_integer("t3.t.absent", 5, LK_VALUE_NIL, "");
+	exercise_get_integer("t3.t.absent", 5, LK_NOT_FOUND, "");
 
 	/* fail: t3.t. */
-	exercise_get_integer("t3.t.", 0, LK_KEY_BAD,
-		"Empty component in: t3.t.");
+	exercise_get_integer("t3.t.", 0,
+		LK_OUT_OF_RANGE, "Empty component in: t3.t.");
 
 	/* fail: t3.t.i3.k4 */
 	exercise_get_integer("t3.t.i3.k4", 33,
-		LK_KEY_BAD, "Not a table: t3.t.i3");
+		LK_OUT_OF_RANGE, "Not a table: t3.t.i3");
 
 	/* fail: t3.t.b3 (not an integer)  */
 	exercise_get_integer("t3.t.b3", 0,
-		LK_VALUE_BAD, "Not an integer: t3.t.b3");
+		LK_OUT_OF_RANGE, "Not an integer: t3.t.b3");
 
 	/* fail: t3.k.i3 */
-	exercise_get_integer("t3.k.i3", 0, LK_KEY_BAD, "Not a table: t3.k");
+	exercise_get_integer("t3.k.i3", 0,
+		LK_OUT_OF_RANGE, "Not a table: t3.k");
 
 	/* fail: t3.12345.3 */
 	exercise_get_integer("t3.12345.3", 0,
-		LK_KEY_BAD, "Not a table: t3.12345");
+		LK_OUT_OF_RANGE, "Not a table: t3.12345");
 
 	/* pass: tf.i function returning integer */
 	exercise_get_integer("tf.i", 4, LK_OK, "");
 
 	/* fail: tf.i. (trailing .) */
-	exercise_get_integer("tf.i.", 4, LK_KEY_BAD, "Not a table: tf.i");
+	exercise_get_integer("tf.i.", 4, LK_OUT_OF_RANGE, "Not a table: tf.i");
 
 	/* fail: t5b function not returning integer */
-	exercise_get_integer("t5b", 0, LK_VALUE_BAD, "Not an integer: t5b");
+	exercise_get_integer("t5b", 0, LK_OUT_OF_RANGE, "Not an integer: t5b");
 
 	/* fail: tf.d function not returning integer */
-	exercise_get_integer("tf.b", 2, LK_VALUE_BAD, "Not an integer: tf.b");
+	exercise_get_integer("tf.b", 2,
+		LK_OUT_OF_RANGE, "Not an integer: tf.b");
 
 	/* fail: t6..k2 - empty key */
 	exercise_get_integer("t6..k2", 6,
-		LK_KEY_BAD, "Empty component in: t6..k2");
+		LK_OUT_OF_RANGE, "Empty component in: t6..k2");
 
 	/* fail: t6...k2 */
 	exercise_get_integer("t6...k2", 0,
-		LK_KEY_BAD, "Empty component in: t6...k2");
+		LK_OUT_OF_RANGE, "Empty component in: t6...k2");
 
 	/* fail: "" */
-	exercise_get_integer("", -5, LK_KEY_BAD, "Empty path");
+	exercise_get_integer("", -5, LK_OUT_OF_RANGE, "Empty path");
 
 	/* fail: "." */
-	exercise_get_integer(".", -5, LK_KEY_BAD, "Empty component in: .");
+	exercise_get_integer(".", -5, LK_OUT_OF_RANGE, "Empty component in: .");
 
 	/* pass: i */
 	exercise_get_integer("i", 11, LK_OK, "");
@@ -1086,34 +1093,35 @@ test_get_integer(void)
 
 	/* fail: t7. */
 	exercise_get_integer("t7.", 7,
-		LK_KEY_BAD, "Empty component in: t7.");
+		LK_OUT_OF_RANGE, "Empty component in: t7.");
 
 	/* fail: .t8 */
 	exercise_get_integer(".t8", 8,
-		LK_KEY_BAD, "Empty component in: .t8");
+		LK_OUT_OF_RANGE, "Empty component in: .t8");
 
 	/* fail: t */
-	exercise_get_integer("t", 0, LK_VALUE_BAD, "Not an integer: t");
+	exercise_get_integer("t", 0, LK_OUT_OF_RANGE, "Not an integer: t");
 
 	/* fail: t. */
-	exercise_get_integer("t.", 0, LK_KEY_BAD, "Empty component in: t.");
+	exercise_get_integer("t.", 0,
+		LK_OUT_OF_RANGE, "Empty component in: t.");
 
 	/* pass: t.k nil VALUE */
-	exercise_get_integer("t.k", 999, LK_VALUE_NIL, "");
+	exercise_get_integer("t.k", 999, LK_NOT_FOUND, "");
 
 	/* fail: toolong takes too long */
 	exercise_get_integer("toolong", 0,
-		LK_CALL_CHUNK, "Instruction count exceeded");
+		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
 	exercise_get_integer("badrun", 0,
-		LK_CALL_CHUNK, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
+		LK_LUA_ERROR, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
 
 	/* pass: jri */
 	exercise_get_integer("jri", 5, LK_OK, "");
 
 	/* fail: hidden */
-	exercise_get_integer("hidden", 0, LK_VALUE_NIL, "");
+	exercise_get_integer("hidden", 0, LK_NOT_FOUND, "");
 
 	return EXIT_SUCCESS;
 }
@@ -1176,7 +1184,7 @@ test_get_string(void)
 
 	/* fail: load null lkonf_context */
 	{
-		assert(LK_LKONF_NULL == lkonf_get_string(0, 0, 0, 0));
+		assert(LK_INVALID_ARGUMENT == lkonf_get_string(0, 0, 0, 0));
 	}
 
 	/* fail: null ovalue */
@@ -1187,7 +1195,7 @@ test_get_string(void)
 		const lkonf_error res = lkonf_get_string(lc, "", 0, 0);
 		ensure_result(lc, res,
 			"get_string(lc, \"\", 0, 0)",
-			LK_ARG_BAD, "oValue NULL");
+			LK_INVALID_ARGUMENT, "oValue NULL");
 
 		lkonf_destruct(lc);
 	}
@@ -1200,7 +1208,8 @@ test_get_string(void)
 		char * v = 0;
 		const lkonf_error res = lkonf_get_string(lc, 0, &v, 0);
 		ensure_result(lc, res,
-			"get_integer(lc, 0, &v)", LK_ARG_BAD, "iPath NULL");
+			"get_integer(lc, 0, &v)",
+			LK_INVALID_ARGUMENT, "iPath NULL");
 
 		lkonf_destruct(lc);
 	}
@@ -1209,7 +1218,7 @@ test_get_string(void)
 	exercise_get_string("s1", "1", 1, LK_OK, "");
 
 	/* pass: top-level key 'missing' not set */
-	exercise_get_string("missing", "", 0, LK_VALUE_NIL, "");
+	exercise_get_string("missing", "", 0, LK_NOT_FOUND, "");
 
 	/* pass: t2.empty */
 	exercise_get_string("t2.empty", "", 0, LK_OK, "");
@@ -1221,66 +1230,70 @@ test_get_string(void)
 	exercise_get_string("t3.t.s3", "thirty three", 12, LK_OK, "");
 
 	/* pass: t3.t.absent not set */
-	exercise_get_string("t3.t.absent", "", 0, LK_VALUE_NIL, "");
+	exercise_get_string("t3.t.absent", "", 0, LK_NOT_FOUND, "");
 
 	/* fail: t3.t. */
-	exercise_get_string("t3.t.", "", 0, LK_KEY_BAD,
-		"Empty component in: t3.t.");
+	exercise_get_string("t3.t.", "", 0,
+		LK_OUT_OF_RANGE, "Empty component in: t3.t.");
 
 	/* fail: t3.t.i3.k4 */
 	exercise_get_string("t3.t.i3.k4", "", 0,
-		LK_KEY_BAD, "Not a table: t3.t.i3");
+		LK_OUT_OF_RANGE, "Not a table: t3.t.i3");
 
 	/* fail: t3.t.b3 (not a string)  */
 	exercise_get_string("t3.t.b3", "", 0,
-		LK_VALUE_BAD, "Not a string: t3.t.b3");
+		LK_OUT_OF_RANGE, "Not a string: t3.t.b3");
 
 	/* fail: t3.k.i3 */
-	exercise_get_string("t3.k.i3", "", 0, LK_KEY_BAD, "Not a table: t3.k");
+	exercise_get_string("t3.k.i3", "", 0,
+		LK_OUT_OF_RANGE, "Not a table: t3.k");
 
 	/* fail: t3.12345.3 */
 	exercise_get_string("t3.12345.3", "", 0,
-		LK_KEY_BAD, "Not a table: t3.12345");
+		LK_OUT_OF_RANGE, "Not a table: t3.12345");
 
 	/* pass: tf.s function returning string */
 	exercise_get_string("tf.s", "tf path=tf.s", 12, LK_OK, "");
 
 	/* fail: tf.s. (trailing .) */
-	exercise_get_string("tf.s.", "", 4, LK_KEY_BAD, "Not a table: tf.s");
+	exercise_get_string("tf.s.", "", 4,
+		LK_OUT_OF_RANGE, "Not a table: tf.s");
 
 	/* fail: t5b function not returning string */
-	exercise_get_string("t5b", "", 0, LK_VALUE_BAD, "Not a string: t5b");
+	exercise_get_string("t5b", "", 0, LK_OUT_OF_RANGE, "Not a string: t5b");
 
 	/* fail: tf.i function not returning string */
-	exercise_get_string("tf.i", "", 0, LK_VALUE_BAD, "Not a string: tf.i");
+	exercise_get_string("tf.i", "", 0,
+		LK_OUT_OF_RANGE, "Not a string: tf.i");
 
 	/* fail: t6..k2 - empty key */
 	exercise_get_string("t6..k2", "", 6,
-		LK_KEY_BAD, "Empty component in: t6..k2");
+		LK_OUT_OF_RANGE, "Empty component in: t6..k2");
 
 	/* fail: t6...k2 */
 	exercise_get_string("t6...k2", "", 0,
-		LK_KEY_BAD, "Empty component in: t6...k2");
+		LK_OUT_OF_RANGE, "Empty component in: t6...k2");
 
 	/* fail: "" */
-	exercise_get_string("", "", 0, LK_KEY_BAD, "Empty path");
+	exercise_get_string("", "", 0, LK_OUT_OF_RANGE, "Empty path");
 
 	/* fail: "." */
-	exercise_get_string(".", "", 0, LK_KEY_BAD, "Empty component in: .");
+	exercise_get_string(".", "", 0,
+		LK_OUT_OF_RANGE, "Empty component in: .");
 
 	/* fail: toolong takes too long */
 	exercise_get_string("toolong", "", 0,
-		LK_CALL_CHUNK, "Instruction count exceeded");
+		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
 	exercise_get_string("badrun", "", 0,
-		LK_CALL_CHUNK, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
+		LK_LUA_ERROR, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
 
 	/* pass: jrs */
 	exercise_get_string("jrs", "just right!", 11, LK_OK, "");
 
 	/* fail: hidden */
-	exercise_get_string("hidden", "", 0, LK_VALUE_NIL, "");
+	exercise_get_string("hidden", "", 0, LK_NOT_FOUND, "");
 
 	return EXIT_SUCCESS;
 }

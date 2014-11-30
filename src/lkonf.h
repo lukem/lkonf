@@ -57,15 +57,11 @@ typedef struct lkonf_context_s lkonf_context;
 typedef enum
 {
 	LK_OK			= 0,	/** No error. */
-	LK_LKONF_NULL		= 1,	/** lkonf_context is NULL. */
-	LK_STATE_NULL		= 2,	/** Lua state is NULL. */
-	LK_ARG_BAD		= 3,	/** Method argument is bad */
-	LK_LOAD_CHUNK		= 4,	/** Can't load chunk. */
-	LK_CALL_CHUNK		= 5,	/** Can't call chunk. */
-	LK_KEY_BAD		= 6,	/** Key/path-component not a table. */
-	LK_VALUE_BAD		= 7,	/** Value of incorrect type. */
-	LK_VALUE_NIL		= 8,	/** Value is NIL. */
-	LK_MALLOC_FAILURE	= 10,	/** Can't allocate memory. */
+	LK_LUA_ERROR		= 1,	/** Error loading or calling lua. */
+	LK_INVALID_ARGUMENT	= 2,	/** Invalid argument. */
+	LK_NOT_FOUND		= 3,	/** Element not found. */
+	LK_OUT_OF_RANGE		= 4,	/** Invalid element/key. */
+	LK_RESOURCE_EXHAUSTED	= 5,	/** Not enough resources (memory). */
 } lkonf_error;
 
 
@@ -144,7 +140,7 @@ lkonf_get_error_string(lkonf_context * iLc);
  * Load file as a Lua chunk and execute in the sandbox.
  * @param iLc	lkonf_context.
  * @param iFile	Filename
- * @return 	Error code, or LK_OK if ok.
+ * @return	Error code, or LK_OK if ok.
  */
 LUA_API lkonf_error
 lkonf_load_file(lkonf_context * iLc, const char * iFile);
@@ -154,7 +150,7 @@ lkonf_load_file(lkonf_context * iLc, const char * iFile);
  * Load string as a Lua chunk and execute in the sandbox.
  * @param iLc		lkonf_context.
  * @param iString	String to load.
- * @return 		Error code, or LK_OK if ok.
+ * @return		Error code, or LK_OK if ok.
  */
 LUA_API lkonf_error
 lkonf_load_string(lkonf_context * iLc, const char * iString);
@@ -177,7 +173,7 @@ lkonf_get_instruction_limit(lkonf_context * iLc);
  * Set the instruction limit.
  * @param iLc		lkonf_context.
  * @param iLimit	Limit to set.  0 is no limit.
- * @return 		Error code, or LK_OK if ok.
+ * @return		Error code, or LK_OK if ok.
  */
 LUA_API lkonf_error
 lkonf_set_instruction_limit(lkonf_context * iLc, const int iLimit);

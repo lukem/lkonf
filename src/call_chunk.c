@@ -10,12 +10,12 @@ lki_call_chunk(lkonf_context * iLc, const int iNumArgs, const int iNumResults)
 	assert(iLc->state);
 
 	if (iNumArgs < 0) {
-		lki_set_error(iLc, LK_ARG_BAD, "iNumArgs < 0");
+		lki_set_error(iLc, LK_INVALID_ARGUMENT, "iNumArgs < 0");
 		return iLc->error_code;
 	}
 
 	if (iNumResults < 0) {
-		lki_set_error(iLc, LK_ARG_BAD, "iNumResults < 0");
+		lki_set_error(iLc, LK_INVALID_ARGUMENT, "iNumResults < 0");
 		return iLc->error_code;
 	}
 
@@ -30,7 +30,7 @@ lki_call_chunk(lkonf_context * iLc, const int iNumArgs, const int iNumResults)
 // TODO sandbox
 
 	if (lua_pcall(iLc->state, iNumArgs, iNumResults, 0)) {
-		lki_set_error_from_state(iLc, LK_CALL_CHUNK);
+		lki_set_error_from_state(iLc, LK_LUA_ERROR);
 	}
 
 	if (iLc->instruction_limit > 0) {

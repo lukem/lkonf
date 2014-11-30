@@ -11,7 +11,7 @@ lkonf_getkey_string(
 	size_t *	oLen)
 {
 	if (! iLc) {
-		return LK_LKONF_NULL;
+		return LK_INVALID_ARGUMENT;
 	}
 
 	if (LK_OK != lki_state_entry(iLc)) {
@@ -19,7 +19,7 @@ lkonf_getkey_string(
 	}
 
 	if (! oValue) {
-		lki_set_error(iLc, LK_ARG_BAD, "oValue NULL");
+		lki_set_error(iLc, LK_INVALID_ARGUMENT, "oValue NULL");
 		return lki_state_exit(iLc);
 	}
 
@@ -36,13 +36,13 @@ lkonf_getkey_string(
 	}
 
 	if (LUA_TNIL == lua_type(iLc->state, -1)) {
-		lki_set_error(iLc, LK_VALUE_NIL, "");
+		lki_set_error(iLc, LK_NOT_FOUND, "");
 		return lki_state_exit(iLc);
 	}
 
 	if (LUA_TSTRING != lua_type(iLc->state, -1)) {
-		lki_set_error_item(iLc, LK_VALUE_BAD, "Not a string",
-			iKeys[last]);
+		lki_set_error_item(iLc,
+			LK_OUT_OF_RANGE, "Not a string", iKeys[last]);
 		return lki_state_exit(iLc);
 	}
 
@@ -51,7 +51,8 @@ lkonf_getkey_string(
 
 	char * copy = malloc(len + 1);
 	if (! copy) {
-		lki_set_error_item(iLc, LK_MALLOC_FAILURE,
+		lki_set_error_item(iLc,
+			LK_RESOURCE_EXHAUSTED,
 			"Copying string result for", iKeys[last]);
 		return lki_state_exit(iLc);
 	}

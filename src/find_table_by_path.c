@@ -37,20 +37,20 @@ lkonf_error
 lki_find_table_by_path(lkonf_context * iLc, const char * iPath)
 {
 	if (! iLc) {
-		return LK_LKONF_NULL;
+		return LK_INVALID_ARGUMENT;
 	}
 
 	if (! iPath) {
-		return lki_set_error(iLc, LK_ARG_BAD, "iPath NULL");
+		return lki_set_error(iLc, LK_INVALID_ARGUMENT, "iPath NULL");
 	}
 
 	if (! *iPath) {
-		return lki_set_error(iLc, LK_KEY_BAD, "Empty path");
+		return lki_set_error(iLc, LK_OUT_OF_RANGE, "Empty path");
 	}
 
 	if ('.' == *iPath) {
-		return lki_set_error_item(iLc, LK_KEY_BAD,
-			"Empty component in", iPath);
+		return lki_set_error_item(iLc,
+			LK_OUT_OF_RANGE, "Empty component in", iPath);
 	}
 
 		/* Push globals table onto stack. */
@@ -63,8 +63,8 @@ lki_find_table_by_path(lkonf_context * iLc, const char * iPath)
 		/* Push first key. */
 	const char * end = push_next_key(iLc, iPath);	/* S: t k */
 	if (! end) {
-		return lki_set_error_item(iLc, LK_KEY_BAD,
-			"Empty component in", iPath);
+		return lki_set_error_item(iLc,
+			LK_OUT_OF_RANGE, "Empty component in", iPath);
 	}
 
 	lua_gettable(iLc->state, -2);			/* S: t t[k] */
@@ -76,14 +76,14 @@ lki_find_table_by_path(lkonf_context * iLc, const char * iPath)
 			char path[sizeof(iLc->error_string)];
 			snprintf(path, sizeof(path), "%.*s",
 				(int)(end - iPath), iPath);
-			return lki_set_error_item(
-				iLc, LK_KEY_BAD, "Not a table", path);
+			return lki_set_error_item(iLc,
+				LK_OUT_OF_RANGE, "Not a table", path);
 		}
 
 		end = push_next_key(iLc, end);		/* S: t[k] k2 */
 		if (! end) {
-			return lki_set_error_item(iLc, LK_KEY_BAD,
-				"Empty component in", iPath);
+			return lki_set_error_item(iLc,
+				LK_OUT_OF_RANGE, "Empty component in", iPath);
 		}
 
 		lua_gettable(iLc->state, -2);		/* S: t[k] t[k][k2] */

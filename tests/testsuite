@@ -2092,7 +2092,7 @@ at_fn_check_prepare_notrace 'a ${...} parameter expansion' "load_file.at:7"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
-echo >>"$at_stdout"; $as_echo "Error 5: print.lua:2: attempt to call global 'print' (a nil value)
+echo >>"$at_stdout"; $as_echo "Error 1: print.lua:2: attempt to call global 'print' (a nil value)
 " | \
   $at_diff - "$at_stdout" || at_failed=:
 at_fn_check_status 1 $at_status "$at_srcdir/load_file.at:7"
@@ -2150,7 +2150,7 @@ at_fn_check_prepare_trace "load_string.at:7"
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
-echo >>"$at_stdout"; $as_echo "Error 5: [string \"print()\"]:1: attempt to call global 'print' (a nil value)
+echo >>"$at_stdout"; $as_echo "Error 1: [string \"print()\"]:1: attempt to call global 'print' (a nil value)
 " | \
   $at_diff - "$at_stdout" || at_failed=:
 at_fn_check_status 1 $at_status "$at_srcdir/load_string.at:7"
@@ -2216,7 +2216,7 @@ foo()'
 at_status=$? at_failed=false
 $at_check_filter
 at_fn_diff_devnull "$at_stderr" || at_failed=:
-echo >>"$at_stdout"; $as_echo "Error 5: [string \"...\"]:3: attempt to call global 'print' (a nil value)
+echo >>"$at_stdout"; $as_echo "Error 1: [string \"...\"]:3: attempt to call global 'print' (a nil value)
 " | \
   $at_diff - "$at_stdout" || at_failed=:
 at_fn_check_status 1 $at_status "$at_srcdir/load_string.at:17"

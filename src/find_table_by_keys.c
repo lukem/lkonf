@@ -4,19 +4,20 @@ lkonf_error
 lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys, size_t * oMatch)
 {
 	if (! iLc) {
-		return LK_LKONF_NULL;
+		return LK_INVALID_ARGUMENT;
 	}
 
 	if (! iKeys) {
-		return lki_set_error(iLc, LK_ARG_BAD, "iKeys NULL");
+		return lki_set_error(iLc, LK_INVALID_ARGUMENT, "iKeys NULL");
 	}
 
 	if (! iKeys[0]) {
-		return lki_set_error(iLc, LK_KEY_BAD, "Empty keys");
+		return lki_set_error(iLc, LK_OUT_OF_RANGE, "Empty keys");
 	}
 
 	if (! iKeys[0][0]) {
-		return lki_set_error(iLc, LK_KEY_BAD, "Empty top-level key");
+		return lki_set_error(iLc,
+			LK_OUT_OF_RANGE, "Empty top-level key");
 	}
 
 		/* Push globals table onto stack. */
@@ -35,8 +36,8 @@ lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys, size_t * oMatch)
 	size_t ki;
 	for (ki = 1; 0 != iKeys[ki]; ++ki) {
 		if (! lua_istable(iLc->state, -1)) {
-			return lki_set_error_item(
-				iLc, LK_KEY_BAD, "Not a table", iKeys[ki-1]);
+			return lki_set_error_item(iLc,
+				LK_OUT_OF_RANGE, "Not a table", iKeys[ki-1]);
 		}
 
 		lua_pushstring(iLc->state, iKeys[ki]);	/* S: t[k] k2 */
