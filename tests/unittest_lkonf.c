@@ -365,7 +365,7 @@ exercise_get_boolean(
 	const char *		path,
 	lkonf_keys		keys,
 	const bool		wanted,
-	const lkonf_error		expect_code,
+	const lkonf_error	expect_code,
 	const char *		expect_str)
 {
 	assert(path);
@@ -748,13 +748,15 @@ test_getkey_boolean(void)
 
 void
 exercise_get_double(
-	const char *	path,
-	const double	wanted,
+	const char *		path,
+	lkonf_keys		keys,
+	const double		wanted,
 	const lkonf_error	expect_code,
-	const char *	expect_str)
+	const char *		expect_str)
 {
 	char desc[128];
-	snprintf(desc, sizeof(desc), "get_double('%s')", path);
+	snprintf(desc, sizeof(desc), "%s_double('%s')",
+		keys ? "getkey" : "get", path);
 	printf("%s = %g", desc, wanted);
 	if (LK_OK != expect_code) {
 		printf("; expect code %s '%s'",
@@ -773,7 +775,12 @@ exercise_get_double(
 	ensure_result(lc, sil, "set_instruction_limit(lc, 100)", LK_OK, "");
 
 	double v = -wanted;
-	const lkonf_error res = lkonf_get_double(lc, path, &v);
+	lkonf_error res = LK_INVALID_ARGUMENT;
+	if (keys) {
+		res = lkonf_getkey_double(lc, keys, &v);
+	} else {
+		res = lkonf_get_double(lc, path, &v);
+	}
 	ensure_result(lc, res, desc, expect_code, expect_str);
 	if (LK_OK == expect_code) {
 		if (wanted != v) {
@@ -825,102 +832,108 @@ test_get_double(void)
 	}
 
 	/* pass: d1 */
-	exercise_get_double("d1", 1.01, LK_OK, "");
+	exercise_get_double("d1", NULL, 1.01, LK_OK, "");
 
 	/* pass: top-level key 'missing' not set */
-	exercise_get_double("missing", 5, LK_NOT_FOUND, "");
+	exercise_get_double("missing", NULL, 5, LK_NOT_FOUND, "");
 
 	/* pass: t2.d */
-	exercise_get_double("t2.d", 2.714, LK_OK, "");
+	exercise_get_double("t2.d", NULL, 2.714, LK_OK, "");
 
 	/* pass: t3.t.d3 */
-	exercise_get_double("t3.t.d3", 3.1415, LK_OK, "");
+	exercise_get_double("t3.t.d3", NULL, 3.1415, LK_OK, "");
 
 	/* pass: t3.t.absent not set */
-	exercise_get_double("t3.t.absent", 5, LK_NOT_FOUND, "");
+	exercise_get_double("t3.t.absent", NULL, 5, LK_NOT_FOUND, "");
 
 	/* fail: t3.t. */
-	exercise_get_double("t3.t.", 0,
+	exercise_get_double("t3.t.", NULL, 0,
 		LK_OUT_OF_RANGE, "Empty component in: t3.t.");
 
 	/* fail: t3.t.d3.k4 */
-	exercise_get_double("t3.t.d3.k4", 33,
+	exercise_get_double("t3.t.d3.k4", NULL, 33,
 		LK_OUT_OF_RANGE, "Not a table: t3.t.d3");
 
 	/* fail: t3.t.b3 (not a double)  */
-	exercise_get_double("t3.t.b3", 0,
+	exercise_get_double("t3.t.b3", NULL, 0,
 		LK_OUT_OF_RANGE, "Not a double: t3.t.b3");
 
 	/* fail: t3.k.d3 */
-	exercise_get_double("t3.k.d3", 0, LK_OUT_OF_RANGE, "Not a table: t3.k");
+	exercise_get_double("t3.k.d3", NULL, 0,
+		LK_OUT_OF_RANGE, "Not a table: t3.k");
 
 	/* fail: t3.12345.3 */
-	exercise_get_double("t3.12345.3", 0,
+	exercise_get_double("t3.12345.3", NULL, 0,
 		LK_OUT_OF_RANGE, "Not a table: t3.12345");
 
 	/* pass: tf.d function returning double */
-	exercise_get_double("tf.d", -4.01, LK_OK, "");
+	exercise_get_double("tf.d", NULL, -4.01, LK_OK, "");
 
 	/* fail: tf.d. (trailing .) */
-	exercise_get_double("tf.d.", 4, LK_OUT_OF_RANGE, "Not a table: tf.d");
+	exercise_get_double("tf.d.", NULL, 4,
+		LK_OUT_OF_RANGE, "Not a table: tf.d");
 
 	/* fail: t5b function not returning double */
-	exercise_get_double("t5b", 0, LK_OUT_OF_RANGE, "Not a double: t5b");
+	exercise_get_double("t5b", NULL, 0,
+		LK_OUT_OF_RANGE, "Not a double: t5b");
 
 	/* fail: tf.s function not returning double */
-	exercise_get_double("tf.s", 0, LK_OUT_OF_RANGE, "Not a double: tf.s");
+	exercise_get_double("tf.s", NULL, 0,
+		LK_OUT_OF_RANGE, "Not a double: tf.s");
 
 	/* fail: t6..k2 - empty key */
-	exercise_get_double("t6..k2", 6,
+	exercise_get_double("t6..k2", NULL, 6,
 		LK_OUT_OF_RANGE, "Empty component in: t6..k2");
 
 	/* fail: t6...k2 */
-	exercise_get_double("t6...k2", 0,
+	exercise_get_double("t6...k2", NULL, 0,
 		LK_OUT_OF_RANGE, "Empty component in: t6...k2");
 
 	/* fail: "" */
-	exercise_get_double("", -5, LK_OUT_OF_RANGE, "Empty path");
+	exercise_get_double("", NULL, -5, LK_OUT_OF_RANGE, "Empty path");
 
 	/* fail: "." */
-	exercise_get_double(".", -5, LK_OUT_OF_RANGE, "Empty component in: .");
+	exercise_get_double(".", NULL, -5,
+		LK_OUT_OF_RANGE, "Empty component in: .");
 
 	/* pass: d */
-	exercise_get_double("d", 0.5, LK_OK, "");
+	exercise_get_double("d", NULL, 0.5, LK_OK, "");
 
 	/* pass: loooooooooooooooooooooooooooong.x.yd */
-	exercise_get_double("loooooooooooooooooooooooooooong.x.yd",
+	exercise_get_double("loooooooooooooooooooooooooooong.x.yd", NULL,
 		99.999, LK_OK, "");
 
 	/* fail: t7. */
-	exercise_get_double("t7.", 7,
+	exercise_get_double("t7.", NULL, 7,
 		LK_OUT_OF_RANGE, "Empty component in: t7.");
 
 	/* fail: .t8 */
-	exercise_get_double(".t8", 8,
+	exercise_get_double(".t8", NULL, 8,
 		LK_OUT_OF_RANGE, "Empty component in: .t8");
 
 	/* fail: t */
-	exercise_get_double("t", 0, LK_OUT_OF_RANGE, "Not a double: t");
+	exercise_get_double("t", NULL, 0, LK_OUT_OF_RANGE, "Not a double: t");
 
 	/* fail: t. */
-	exercise_get_double("t.", 0, LK_OUT_OF_RANGE, "Empty component in: t.");
+	exercise_get_double("t.", NULL, 0,
+		LK_OUT_OF_RANGE, "Empty component in: t.");
 
 	/* pass: t.k nil VALUE */
-	exercise_get_double("t.k", 999, LK_NOT_FOUND, "");
+	exercise_get_double("t.k", NULL, 999, LK_NOT_FOUND, "");
 
 	/* fail: toolong takes too long */
-	exercise_get_double("toolong", 0,
+	exercise_get_double("toolong", NULL, 0,
 		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
-	exercise_get_double("badrun", -1,
+	exercise_get_double("badrun", NULL, -1,
 		LK_LUA_ERROR, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
 
 	/* pass: jrd */
-	exercise_get_double("jrd", 4.9, LK_OK, "");
+	exercise_get_double("jrd", NULL, 4.9, LK_OK, "");
 
 	/* fail: hidden */
-	exercise_get_double("hidden", 0, LK_NOT_FOUND, "");
+	exercise_get_double("hidden", NULL, 0, LK_NOT_FOUND, "");
 
 	return EXIT_SUCCESS;
 }
