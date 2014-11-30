@@ -59,23 +59,6 @@ enum TestFlags
 
 
 /**
- * Return string representation of a given lkonf_error code.
- */
-const char *
-err_to_str(const lkonf_error code)
-{
-	switch (code) {
-		case LK_OK:			return "LK_OK";
-		case LK_INVALID_ARGUMENT:	return "LK_INVALID_ARGUMENT";
-		case LK_LUA_ERROR:		return "LK_LUA_ERROR";
-		case LK_NOT_FOUND:		return "LK_NOT_FOUND";
-		case LK_RESOURCE_EXHAUSTED:	return "LK_RESOURCE_EXHAUSTED";
-		case LK_OUT_OF_RANGE:	return "LK_OUT_OF_RANGE";
-	}
-	return "<unknown>";
-}
-
-/**
  * Return non-zero if the strings are equal.
  */
 bool
@@ -100,15 +83,15 @@ ensure_result(
 	if (code != expect_code) {
 		fprintf(stderr, "%s: code %d (%s) != expected %d (%s)\n",
 			desc,
-			code, err_to_str(code),
-			expect_code, err_to_str(expect_code));
+			code, lkonf_error_to_string(code),
+			expect_code, lkonf_error_to_string(expect_code));
 	}
 	const lkonf_error gec = lkonf_get_error_code(lc);
 	if (code != gec) {
 		fprintf(stderr, "%s: code %d (%s) != get_error_code %d (%s)\n",
 			desc,
-			code, err_to_str(code),
-			gec, err_to_str(gec));
+			code, lkonf_error_to_string(code),
+			gec, lkonf_error_to_string(gec));
 	}
 	const char * lk_errstr = lkonf_get_error_string(lc);
 	if (! streq(lk_errstr, expect_str)) {
@@ -400,7 +383,7 @@ exercise_get_boolean(
 	printf("%s = %s", desc, wanted ? "true" : "false");
 	if (LK_OK != expect_code) {
 		printf("; expect code %s '%s'",
-			err_to_str(expect_code), expect_str);
+			lkonf_error_to_string(expect_code), expect_str);
 	}
 	printf("\n");
 
@@ -775,7 +758,7 @@ exercise_get_double(
 	printf("%s = %g", desc, wanted);
 	if (LK_OK != expect_code) {
 		printf("; expect code %s '%s'",
-			err_to_str(expect_code), expect_str);
+			lkonf_error_to_string(expect_code), expect_str);
 	}
 	printf("\n");
 
@@ -955,7 +938,7 @@ exercise_get_integer(
 	printf("%s = %" PRId64, desc, (int64_t)wanted);
 	if (LK_OK != expect_code) {
 		printf("; expect code %s '%s'",
-			err_to_str(expect_code), expect_str);
+			lkonf_error_to_string(expect_code), expect_str);
 	}
 	printf("\n");
 
@@ -1140,7 +1123,7 @@ exercise_get_string(
 	printf("%s = '%s'/%zu", desc, wantstr, wantlen);
 	if (LK_OK != expect_code) {
 		printf("; expect code %s '%s'",
-			err_to_str(expect_code), expect_str);
+			lkonf_error_to_string(expect_code), expect_str);
 	}
 	printf("\n");
 

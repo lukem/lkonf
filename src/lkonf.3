@@ -40,9 +40,10 @@
 .Fn lkonf_get_lua_State "lkonf_context * iLc"
 .Ft lkonf_error
 .Fn lkonf_get_error_code "lkonf_context * iLc"
-.Ft lkonf_error
+.Ft "const char *"
 .Fn lkonf_get_error_string "lkonf_context * iLc"
-.Ft lkonf_error
+.Ft "const char *"
+.Fn lkonf_error_to_string "const lkonf_error"
 .Fn lkonf_load_file "lkonf_context * iLc" "const char * iFile"
 .Ft lkonf_error
 .Fn lkonf_load_string "lkonf_context * iLc" "const char * iString"
@@ -158,6 +159,10 @@ if
 .Fa iLc
 is
 .Dv 0 .
+.It Fn lkonf_error_to_string
+Returns the error string for the given
+.Fa lkonf_error ,
+or empty string if the error code isn't known.
 .El
 .
 .Sh LOAD AND SANDBOX FUNCTIONS

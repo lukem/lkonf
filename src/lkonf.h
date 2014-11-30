@@ -132,6 +132,15 @@ LUA_API const char *
 lkonf_get_error_string(lkonf_context * iLc);
 
 
+/**
+ * Error string description of lkonf_error.
+ * @param iError	Error code.
+ * @return String describing the error, or empty if unknown code.
+ */
+LUA_API const char *
+lkonf_error_to_string(const lkonf_error iError);
+
+
 	/*
 	 * Chunk loading.
 	 */

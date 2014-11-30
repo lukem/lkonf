@@ -5,7 +5,7 @@ AT_CHECK([unittest_lkonf load_file], [0], [ignore])
 AT_CHECK([cp ${srcdir}/files/simple.lua . && lkonf file simple.lua])
 
 AT_CHECK([cp ${abs_srcdir}/files/print.lua . && lkonf file print.lua], [1], [dnl
-Error 1: print.lua:2: attempt to call global 'print' (a nil value)
+Error: Lua error: print.lua:2: attempt to call global 'print' (a nil value)
 ])
 
 AT_CLEANUP()

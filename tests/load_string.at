@@ -5,7 +5,7 @@ AT_CHECK([unittest_lkonf load_string], [0], [ignore])
 AT_CHECK([lkonf string 'a=nil'])
 
 AT_CHECK([lkonf string 'print()'], [1],
-[[Error 1: [string "print()"]:1: attempt to call global 'print' (a nil value)
+[[Error: Lua error: [string "print()"]:1: attempt to call global 'print' (a nil value)
 ]])
 
 AT_CHECK([lkonf string 'function foo() end'])
@@ -19,7 +19,7 @@ local function foo()
     print()
 end
 foo()'], [1],
-[[Error 1: [string "..."]:3: attempt to call global 'print' (a nil value)
+[[Error: Lua error: [string "..."]:3: attempt to call global 'print' (a nil value)
 ]])
 
 AT_CLEANUP()

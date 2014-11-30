@@ -41,8 +41,8 @@ command(lkonf_context * lkonf, const int limit, const char * cmd, const char * a
 	}
 
 	if (LK_OK != lerr) {
-		printf("Error %d: %s\n",
-			lerr, /* TODO err_to_str(lr), */
+		printf("Error: %s: %s\n",
+			lkonf_error_to_string(lerr),
 			lkonf_get_error_string(lkonf));
 		return EXIT_FAILURE;
 	}
