@@ -28,6 +28,3 @@ unittest_lkonf and testsuite
 	getkey_string
 
 provide method to translate lkonf_error code into string.
-
-lkonf(3)
-	document error codes
