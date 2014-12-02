@@ -54,10 +54,10 @@ lki_find_table_by_path(lkonf_context * iLc, const char * iPath)
 	}
 
 		/* Push globals table onto stack. */
-#if 502 > LUA_VERSION_NUM
-	lua_pushvalue(iLc->state, LUA_GLOBALSINDEX);
-#else
+#if LUA_VERSION_NUM >= 502
 	lua_pushglobaltable(iLc->state);		/* S: t */
+#else
+	lua_pushvalue(iLc->state, LUA_GLOBALSINDEX);	/* S: t */
 #endif
 
 		/* Push first key. */
