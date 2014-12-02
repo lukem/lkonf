@@ -39,6 +39,14 @@ badrun = function (x) print() end \
 local hidden = 1 \
 ";
 
+static const char * badrun_error =
+#if LUA_VERSION_NUM >= 502
+"[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { b ...\"]:1: attempt to call global 'print' (a nil value)"
+#else
+"[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)"
+#endif
+;
+
 
 /**
  * One flag per test.
@@ -216,7 +224,12 @@ test_load_string(void)
 		ensure_result(lc, res,
 			"load_string(lc, \"junk\")",
 			LK_LUA_ERROR,
-			"[string \"junk\"]:1: '=' expected near '<eof>'");
+#if LUA_VERSION_NUM >= 502
+			"[string \"junk\"]:1: syntax error near <eof>"
+#else
+			"[string \"junk\"]:1: '=' expected near '<eof>'"
+#endif
+			);
 
 		lkonf_destruct(lc);
 	}
@@ -382,8 +395,9 @@ exercise_get_boolean(
 		keys ? "getkey" : "get", path);
 	printf("%s = %s", desc, wanted ? "true" : "false");
 	if (LK_OK != expect_code) {
-		printf("; expect code %s '%s'",
-			lkonf_error_to_string(expect_code), expect_str);
+		printf("; expect code %d [%s] '%s'",
+			expect_code, lkonf_error_to_string(expect_code),
+			expect_str);
 	}
 	printf("\n");
 
@@ -558,8 +572,7 @@ test_get_boolean(void)
 		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
-	exercise_get_boolean("badrun", 0, false,
-		LK_LUA_ERROR, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
+	exercise_get_boolean("badrun", 0, false, LK_LUA_ERROR, badrun_error);
 
 	/* pass: jrb */
 	exercise_get_boolean("jrb", 0, true, LK_OK, "");
@@ -731,9 +744,7 @@ test_getkey_boolean(void)
 		true, LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
-	exercise_get_boolean("badrun", (lkonf_keys){"badrun", 0},
-		false,
-		LK_LUA_ERROR, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
+	exercise_get_boolean("badrun", 0, false, LK_LUA_ERROR, badrun_error);
 
 	/* pass: jrb */
 	exercise_get_boolean("jrb", (lkonf_keys){"jrb", 0}, true, LK_OK, "");
@@ -759,8 +770,9 @@ exercise_get_double(
 		keys ? "getkey" : "get", path);
 	printf("%s = %g", desc, wanted);
 	if (LK_OK != expect_code) {
-		printf("; expect code %s '%s'",
-			lkonf_error_to_string(expect_code), expect_str);
+		printf("; expect code %d [%s] '%s'",
+			expect_code, lkonf_error_to_string(expect_code),
+			expect_str);
 	}
 	printf("\n");
 
@@ -926,8 +938,7 @@ test_get_double(void)
 		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
-	exercise_get_double("badrun", NULL, -1,
-		LK_LUA_ERROR, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
+	exercise_get_double("badrun", NULL, -1, LK_LUA_ERROR, badrun_error);
 
 	/* pass: jrd */
 	exercise_get_double("jrd", NULL, 4.9, LK_OK, "");
@@ -950,8 +961,9 @@ exercise_get_integer(
 	snprintf(desc, sizeof(desc), "get_integer('%s')", path);
 	printf("%s = %" PRId64, desc, (int64_t)wanted);
 	if (LK_OK != expect_code) {
-		printf("; expect code %s '%s'",
-			lkonf_error_to_string(expect_code), expect_str);
+		printf("; expect code %d [%s] '%s'",
+			expect_code, lkonf_error_to_string(expect_code),
+			expect_str);
 	}
 	printf("\n");
 
@@ -1110,8 +1122,7 @@ test_get_integer(void)
 		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
-	exercise_get_integer("badrun", 0,
-		LK_LUA_ERROR, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
+	exercise_get_integer("badrun", 0, LK_LUA_ERROR, badrun_error);
 
 	/* pass: jri */
 	exercise_get_integer("jri", 5, LK_OK, "");
@@ -1135,8 +1146,9 @@ exercise_get_string(
 	snprintf(desc, sizeof(desc), "get_string('%s')", path);
 	printf("%s = '%s'/%zu", desc, wantstr, wantlen);
 	if (LK_OK != expect_code) {
-		printf("; expect code %s '%s'",
-			lkonf_error_to_string(expect_code), expect_str);
+		printf("; expect code %d [%s] '%s'",
+			expect_code, lkonf_error_to_string(expect_code),
+			expect_str);
 	}
 	printf("\n");
 
@@ -1282,8 +1294,7 @@ test_get_string(void)
 		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
-	exercise_get_string("badrun", "", 0,
-		LK_LUA_ERROR, "[string \"b1 = true d1 = 1.01 i1 = 1 s1 = \"1\" t2 = { ...\"]:1: attempt to call global 'print' (a nil value)");
+	exercise_get_string("badrun", "", 0, LK_LUA_ERROR, badrun_error);
 
 	/* pass: jrs */
 	exercise_get_string("jrs", "just right!", 11, LK_OK, "");
