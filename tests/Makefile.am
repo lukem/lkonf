@@ -5,7 +5,8 @@
 AM_CFLAGS = $(WARNCFLAGS)
 
 AM_CPPFLAGS = \
-	-I$(top_srcdir)/src
+	-I$(top_srcdir)/src \
+	$(LUA_CFLAGS)
 
 LDADD = \
 	$(builddir)/../src/liblkonf.la
