@@ -1126,9 +1126,9 @@ test_get_integer(void)
 void
 exercise_get_string(
 	const char *		path,
-	const const char *	wantstr,
+	const char *		wantstr,
 	const size_t		wantlen,
-	const lkonf_error		expect_code,
+	const lkonf_error	expect_code,
 	const char *		expect_str)
 {
 	char desc[128];
