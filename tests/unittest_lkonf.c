@@ -376,9 +376,9 @@ format_keys(lkonf_keys keys)
 
 void
 exercise_get_boolean(
+	const bool		wanted,
 	const char *		path,
 	lkonf_keys		keys,
-	const bool		wanted,
 	const lkonf_error	expect_code,
 	const char *		expect_str)
 {
@@ -471,115 +471,162 @@ test_get_boolean(void)
 	}
 
 	/* pass: b1 */
-	exercise_get_boolean("b1", 0, true, LK_OK, "");
+	exercise_get_boolean(true,
+		"b1", 0,
+		LK_OK, "");
 
-	/* pass: top-level key 'missing' not set */
-	exercise_get_boolean("missing", 0, true, LK_NOT_FOUND, "");
+	/* fail: top-level key 'missing' not set */
+	exercise_get_boolean(true,
+		"missing", 0,
+		LK_NOT_FOUND, "");
 
 	/* pass: t2.b */
-	exercise_get_boolean("t2.b", 0, false, LK_OK, "");
+	exercise_get_boolean(false,
+		"t2.b", 0,
+		LK_OK, "");
 
 	/* pass: t3.t.b3 */
-	exercise_get_boolean("t3.t.b3", 0, false, LK_OK, "");
+	exercise_get_boolean(false,
+		"t3.t.b3", 0,
+		LK_OK, "");
+
+	/* (no test for t6 "" 6.6 bm) */
 
 	/* pass: t3.t.absent not set */
-	exercise_get_boolean("t3.t.absent", 0, true, LK_NOT_FOUND, "");
+	exercise_get_boolean(true,
+		"t3.t.absent", 0,
+		LK_NOT_FOUND, "");
 
 	/* fail: t3.t. */
-	exercise_get_boolean("t3.t.", 0, false,
+	exercise_get_boolean(false,
+		"t3.t.", 0,
 		LK_OUT_OF_RANGE, "Empty component in: t3.t.");
 
 	/* fail: t3.t.b3.k4 */
-	exercise_get_boolean("t3.t.b3.k4", 0, true,
+	exercise_get_boolean(true,
+		"t3.t.b3.k4", 0,
 		LK_OUT_OF_RANGE, "Not a table: t3.t.b3");
 
 	/* fail: t3.t.i3 (not a boolean)  */
-	exercise_get_boolean("t3.t.i3", 0, false,
+	exercise_get_boolean(false,
+		"t3.t.i3", 0,
 		LK_OUT_OF_RANGE, "Not a boolean: t3.t.i3");
 
 	/* fail: t3.k.k2 */
-	exercise_get_boolean("t3.k.k2", 0, false,
+	exercise_get_boolean(false,
+		"t3.k.k2", 0,
 		LK_OUT_OF_RANGE, "Not a table: t3.k");
 
 	/* fail: t3.12345.3 */
-	exercise_get_boolean("t3.12345.3", 0, false,
+	exercise_get_boolean(false,
+		"t3.12345.3", 0,
 		LK_OUT_OF_RANGE, "Not a table: t3.12345");
 
 	/* pass: tf.b function returning boolean */
-	exercise_get_boolean("tf.b", 0, true, LK_OK, "");
+	exercise_get_boolean(true,
+		"tf.b", 0,
+		LK_OK, "");
 
 	/* fail: tf.b. (trailing .) */
-	exercise_get_boolean("tf.b.", 0, true,
+	exercise_get_boolean(true,
+		"tf.b.", 0,
 		LK_OUT_OF_RANGE, "Not a table: tf.b");
 
 	/* fail: t5i function not returning boolean */
-	exercise_get_boolean("t5i", 0, false,
+	exercise_get_boolean(false,
+		"t5i", 0,
 		LK_OUT_OF_RANGE, "Not a boolean: t5i");
 
 	/* fail: tf.i function not returning boolean */
-	exercise_get_boolean("tf.i", 0, false,
+	exercise_get_boolean(false,
+		"tf.i", 0,
 		LK_OUT_OF_RANGE, "Not a boolean: tf.i");
 
 	/* fail: t6..k2 - empty key */
-	exercise_get_boolean("t6..k2", 0, true,
+	exercise_get_boolean(true,
+		"t6..k2", 0,
 		LK_OUT_OF_RANGE, "Empty component in: t6..k2");
 
 	/* fail: t6 "." k2 - not a table "." */
-	exercise_get_boolean("t6...k2", 0, false,
+	exercise_get_boolean(false,
+		"t6...k2", 0,
 		LK_OUT_OF_RANGE, "Empty component in: t6...k2");
 
 	/* fail: "" */
-	exercise_get_boolean("", 0, false, LK_OUT_OF_RANGE, "Empty path");
+	exercise_get_boolean(false,
+		"", 0,
+		LK_OUT_OF_RANGE, "Empty path");
 
 	/* fail: "." */
-	exercise_get_boolean(".", 0, false,
+	exercise_get_boolean(false,
+		".", 0,
 		LK_OUT_OF_RANGE, "Empty component in: .");
 
-	/* pass: x */
-	exercise_get_boolean("b", 0, true, LK_OK, "");
+	/* pass: b */
+	exercise_get_boolean(true,
+		"b", 0,
+		LK_OK, "");
 
 	/* pass: loooooooooooooooooooooooooooong.x.yb */
-	exercise_get_boolean("loooooooooooooooooooooooooooong.x.yb", 0, true,
+	exercise_get_boolean(true,
+		"loooooooooooooooooooooooooooong.x.yb", 0,
 		LK_OK, "");
 
 	/* fail: t7. */
-	exercise_get_boolean("t7.", 0, true,
+	exercise_get_boolean(true,
+		"t7.", 0,
 		LK_OUT_OF_RANGE, "Empty component in: t7.");
 
 	/* fail: .t8 */
-	exercise_get_boolean(".t8", 0, true,
+	exercise_get_boolean(true,
+		".t8", 0,
 		LK_OUT_OF_RANGE, "Empty component in: .t8");
 
 	/* fail: t9n.1 */
 /* TODO: fix path lookup to support integer lookup? */
-	exercise_get_boolean("t9n.1", 0, true, LK_NOT_FOUND, "");
+	exercise_get_boolean(true,
+		"t9n.1", 0,
+		LK_NOT_FOUND, "");
 
 	/* pass: t9s.1 */
-	exercise_get_boolean("t9s.1", 0, true, LK_OK, "");
+	exercise_get_boolean(true,
+		"t9s.1", 0,
+		LK_OK, "");
 
 	/* fail: t */
-	exercise_get_boolean("t", 0, false,
+	exercise_get_boolean(false,
+		"t", 0,
 		LK_OUT_OF_RANGE, "Not a boolean: t");
 
 	/* fail: t. */
-	exercise_get_boolean("t.", 0, false,
+	exercise_get_boolean(false,
+		"t.", 0,
 		LK_OUT_OF_RANGE, "Empty component in: t.");
 
-	/* pass: t.k nil VALUE */
-	exercise_get_boolean("t.k", 0, true, LK_NOT_FOUND, "");
+	/* fail: t.k nil VALUE */
+	exercise_get_boolean(true,
+		"t.k", 0,
+		LK_NOT_FOUND, "");
 
 	/* fail: toolong takes too long */
-	exercise_get_boolean("toolong", 0, true,
+	exercise_get_boolean(true,
+		"toolong", 0,
 		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
-	exercise_get_boolean("badrun", 0, false, LK_LUA_ERROR, badrun_error);
+	exercise_get_boolean(false,
+		"badrun", 0,
+		LK_LUA_ERROR, badrun_error);
 
 	/* pass: jrb */
-	exercise_get_boolean("jrb", 0, true, LK_OK, "");
+	exercise_get_boolean(true,
+		"jrb", 0,
+		LK_OK, "");
 
 	/* fail: hidden */
-	exercise_get_boolean("hidden", 0, true, LK_NOT_FOUND, "");
+	exercise_get_boolean(true,
+		"hidden", 0,
+		LK_NOT_FOUND, "");
 
 	return EXIT_SUCCESS;
 }
@@ -635,125 +682,167 @@ test_getkey_boolean(void)
 	}
 
 	/* pass: b1 */
-	exercise_get_boolean("b1", (lkonf_keys){ "b1", 0 }, true, LK_OK, "");
+	exercise_get_boolean(true,
+		"b1", (lkonf_keys){ "b1", 0 },
+		LK_OK, "");
 
-	/* pass: top-level key 'missing' not set */
-	exercise_get_boolean("missing", (lkonf_keys){ "missing", 0 },
-		true, LK_NOT_FOUND, "");
+	/* fail: top-level key 'missing' not set */
+	exercise_get_boolean(true,
+		"missing", (lkonf_keys){ "missing", 0 },
+		LK_NOT_FOUND, "");
 
-	/* pass: t2.b */
-	exercise_get_boolean("t2 b", (lkonf_keys){"t2", "b", 0},
-		false, LK_OK, "");
+	/* pass: t2 b */
+	exercise_get_boolean(false,
+		"t2 b", (lkonf_keys){"t2", "b", 0},
+		LK_OK, "");
 
-	/* pass: t3.t.b3 */
-	exercise_get_boolean("t3 t b3", (lkonf_keys){"t3", "t", "b3", 0},
-		false, LK_OK, "");
+	/* pass: t3 t b3 */
+	exercise_get_boolean(false,
+		"t3 t b3", (lkonf_keys){"t3", "t", "b3", 0},
+		LK_OK, "");
 
-	/* pass: t6.""."6.6".bm */
-	exercise_get_boolean("t6 \"\" \"6.6\" bm",
-		(lkonf_keys){"t6", "", "6.6", "bm", 0},
-		true, LK_OK, "");
+	/* pass: t6 "" "6.6" bm */
+	exercise_get_boolean(true,
+		"t6 \"\" \"6.6\" bm", (lkonf_keys){"t6", "", "6.6", "bm", 0},
+		LK_OK, "");
 
-	/* pass: t3.t.absent not set */
-	exercise_get_boolean("t3 t absent",
-		(lkonf_keys){"t3", "t", "absent", 0},
-		true, LK_NOT_FOUND, "");
+	/* fail: t3 t absent not set */
+	exercise_get_boolean(true,
+		"t3 t absent", (lkonf_keys){"t3", "t", "absent", 0},
+		LK_NOT_FOUND, "");
 
-	/* pass: t3.t."" not set */
-	exercise_get_boolean("t3 t \"\"", (lkonf_keys){"t3", "t", "", 0},
-		true, LK_NOT_FOUND, "");
+	/* fail: t3 t "" not set */
+	exercise_get_boolean(true,
+		"t3 t \"\"", (lkonf_keys){"t3", "t", "", 0},
+		LK_NOT_FOUND, "");
 
-	/* fail: t3.t.b3.k4 */
-	exercise_get_boolean("t3 t b3 k4",
-		(lkonf_keys){"t3", "t", "b3", "k4", 0},
-		true, LK_OUT_OF_RANGE, "Not a table: b3");
+	/* fail: t3 t b3 k4 */
+	exercise_get_boolean(true,
+		"t3 t b3 k4", (lkonf_keys){"t3", "t", "b3", "k4", 0},
+		LK_OUT_OF_RANGE, "Not a table: b3");
 
-	/* fail: t3.t.i3 (not a boolean)  */
-	exercise_get_boolean("t3 t i3",
-		(lkonf_keys){"t3", "t", "i3", 0},
-		false, LK_OUT_OF_RANGE, "Not a boolean: i3");
+	/* fail: t3 t i3 (not a boolean)  */
+	exercise_get_boolean(false,
+		"t3 t i3", (lkonf_keys){"t3", "t", "i3", 0},
+		LK_OUT_OF_RANGE, "Not a boolean: i3");
 
-	/* fail: t3.k.k2 */
-	exercise_get_boolean("t3 k k2",
-		(lkonf_keys){"t3", "k", "k2", 0},
-		false, LK_OUT_OF_RANGE, "Not a table: k");
+	/* fail: t3 k k2 */
+	exercise_get_boolean(false,
+		"t3 k k2", (lkonf_keys){"t3", "k", "k2", 0},
+		LK_OUT_OF_RANGE, "Not a table: k");
 
-	/* fail: t3.12345.3 */
-	exercise_get_boolean("t3 12345 3",
-		(lkonf_keys){"t3", "12345", "3", 0},
-		false, LK_OUT_OF_RANGE, "Not a table: 12345");
+	/* fail: t3 12345 3 */
+	exercise_get_boolean(false,
+		"t3 12345 3", (lkonf_keys){"t3", "12345", "3", 0},
+		LK_OUT_OF_RANGE, "Not a table: 12345");
 
-	/* pass: tf.b function returning boolean */
-	exercise_get_boolean("tf b", (lkonf_keys){"tf", "b", 0},
-		true, LK_OK, "");
+	/* pass: tf b function returning boolean */
+	exercise_get_boolean(true,
+		"tf b", (lkonf_keys){"tf", "b", 0},
+		LK_OK, "");
 
 	/* fail: tf b "" (trailing .) */
-	exercise_get_boolean("tf b \"\"",
-		(lkonf_keys){"tf", "b", "", 0},
-		true, LK_OUT_OF_RANGE, "Not a table: b");
+	exercise_get_boolean(true,
+		"tf b \"\"", (lkonf_keys){"tf", "b", "", 0},
+		LK_OUT_OF_RANGE, "Not a table: b");
 
-	/* fail: tf.i function not returning boolean */
-	exercise_get_boolean("tf i", (lkonf_keys){"tf", "i", 0},
-		false, LK_OUT_OF_RANGE, "Not a boolean: i");
+	/* fail: t5i function not returning boolean */
+	exercise_get_boolean(false,
+		"t5i", (lkonf_keys){"t5i", 0},
+		LK_OUT_OF_RANGE, "Not a boolean: t5i");
 
-	/* pass: t6 "" k2 - missing key k2 */
-	exercise_get_boolean("t6 \"\" k2", (lkonf_keys){"t6", "", "k2", 0},
-		true, LK_NOT_FOUND, "");
+	/* fail: tf i function not returning boolean */
+	exercise_get_boolean(false,
+		"tf i", (lkonf_keys){"tf", "i", 0},
+		LK_OUT_OF_RANGE, "Not a boolean: i");
+
+	/* fail: t6 "" k2 - missing key k2 */
+	exercise_get_boolean(true,
+		"t6 \"\" k2", (lkonf_keys){"t6", "", "k2", 0},
+		LK_NOT_FOUND, "");
 
 	/* pass: t6 "." b */
-	exercise_get_boolean("t6 \".\" b", (lkonf_keys){"t6", ".", "b", 0},
-		false, LK_OK, "");
+	exercise_get_boolean(false,
+		"t6 \".\" b", (lkonf_keys){"t6", ".", "b", 0},
+		LK_OK, "");
 
 	/* fail: "" empty key */
-	exercise_get_boolean("", (lkonf_keys){"", 0},
-		true, LK_OUT_OF_RANGE, "Empty top-level key");
+	exercise_get_boolean(true,
+		"", (lkonf_keys){"", 0},
+		LK_OUT_OF_RANGE, "Empty top-level key");
 
-	/* pass: "." absent */
-	exercise_get_boolean(".", (lkonf_keys){".", 0},
-		true, LK_NOT_FOUND, "");
+	/* fail: "." */
+	exercise_get_boolean(true,
+		".", (lkonf_keys){".", 0},
+		LK_NOT_FOUND, "");
 
 	/* pass: b */
-	exercise_get_boolean("b", (lkonf_keys){"b", 0}, true, LK_OK, "");
+	exercise_get_boolean(true,
+		"b", (lkonf_keys){"b", 0},
+		LK_OK, "");
 
-	/* pass: loooooooooooooooooooooooooooong.x.yb */
-	exercise_get_boolean("loooooooooooooooooooooooooooong x yb",
+	/* pass: loooooooooooooooooooooooooooong x yb */
+	exercise_get_boolean(true,
+		"loooooooooooooooooooooooooooong x yb",
 		(lkonf_keys){"loooooooooooooooooooooooooooong", "x", "yb", 0},
-		true, LK_OK, "");
+		LK_OK, "");
 
 	/* fail: t7 "" - not a bool */
-	exercise_get_boolean("t7 \"\"", (lkonf_keys){"t7", "", 0},
-		true, LK_OUT_OF_RANGE, "Not a boolean: ");
+	exercise_get_boolean(true,
+		"t7 \"\"", (lkonf_keys){"t7", "", 0},
+		LK_OUT_OF_RANGE, "Not a boolean: ");
 
 	/* fail: "" t8 */
-	exercise_get_boolean("\"\" t8", (lkonf_keys){"", "t8", 0},
-		true, LK_OUT_OF_RANGE, "Empty top-level key");
+	exercise_get_boolean(true,
+		"\"\" t8", (lkonf_keys){"", "t8", 0},
+		LK_OUT_OF_RANGE, "Empty top-level key");
+
+	/* fail: t9n 1 */
+/* TODO: fix path lookup to support integer lookup? */
+	exercise_get_boolean(true,
+		"t9n 1", (lkonf_keys){"t9n", "1", 0},
+		LK_NOT_FOUND, "");
+
+	/* pass: t9s 1 */
+	exercise_get_boolean(true,
+		"t9s 1", (lkonf_keys){"t9s", "1", 0},
+		LK_OK, "");
+
 
 	/* fail: t */
-	exercise_get_boolean("t", (lkonf_keys){"t", 0},
-		false, LK_OUT_OF_RANGE, "Not a boolean: t");
+	exercise_get_boolean(false,
+		"t", (lkonf_keys){"t", 0},
+		LK_OUT_OF_RANGE, "Not a boolean: t");
 
-	/* pass: t "" */
-	exercise_get_boolean("t \"\"", (lkonf_keys){"t", "", 0},
-		true, LK_NOT_FOUND, "");
+	/* fail: t "" */
+	exercise_get_boolean(true,
+		"t \"\"", (lkonf_keys){"t", "", 0},
+		LK_NOT_FOUND, "");
 
-	/* pass: t.k nil VALUE */
-	exercise_get_boolean("t.k", (lkonf_keys){"t", "k", 0},
-		true, LK_NOT_FOUND, "");
+	/* fail: t k nil VALUE */
+	exercise_get_boolean(true,
+		"t.k", (lkonf_keys){"t", "k", 0},
+		LK_NOT_FOUND, "");
 
 	/* fail: toolong takes too long */
-	exercise_get_boolean("toolong", (lkonf_keys){"toolong", 0},
-		true, LK_LUA_ERROR, "Instruction count exceeded");
+	exercise_get_boolean(true,
+		"toolong", (lkonf_keys){"toolong", 0},
+		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
-	exercise_get_boolean("badrun", (lkonf_keys){"badrun", 0},
-		false, LK_LUA_ERROR, badrun_error);
+	exercise_get_boolean(false,
+		"badrun", (lkonf_keys){"badrun", 0},
+		LK_LUA_ERROR, badrun_error);
 
 	/* pass: jrb */
-	exercise_get_boolean("jrb", (lkonf_keys){"jrb", 0}, true, LK_OK, "");
+	exercise_get_boolean(true,
+		"jrb", (lkonf_keys){"jrb", 0},
+		LK_OK, "");
 
 	/* fail: hidden */
-	exercise_get_boolean("hidden", (lkonf_keys){"hidden", 0},
-		true, LK_NOT_FOUND, "");
+	exercise_get_boolean(true,
+		"hidden", (lkonf_keys){"hidden", 0},
+		LK_NOT_FOUND, "");
 
 	return EXIT_SUCCESS;
 }
