@@ -65,6 +65,7 @@ enum TestFlags
 	TF_getkey_boolean	= 1<<9,
 	TF_getkey_double	= 1<<10,
 	TF_getkey_integer	= 1<<11,
+	TF_getkey_string	= 1<<12,
 };
 
 
@@ -1902,7 +1903,7 @@ test_get_string(void)
 		"t3.t.", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t3.t.");
 
-	/* fail: t3.t.i3.k4 */
+	/* fail: t3.t.s3.k4 */
 	exercise_get_string("", 0,
 		"t3.t.s3.k4", NULL,
 		LK_OUT_OF_RANGE, "Not a table: t3.t.s3");
@@ -2031,6 +2032,209 @@ test_get_string(void)
 	return EXIT_SUCCESS;
 }
 
+int
+test_getkey_string(void)
+{
+	printf("lkonf_getkey_string()\n");
+
+	/* fail: load null lkonf_context */
+	{
+		assert(LK_INVALID_ARGUMENT == lkonf_getkey_string(0, 0, 0, 0));
+	}
+
+	/* fail: null oValue */
+	{
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
+
+		const lkonf_error res = lkonf_getkey_string(lc,
+			(lkonf_keys){ 0 }, 0, 0);
+		ensure_result(lc, res,
+			"getkey_string(lc, {0}, 0, 0)",
+			LK_INVALID_ARGUMENT, "oValue NULL");
+
+		lkonf_destruct(lc);
+	}
+
+	/* fail: null iKeys */
+	{
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
+
+		char * v = 0;
+		const lkonf_error res = lkonf_getkey_string(lc, 0, &v, 0);
+		ensure_result(lc, res,
+			"getkey_string(lc, 0, &v)",
+			LK_INVALID_ARGUMENT, "iKeys NULL");
+
+		lkonf_destruct(lc);
+	}
+
+	/* pass: s1 */
+	exercise_get_string("1", 1,
+		"s1", (lkonf_keys){"s1", 0},
+		LK_OK, "");
+
+	/* fail: top-level key 'missing' not set */
+	exercise_get_string("", 0,
+		"missing", (lkonf_keys){"missing", 0},
+		LK_NOT_FOUND, "");
+
+	/* pass: t2 empty */
+	exercise_get_string("", 0,
+		"t2 empty", (lkonf_keys){"t2", "empty", 0},
+		LK_OK, "");
+
+	/* pass: t2 2 */
+	exercise_get_string("two", 3,
+		"t2 2", (lkonf_keys){"t2", "2", 0},
+		LK_OK, "");
+
+	/* pass: t3 t s3 */
+	exercise_get_string("thirty three", 12,
+		"t3 t s3", (lkonf_keys){"t3", "t", "s3", 0},
+		LK_OK, "");
+
+	/* pass: t3 t absent not set */
+	exercise_get_string("", 0,
+		"t3 t absent", (lkonf_keys){"t3", "t", "absent", 0},
+		LK_NOT_FOUND, "");
+
+	/* fail: t3 t "" */
+	exercise_get_string("", 0,
+		"t3 t \"\"", (lkonf_keys){"t3", "t", "", 0},
+		LK_NOT_FOUND, "");
+
+	/* fail: t3 t s3 k4 */
+	exercise_get_string("", 0,
+		"t3 t s3 k4", (lkonf_keys){"t3", "t", "s3", "k4", 0},
+		LK_OUT_OF_RANGE, "Not a table: s3");
+
+	/* fail: t3 t b3 (not a string)  */
+	exercise_get_string("", 0,
+		"t3 t b3", (lkonf_keys){"t3", "t", "b3", 0},
+		LK_OUT_OF_RANGE, "Not a string: b3");
+
+	/* fail: t3 k s3 */
+	exercise_get_string("", 0,
+		"t3 k 3", (lkonf_keys){"t3", "k", "3", 0},
+		LK_OUT_OF_RANGE, "Not a table: k");
+
+	/* fail: t3 h2345 3 */
+	exercise_get_string("", 0,
+		"t3 12345 3", (lkonf_keys){"t3", "12345", "3", 0},
+		LK_OUT_OF_RANGE, "Not a table: 12345");
+
+	/* pass: tf.s function returning string */
+	exercise_get_string("tf path=s", 9,
+		"tf s", (lkonf_keys){"tf", "s", 0},
+		LK_OK, "");
+
+	/* fail: tf.s. (trailing .) */
+	exercise_get_string("", 4,
+		"tf s \"\"", (lkonf_keys){"tf", "s", "", 0},
+		LK_OUT_OF_RANGE, "Not a table: s");
+
+	/* fail: t5b function not returning string */
+	exercise_get_string("", 0,
+		"t5b", (lkonf_keys){"t5b", 0},
+		LK_OUT_OF_RANGE, "Not a string: t5b");
+
+	/* fail: tf.i function not returning string */
+	exercise_get_string("", 0,
+		"tf i", (lkonf_keys){"tf", "i", 0},
+		LK_OUT_OF_RANGE, "Not a string: i");
+
+	/* fail: t6 "" k2 - missing key k2 */
+	exercise_get_string("", 6,
+		"t6 \"\" k2", (lkonf_keys){"t6", "", "k2", 0},
+		LK_NOT_FOUND, "");
+
+	/* pass: t6 "." s */
+	exercise_get_string("dot", 3,
+		"t6 \".\" s", (lkonf_keys){"t6", ".", "s", 0},
+		LK_OK, "");
+
+	/* fail: "" */
+	exercise_get_string("", 0,
+		"", (lkonf_keys){"", 0},
+		LK_OUT_OF_RANGE, "Empty top-level key");
+
+	/* fail: "." absent */
+	exercise_get_string("", 0,
+		".", (lkonf_keys){".", 0},
+		LK_NOT_FOUND, "");
+
+	/* pass: s */
+	exercise_get_string("sooooper", 8,
+		"s", (lkonf_keys){"s", 0},
+		LK_OK, "");
+
+	/* pass: loooooooooooooooooooooooooooong x ys */
+	exercise_get_string("yus", 3,
+		"loooooooooooooooooooooooooooong x ys",
+		(lkonf_keys){"loooooooooooooooooooooooooooong", "x", "ys", 0},
+		LK_OK, "");
+
+	/* pass: t7 "" */
+	exercise_get_string("", 0,
+		"t7 \"\"", (lkonf_keys){"t7", "", 0},
+		LK_OK, "");
+
+	/* fail: "" t8 */
+	exercise_get_string("", 0,
+		"\"\" t8", (lkonf_keys){"", "t8", 0},
+		LK_OUT_OF_RANGE, "Empty top-level key");
+
+	/* fail: t9n 4 */
+/* TODO: fix path lookup to support integer lookup? */
+	exercise_get_string("six", 3,
+		"t9n.4", (lkonf_keys){"t9n", "4", 0},
+		LK_NOT_FOUND, "");
+
+	/* pass: t9s 4 */
+	exercise_get_string("six", 3,
+		"t9s.4", (lkonf_keys){"t9s", "4", 0},
+		LK_OK, "");
+
+	/* fail: t */
+	exercise_get_string("", 0,
+		"t", (lkonf_keys){"t", 0},
+		LK_OUT_OF_RANGE, "Not a string: t");
+
+	/* fail: t "" */
+	exercise_get_string("", 0,
+		"t \"\"", (lkonf_keys){"t", "", 0},
+		LK_OUT_OF_RANGE, "Empty component in: t.");
+
+	/* pass: t.k nil VALUE */
+	exercise_get_string("", 0,
+		"t k", (lkonf_keys){"t", "k", 0},
+		LK_NOT_FOUND, "");
+
+	/* fail: toolong takes too long */
+	exercise_get_string("", 0,
+		"toolong", (lkonf_keys){"toolong", 0},
+		LK_LUA_ERROR, "Instruction count exceeded");
+
+	/* fail: badrun calls unknown symbol */
+	exercise_get_string("", 0,
+		"badrun", (lkonf_keys){"badrun", 0},
+		LK_LUA_ERROR, badrun_error);
+
+	/* pass: jrs */
+	exercise_get_string("just right!", 11,
+		"jrs", (lkonf_keys){"jrs", 0},
+		LK_OK, "");
+
+	/* fail: hidden */
+	exercise_get_string("", 0,
+		"hidden", (lkonf_keys){"hidden", 0},
+		LK_NOT_FOUND, "");
+
+	return EXIT_SUCCESS;
+}
+
 /**
  * Mapping of test name to TestFlags and function to execute.
  */
@@ -2052,6 +2256,7 @@ const struct
 	{ "get_integer",	TF_get_integer,		test_get_integer },
 	{ "getkey_integer",	TF_getkey_integer,	test_getkey_integer },
 	{ "get_string",		TF_get_string,		test_get_string },
+	{ "getkey_string",	TF_getkey_string,	test_getkey_string },
 	{ 0,			0,			0 },
 };
 
