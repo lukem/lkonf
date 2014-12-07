@@ -939,7 +939,7 @@ test_get_double(void)
 		"d1", NULL,
 		LK_OK, "");
 
-	/* pass: top-level key 'missing' not set */
+	/* fail: top-level key 'missing' not set */
 	exercise_get_double(5,
 		"missing", NULL,
 		LK_NOT_FOUND, "");
@@ -1155,7 +1155,7 @@ test_getkey_double(void)
 		"d1", (lkonf_keys){ "d1", 0 },
 		LK_OK, "");
 
-	/* pass: top-level key 'missing' not set */
+	/* fail: top-level key 'missing' not set */
 	exercise_get_double(5,
 		"missing", (lkonf_keys){ "missing", 0 },
 		LK_NOT_FOUND, "");
@@ -1225,7 +1225,7 @@ test_getkey_double(void)
 		"tf s", (lkonf_keys){"tf", "s", 0},
 		LK_OUT_OF_RANGE, "Not a double: s");
 
-	/* pass: t6 "" k2 - missing key k2 */
+	/* fail: t6 "" k2 - missing key k2 */
 	exercise_get_double(6,
 		"t6 \"\" k2", (lkonf_keys){"t6", "", "k2", 0},
 		LK_NOT_FOUND, "");
@@ -1408,7 +1408,7 @@ test_get_integer(void)
 		"i1", NULL,
 		LK_OK, "");
 
-	/* pass: top-level key 'missing' not set */
+	/* fail: top-level key 'missing' not set */
 	exercise_get_integer(5,
 		"missing", NULL,
 		LK_NOT_FOUND, "");
@@ -1448,6 +1448,11 @@ test_get_integer(void)
 		"t3.k.i3", NULL,
 		LK_OUT_OF_RANGE, "Not a table: t3.k");
 
+	/* fail: t3.k.k2 */
+	exercise_get_integer(0,
+		"t3.k.k2", NULL,
+		LK_OUT_OF_RANGE, "Not a table: t3.k");
+
 	/* fail: t3.12345.3 */
 	exercise_get_integer(0,
 		"t3.12345.3", NULL,
@@ -1478,10 +1483,10 @@ test_get_integer(void)
 		"t6..k2", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t6..k2");
 
-	/* fail: t6...k2 */
+	/* fail: t6 "." d - not a table "." */
 	exercise_get_integer(0,
-		"t6...k2", NULL,
-		LK_OUT_OF_RANGE, "Empty component in: t6...k2");
+		"t6...d", NULL,
+		LK_OUT_OF_RANGE, "Empty component in: t6...d");
 
 	/* fail: "" */
 	exercise_get_integer(-5,
@@ -1512,6 +1517,17 @@ test_get_integer(void)
 	exercise_get_integer(8,
 		".t8", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: .t8");
+
+	/* fail: t9n.3 */
+/* TODO: fix path lookup to support integer lookup? */
+	exercise_get_integer(6,
+		"t9n.3", NULL,
+		LK_NOT_FOUND, "");
+
+	/* pass: t9s.3 */
+	exercise_get_integer(6,
+		"t9s.3", NULL,
+		LK_OK, "");
 
 	/* fail: t */
 	exercise_get_integer(0,
@@ -1643,7 +1659,7 @@ test_get_string(void)
 	/* pass: s1 */
 	exercise_get_string("s1", "1", 1, LK_OK, "");
 
-	/* pass: top-level key 'missing' not set */
+	/* fail: top-level key 'missing' not set */
 	exercise_get_string("missing", "", 0, LK_NOT_FOUND, "");
 
 	/* pass: t2.empty */
