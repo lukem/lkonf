@@ -27,9 +27,9 @@ t6 = { \
 t7 = { [\"\"] = 777.0 } \
 t9n = { [1] = true, [2] = 6.1, [3] = 6, [4] = \"six\" } \
 t9s = { [\"1\"] = true, [\"2\"] = 6.1, [\"3\"] = 6, [\"4\"] = \"six\" } \
-b = true d = 0.5 i = 11 \
+b = true d = 0.5 i = 11 s='sooooper' \
 t = {} \
-loooooooooooooooooooooooooooong = { x = { yb = true, yd = 99.999, yi=99 }} \
+loooooooooooooooooooooooooooong = { x = { yb = true, yd = 99.999, yi=99, ys='yus', }} \
 jrb = function (x) local f for i=1, 5 do f=i end return true end \
 jrd = function (x) local f for i=1, 5 do f=i end return f-0.1 end \
 jri = function (x) local f for i=1, 5 do f=i end return f end \
@@ -1774,14 +1774,16 @@ test_getkey_integer(void)
 
 void
 exercise_get_string(
-	const char *		path,
 	const char *		wantstr,
 	const size_t		wantlen,
+	const char *		path,
+	lkonf_keys		keys,
 	const lkonf_error	expect_code,
 	const char *		expect_str)
 {
 	char desc[128];
-	snprintf(desc, sizeof(desc), "get_string('%s')", path);
+	snprintf(desc, sizeof(desc), "%s_string('%s')",
+		keys ? "getkey" : "get", path);
 	printf("%s = '%s'/%zu", desc, wantstr, wantlen);
 	if (LK_OK != expect_code) {
 		printf("; expect code %d [%s] '%s'",
@@ -1802,7 +1804,12 @@ exercise_get_string(
 
 	char * gotstr = 0;
 	size_t gotlen = -wantlen;
-	const lkonf_error res = lkonf_get_string(lc, path, &gotstr, &gotlen);
+	lkonf_error res = LK_INVALID_ARGUMENT;
+	if (keys) {
+		res = lkonf_getkey_string(lc, keys, &gotstr, &gotlen);
+	} else {
+		res = lkonf_get_string(lc, path, &gotstr, &gotlen);
+	}
 	ensure_result(lc, res, desc, expect_code, expect_str);
 	if (LK_OK == expect_code) {
 		if (wantlen != gotlen) {
@@ -1861,84 +1868,165 @@ test_get_string(void)
 	}
 
 	/* pass: s1 */
-	exercise_get_string("s1", "1", 1, LK_OK, "");
+	exercise_get_string("1", 1,
+		"s1", NULL,
+		LK_OK, "");
 
 	/* fail: top-level key 'missing' not set */
-	exercise_get_string("missing", "", 0, LK_NOT_FOUND, "");
+	exercise_get_string("", 0,
+		"missing", NULL,
+		LK_NOT_FOUND, "");
 
 	/* pass: t2.empty */
-	exercise_get_string("t2.empty", "", 0, LK_OK, "");
+	exercise_get_string("", 0,
+		"t2.empty", NULL,
+		LK_OK, "");
 
 	/* pass: t2.2 */
-	exercise_get_string("t2.2", "two", 3, LK_OK, "");
+	exercise_get_string("two", 3,
+		"t2.2", NULL,
+		LK_OK, "");
 
 	/* pass: t3.t.s3 */
-	exercise_get_string("t3.t.s3", "thirty three", 12, LK_OK, "");
+	exercise_get_string("thirty three", 12,
+		"t3.t.s3", NULL,
+		LK_OK, "");
 
 	/* pass: t3.t.absent not set */
-	exercise_get_string("t3.t.absent", "", 0, LK_NOT_FOUND, "");
+	exercise_get_string("", 0,
+		"t3.t.absent", NULL,
+		LK_NOT_FOUND, "");
 
 	/* fail: t3.t. */
-	exercise_get_string("t3.t.", "", 0,
+	exercise_get_string("", 0,
+		"t3.t.", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t3.t.");
 
 	/* fail: t3.t.i3.k4 */
-	exercise_get_string("t3.t.i3.k4", "", 0,
-		LK_OUT_OF_RANGE, "Not a table: t3.t.i3");
+	exercise_get_string("", 0,
+		"t3.t.s3.k4", NULL,
+		LK_OUT_OF_RANGE, "Not a table: t3.t.s3");
 
 	/* fail: t3.t.b3 (not a string)  */
-	exercise_get_string("t3.t.b3", "", 0,
+	exercise_get_string("", 0,
+		"t3.t.b3", NULL,
 		LK_OUT_OF_RANGE, "Not a string: t3.t.b3");
 
-	/* fail: t3.k.i3 */
-	exercise_get_string("t3.k.i3", "", 0,
+	/* fail: t3.k.s3 */
+	exercise_get_string("", 0,
+		"t3.k.s3", NULL,
 		LK_OUT_OF_RANGE, "Not a table: t3.k");
 
 	/* fail: t3.12345.3 */
-	exercise_get_string("t3.12345.3", "", 0,
+	exercise_get_string("", 0,
+		"t3.12345.3", NULL,
 		LK_OUT_OF_RANGE, "Not a table: t3.12345");
 
 	/* pass: tf.s function returning string */
-	exercise_get_string("tf.s", "tf path=tf.s", 12, LK_OK, "");
+	exercise_get_string("tf path=tf.s", 12,
+		"tf.s", NULL,
+		LK_OK, "");
 
 	/* fail: tf.s. (trailing .) */
-	exercise_get_string("tf.s.", "", 4,
+	exercise_get_string("", 4,
+		"tf.s.", NULL,
 		LK_OUT_OF_RANGE, "Not a table: tf.s");
 
 	/* fail: t5b function not returning string */
-	exercise_get_string("t5b", "", 0, LK_OUT_OF_RANGE, "Not a string: t5b");
+	exercise_get_string("", 0,
+		"t5b", NULL,
+		LK_OUT_OF_RANGE, "Not a string: t5b");
 
 	/* fail: tf.i function not returning string */
-	exercise_get_string("tf.i", "", 0,
+	exercise_get_string("", 0,
+		"tf.i", NULL,
 		LK_OUT_OF_RANGE, "Not a string: tf.i");
 
 	/* fail: t6..k2 - empty key */
-	exercise_get_string("t6..k2", "", 6,
+	exercise_get_string("", 6,
+		"t6..k2", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t6..k2");
 
-	/* fail: t6...k2 */
-	exercise_get_string("t6...k2", "", 0,
-		LK_OUT_OF_RANGE, "Empty component in: t6...k2");
+	/* fail: t6 "." d - not a table "." */
+	exercise_get_string("", 0,
+		"t6...d", NULL,
+		LK_OUT_OF_RANGE, "Empty component in: t6...d");
 
 	/* fail: "" */
-	exercise_get_string("", "", 0, LK_OUT_OF_RANGE, "Empty path");
+	exercise_get_string("", 0,
+		"", NULL,
+		LK_OUT_OF_RANGE, "Empty path");
 
 	/* fail: "." */
-	exercise_get_string(".", "", 0,
+	exercise_get_string("", 0,
+		".", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: .");
 
+	/* pass: s */
+	exercise_get_string("sooooper", 8,
+		"s", NULL,
+		LK_OK, "");
+
+	/* pass: loooooooooooooooooooooooooooong.x.ys */
+	exercise_get_string("yus", 3,
+		"loooooooooooooooooooooooooooong.x.ys", NULL,
+		LK_OK, "");
+
+	/* fail: t7. */
+	exercise_get_string("", 0,
+		"t7.", NULL,
+		LK_OUT_OF_RANGE, "Empty component in: t7.");
+
+	/* fail: .t8 */
+	exercise_get_string("", 0,
+		".t8", NULL,
+		LK_OUT_OF_RANGE, "Empty component in: .t8");
+
+	/* fail: t9n.4 */
+/* TODO: fix path lookup to support integer lookup? */
+	exercise_get_string("six", 3,
+		"t9n.4", NULL,
+		LK_NOT_FOUND, "");
+
+	/* pass: t9s.4 */
+	exercise_get_string("six", 3,
+		"t9s.4", NULL,
+		LK_OK, "");
+
+	/* fail: t */
+	exercise_get_string("", 0,
+		"t", NULL,
+		LK_OUT_OF_RANGE, "Not a string: t");
+
+	/* fail: t. */
+	exercise_get_string("", 0,
+		"t.", NULL,
+		LK_OUT_OF_RANGE, "Empty component in: t.");
+
+	/* pass: t.k nil VALUE */
+	exercise_get_string("", 0,
+		"t.k", NULL,
+		LK_NOT_FOUND, "");
+
 	/* fail: toolong takes too long */
-	exercise_get_string("toolong", "", 0,
+	exercise_get_string("", 0,
+		"toolong", NULL,
 		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
-	exercise_get_string("badrun", "", 0, LK_LUA_ERROR, badrun_error);
+	exercise_get_string("", 0,
+		"badrun", NULL,
+		LK_LUA_ERROR, badrun_error);
 
 	/* pass: jrs */
-	exercise_get_string("jrs", "just right!", 11, LK_OK, "");
+	exercise_get_string("just right!", 11,
+		"jrs", NULL,
+		LK_OK, "");
 
 	/* fail: hidden */
-	exercise_get_string("hidden", "", 0, LK_NOT_FOUND, "");
+	exercise_get_string("", 0,
+		"hidden", NULL,
+		LK_NOT_FOUND, "");
 
 	return EXIT_SUCCESS;
 }
