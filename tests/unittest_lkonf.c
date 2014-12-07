@@ -63,6 +63,7 @@ enum TestFlags
 	TF_get_integer		= 1<<7,
 	TF_get_string		= 1<<8,
 	TF_getkey_boolean	= 1<<9,
+	TF_getkey_double	= 1<<10,
 };
 
 
@@ -711,7 +712,7 @@ test_getkey_boolean(void)
 	exercise_get_boolean(".", (lkonf_keys){".", 0},
 		true, LK_NOT_FOUND, "");
 
-	/* pass: x */
+	/* pass: b */
 	exercise_get_boolean("b", (lkonf_keys){"b", 0}, true, LK_OK, "");
 
 	/* pass: loooooooooooooooooooooooooooong.x.yb */
@@ -731,8 +732,8 @@ test_getkey_boolean(void)
 	exercise_get_boolean("t", (lkonf_keys){"t", 0},
 		false, LK_OUT_OF_RANGE, "Not a boolean: t");
 
-	/* pass: t."" */
-	exercise_get_boolean("t.", (lkonf_keys){"t", "", 0},
+	/* pass: t "" */
+	exercise_get_boolean("t \"\"", (lkonf_keys){"t", "", 0},
 		true, LK_NOT_FOUND, "");
 
 	/* pass: t.k nil VALUE */
@@ -744,7 +745,8 @@ test_getkey_boolean(void)
 		true, LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
-	exercise_get_boolean("badrun", 0, false, LK_LUA_ERROR, badrun_error);
+	exercise_get_boolean("badrun", (lkonf_keys){"badrun", 0},
+		false, LK_LUA_ERROR, badrun_error);
 
 	/* pass: jrb */
 	exercise_get_boolean("jrb", (lkonf_keys){"jrb", 0}, true, LK_OK, "");
@@ -945,6 +947,194 @@ test_get_double(void)
 
 	/* fail: hidden */
 	exercise_get_double("hidden", NULL, 0, LK_NOT_FOUND, "");
+
+	return EXIT_SUCCESS;
+}
+
+int
+test_getkey_double(void)
+{
+	printf("lkonf_getkey_double()\n");
+
+	/* fail: load null lkonf_context */
+	{
+		assert(LK_INVALID_ARGUMENT == lkonf_getkey_double(0, 0, 0));
+	}
+
+	/* fail: null ovalue */
+	{
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
+
+		const lkonf_error res = lkonf_getkey_double(lc,
+			(lkonf_keys){ 0 }, 0);
+		ensure_result(lc, res,
+			"getkey_double(lc, {0}, 0)",
+			LK_INVALID_ARGUMENT, "oValue NULL");
+
+		lkonf_destruct(lc);
+	}
+
+	/* fail: null iKeys */
+	{
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
+
+		double v = -1;
+		const lkonf_error res = lkonf_getkey_double(lc, 0, &v);
+		ensure_result(lc, res,
+			"getkey_double(lc, 0, &v)",
+			LK_INVALID_ARGUMENT, "iKeys NULL");
+
+		lkonf_destruct(lc);
+	}
+
+	/* fail: empty iKeys */
+	{
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
+
+		double v = 1.1;
+		const lkonf_error res = lkonf_getkey_double(lc,
+			(lkonf_keys){ 0 }, &v);
+		ensure_result(lc, res, "getkey_double(lc, {0}, &v)",
+			LK_OUT_OF_RANGE, "Empty keys");
+
+		lkonf_destruct(lc);
+	}
+
+	/* pass: d1 */
+	exercise_get_double("d1", (lkonf_keys){ "d1", 0 }, 1.01, LK_OK, "");
+
+	/* pass: top-level key 'missing' not set */
+	exercise_get_double("missing", (lkonf_keys){ "missing", 0 },
+		5, LK_NOT_FOUND, "");
+
+	/* pass: t2.d */
+	exercise_get_double("t2 d", (lkonf_keys){"t2", "d", 0},
+		2.714, LK_OK, "");
+
+	/* pass: t3.t.d3 */
+	exercise_get_double("t3 t d3", (lkonf_keys){"t3", "t", "d3", 0},
+		3.1415, LK_OK, "");
+
+	/* pass: t3.t.absent not set */
+	exercise_get_double("t3 t absent",
+		(lkonf_keys){"t3", "t", "absent", 0},
+		5, LK_NOT_FOUND, "");
+
+	/* pass: t3.t."" not set */
+	exercise_get_double("t3 t \"\"",
+		(lkonf_keys){"t3", "t", "", 0},
+		0, LK_NOT_FOUND, "");
+
+	/* fail: t3.t.d3.k4 */
+	exercise_get_double("t3 t d3 k4",
+		(lkonf_keys){"t3", "t", "d3", "k4", 0},
+		33, LK_OUT_OF_RANGE, "Not a table: d3");
+
+	/* fail: t3.t.b3 (not a double)  */
+	exercise_get_double("t3 t b3",
+		(lkonf_keys){"t3", "t", "b3", 0},
+		0, LK_OUT_OF_RANGE, "Not a double: b3");
+
+	/* fail: t3.k.d3 */
+	exercise_get_double("t3 k d3",
+		(lkonf_keys){"t3", "k", "d3", 0},
+		0, LK_OUT_OF_RANGE, "Not a table: k");
+
+	/* fail: t3.12345.3 */
+	exercise_get_double("t3 12345 3",
+		(lkonf_keys){"t3", "12345", "3", 0},
+		0, LK_OUT_OF_RANGE, "Not a table: 12345");
+
+	/* pass: tf.d function returning double */
+	exercise_get_double("tf d",
+		(lkonf_keys){"tf", "d", 0},
+		-4.01, LK_OK, "");
+
+	/* fail: tf.d. (trailing .) */
+	exercise_get_double("tf d \"\"",
+		(lkonf_keys){"tf", "d", "", 0},
+		4, LK_OUT_OF_RANGE, "Not a table: d");
+
+	/* fail: t5b function not returning double */
+	exercise_get_double("t5b",
+		(lkonf_keys){"t5b", 0},
+		0, LK_OUT_OF_RANGE, "Not a double: t5b");
+
+	/* fail: tf s function not returning double */
+	exercise_get_double("tf s", (lkonf_keys){"tf", "s", 0},
+		0, LK_OUT_OF_RANGE, "Not a double: s");
+
+	/* pass: t6 "" k2 - missing key k2 */
+	exercise_get_double("t6 \"\" k2",
+		(lkonf_keys){"t6", "", "k2", 0},
+		6, LK_NOT_FOUND, "");
+
+	/* pass: t6 "." d */
+	exercise_get_double("t6 \".\" d",
+		(lkonf_keys){"t6", ".", "d", 0},
+		-6.001, LK_OK, "");
+
+	/* fail: "" empty key */
+	exercise_get_double("",
+		(lkonf_keys){"", 0},
+		-5, LK_OUT_OF_RANGE, "Empty top-level key");
+
+	/* pass: "." absent */
+	exercise_get_double(".",
+		(lkonf_keys){".", 0},
+		-5, LK_NOT_FOUND, "");
+
+	/* pass: d */
+	exercise_get_double("d", (lkonf_keys){"d", 0}, 0.5, LK_OK, "");
+
+	/* pass: loooooooooooooooooooooooooooong.x.yd */
+	exercise_get_double("loooooooooooooooooooooooooooong x yd",
+		(lkonf_keys){"loooooooooooooooooooooooooooong", "x", "yd", 0},
+		99.999, LK_OK, "");
+
+	/* pass: t7 "" */
+	exercise_get_double("t7 \"\"",
+		(lkonf_keys){"t7", "", 0},
+		777.0, LK_OK, "");
+
+	/* fail: "" t8 */
+	exercise_get_double("\"\" t8",
+		(lkonf_keys){"", "t8", 0},
+		8, LK_OUT_OF_RANGE, "Empty top-level key");
+
+	/* fail: t */
+	exercise_get_double("t",
+		(lkonf_keys){"t", 0},
+		0, LK_OUT_OF_RANGE, "Not a double: t");
+
+	/* fail: t "" */
+	exercise_get_double("t \"\"",
+		(lkonf_keys){"t", "", 0},
+		0, LK_NOT_FOUND, "");
+
+	/* pass: t.k nil VALUE */
+	exercise_get_double("t k",
+		(lkonf_keys){"t", "k", 0},
+		0, LK_NOT_FOUND, "");
+
+	/* fail: toolong takes too long */
+	exercise_get_double("toolong",
+		(lkonf_keys){"toolong", 0},
+		0, LK_LUA_ERROR, "Instruction count exceeded");
+
+	/* fail: badrun calls unknown symbol */
+	exercise_get_double("badrun", (lkonf_keys){"badrun", 0},
+		-1, LK_LUA_ERROR, badrun_error);
+
+	/* pass: jrd */
+	exercise_get_double("jrd", (lkonf_keys){"jrd", 0}, 4.9, LK_OK, "");
+
+	/* fail: hidden */
+	exercise_get_double("hidden", (lkonf_keys){"hidden", 0},
+		0, LK_NOT_FOUND, "");
 
 	return EXIT_SUCCESS;
 }
@@ -1322,6 +1512,7 @@ const struct
 	{ "get_boolean",	TF_get_boolean,		test_get_boolean },
 	{ "getkey_boolean",	TF_getkey_boolean,	test_getkey_boolean },
 	{ "get_double",		TF_get_double,		test_get_double },
+	{ "getkey_double",	TF_getkey_double,	test_getkey_double },
 	{ "get_integer",	TF_get_integer,		test_get_integer },
 	{ "get_string",		TF_get_string,		test_get_string },
 	{ 0,			0,			0 },

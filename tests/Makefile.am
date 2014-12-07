@@ -38,6 +38,7 @@ TESTSUITE_DEPS += \
 	get_integer.at \
 	get_string.at \
 	getkey_boolean.at \
+	getkey_double.at \
 	instruction_limit.at \
 	load_file.at \
 	load_string.at
