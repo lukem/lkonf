@@ -13,7 +13,7 @@ sandbox:
 	apis to setup & manipulate
 	use in lki_call_chunk()
 
-isFunction()
+lkonf_is_function() ?
 
 helpers to call functions and extract results
 
@@ -22,7 +22,5 @@ internal protected wrappers for lua_*() per
 
 integrate doxygen into configure.ac (etc)
 
-unittest_lkonf and testsuite
-	getkey_double
-	getkey_integer
-	getkey_string
+support lua 5.2:
+	- lkonf_load_*(): add mode argument per lua 5.2 (ignored in 5.1)
