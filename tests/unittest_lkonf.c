@@ -472,160 +472,160 @@ test_get_boolean(void)
 
 	/* pass: b1 */
 	exercise_get_boolean(true,
-		"b1", 0,
+		"b1", NULL,
 		LK_OK, "");
 
 	/* fail: top-level key 'missing' not set */
 	exercise_get_boolean(true,
-		"missing", 0,
+		"missing", NULL,
 		LK_NOT_FOUND, "");
 
 	/* pass: t2.b */
 	exercise_get_boolean(false,
-		"t2.b", 0,
+		"t2.b", NULL,
 		LK_OK, "");
 
 	/* pass: t3.t.b3 */
 	exercise_get_boolean(false,
-		"t3.t.b3", 0,
+		"t3.t.b3", NULL,
 		LK_OK, "");
 
 	/* (no test for t6 "" 6.6 bm) */
 
 	/* pass: t3.t.absent not set */
 	exercise_get_boolean(true,
-		"t3.t.absent", 0,
+		"t3.t.absent", NULL,
 		LK_NOT_FOUND, "");
 
 	/* fail: t3.t. */
 	exercise_get_boolean(false,
-		"t3.t.", 0,
+		"t3.t.", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t3.t.");
 
 	/* fail: t3.t.b3.k4 */
 	exercise_get_boolean(true,
-		"t3.t.b3.k4", 0,
+		"t3.t.b3.k4", NULL,
 		LK_OUT_OF_RANGE, "Not a table: t3.t.b3");
 
 	/* fail: t3.t.i3 (not a boolean)  */
 	exercise_get_boolean(false,
-		"t3.t.i3", 0,
+		"t3.t.i3", NULL,
 		LK_OUT_OF_RANGE, "Not a boolean: t3.t.i3");
 
 	/* fail: t3.k.k2 */
 	exercise_get_boolean(false,
-		"t3.k.k2", 0,
+		"t3.k.k2", NULL,
 		LK_OUT_OF_RANGE, "Not a table: t3.k");
 
 	/* fail: t3.12345.3 */
 	exercise_get_boolean(false,
-		"t3.12345.3", 0,
+		"t3.12345.3", NULL,
 		LK_OUT_OF_RANGE, "Not a table: t3.12345");
 
 	/* pass: tf.b function returning boolean */
 	exercise_get_boolean(true,
-		"tf.b", 0,
+		"tf.b", NULL,
 		LK_OK, "");
 
 	/* fail: tf.b. (trailing .) */
 	exercise_get_boolean(true,
-		"tf.b.", 0,
+		"tf.b.", NULL,
 		LK_OUT_OF_RANGE, "Not a table: tf.b");
 
 	/* fail: t5i function not returning boolean */
 	exercise_get_boolean(false,
-		"t5i", 0,
+		"t5i", NULL,
 		LK_OUT_OF_RANGE, "Not a boolean: t5i");
 
 	/* fail: tf.i function not returning boolean */
 	exercise_get_boolean(false,
-		"tf.i", 0,
+		"tf.i", NULL,
 		LK_OUT_OF_RANGE, "Not a boolean: tf.i");
 
 	/* fail: t6..k2 - empty key */
 	exercise_get_boolean(true,
-		"t6..k2", 0,
+		"t6..k2", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t6..k2");
 
 	/* fail: t6 "." k2 - not a table "." */
 	exercise_get_boolean(false,
-		"t6...k2", 0,
+		"t6...k2", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t6...k2");
 
 	/* fail: "" */
 	exercise_get_boolean(false,
-		"", 0,
+		"", NULL,
 		LK_OUT_OF_RANGE, "Empty path");
 
 	/* fail: "." */
 	exercise_get_boolean(false,
-		".", 0,
+		".", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: .");
 
 	/* pass: b */
 	exercise_get_boolean(true,
-		"b", 0,
+		"b", NULL,
 		LK_OK, "");
 
 	/* pass: loooooooooooooooooooooooooooong.x.yb */
 	exercise_get_boolean(true,
-		"loooooooooooooooooooooooooooong.x.yb", 0,
+		"loooooooooooooooooooooooooooong.x.yb", NULL,
 		LK_OK, "");
 
 	/* fail: t7. */
 	exercise_get_boolean(true,
-		"t7.", 0,
+		"t7.", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t7.");
 
 	/* fail: .t8 */
 	exercise_get_boolean(true,
-		".t8", 0,
+		".t8", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: .t8");
 
 	/* fail: t9n.1 */
 /* TODO: fix path lookup to support integer lookup? */
 	exercise_get_boolean(true,
-		"t9n.1", 0,
+		"t9n.1", NULL,
 		LK_NOT_FOUND, "");
 
 	/* pass: t9s.1 */
 	exercise_get_boolean(true,
-		"t9s.1", 0,
+		"t9s.1", NULL,
 		LK_OK, "");
 
 	/* fail: t */
 	exercise_get_boolean(false,
-		"t", 0,
+		"t", NULL,
 		LK_OUT_OF_RANGE, "Not a boolean: t");
 
 	/* fail: t. */
 	exercise_get_boolean(false,
-		"t.", 0,
+		"t.", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t.");
 
 	/* fail: t.k nil VALUE */
 	exercise_get_boolean(true,
-		"t.k", 0,
+		"t.k", NULL,
 		LK_NOT_FOUND, "");
 
 	/* fail: toolong takes too long */
 	exercise_get_boolean(true,
-		"toolong", 0,
+		"toolong", NULL,
 		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
 	exercise_get_boolean(false,
-		"badrun", 0,
+		"badrun", NULL,
 		LK_LUA_ERROR, badrun_error);
 
 	/* pass: jrb */
 	exercise_get_boolean(true,
-		"jrb", 0,
+		"jrb", NULL,
 		LK_OK, "");
 
 	/* fail: hidden */
 	exercise_get_boolean(true,
-		"hidden", 0,
+		"hidden", NULL,
 		LK_NOT_FOUND, "");
 
 	return EXIT_SUCCESS;
@@ -981,7 +981,7 @@ test_get_double(void)
 
 	/* fail: t3.k.k2 */
 	exercise_get_double(0,
-		"t3.k.k2", 0,
+		"t3.k.k2", NULL,
 		LK_OUT_OF_RANGE, "Not a table: t3.k");
 
 	/* fail: t3.12345.3 */
@@ -1052,12 +1052,12 @@ test_get_double(void)
 	/* fail: t9n.2 */
 /* TODO: fix path lookup to support integer lookup? */
 	exercise_get_double(6.1,
-		"t9n.2", 0,
+		"t9n.2", NULL,
 		LK_NOT_FOUND, "");
 
 	/* pass: t9s.2 */
 	exercise_get_double(6.1,
-		"t9s.2", 0,
+		"t9s.2", NULL,
 		LK_OK, "");
 
 	/* fail: t */
@@ -1318,13 +1318,15 @@ test_getkey_double(void)
 
 void
 exercise_get_integer(
-	const char *		path,
 	const lua_Integer	wanted,
-	const lkonf_error		expect_code,
+	const char *		path,
+	lkonf_keys		keys,
+	const lkonf_error	expect_code,
 	const char *		expect_str)
 {
 	char desc[128];
-	snprintf(desc, sizeof(desc), "get_integer('%s')", path);
+	snprintf(desc, sizeof(desc), "get%s_integer('%s')",
+		keys ? "getkey" : "get", path);
 	printf("%s = %" PRId64, desc, (int64_t)wanted);
 	if (LK_OK != expect_code) {
 		printf("; expect code %d [%s] '%s'",
@@ -1344,7 +1346,12 @@ exercise_get_integer(
 	ensure_result(lc, sil, "set_instruction_limit(lc, 100)", LK_OK, "");
 
 	lua_Integer v = -wanted;
-	const lkonf_error res = lkonf_get_integer(lc, path, &v);
+	lkonf_error res = LK_INVALID_ARGUMENT;
+	if (keys) {
+		res = lkonf_getkey_integer(lc, keys, &v);
+	} else {
+		res = lkonf_get_integer(lc, path, &v);
+	}
 	ensure_result(lc, res, desc, expect_code, expect_str);
 	if (LK_OK == expect_code) {
 		if (wanted != v) {
@@ -1397,104 +1404,149 @@ test_get_integer(void)
 	}
 
 	/* pass: i1 */
-	exercise_get_integer("i1", 1, LK_OK, "");
+	exercise_get_integer(1,
+		"i1", NULL,
+		LK_OK, "");
 
 	/* pass: top-level key 'missing' not set */
-	exercise_get_integer("missing", 5, LK_NOT_FOUND, "");
+	exercise_get_integer(5,
+		"missing", NULL,
+		LK_NOT_FOUND, "");
 
 	/* pass: t2.i */
-	exercise_get_integer("t2.i", 2, LK_OK, "");
+	exercise_get_integer(2,
+		"t2.i", NULL,
+		LK_OK, "");
 
 	/* pass: t3.t.i3 */
-	exercise_get_integer("t3.t.i3", 33, LK_OK, "");
+	exercise_get_integer(33,
+		"t3.t.i3", NULL,
+		LK_OK, "");
 
 	/* pass: t3.t.absent not set */
-	exercise_get_integer("t3.t.absent", 5, LK_NOT_FOUND, "");
+	exercise_get_integer(5,
+		"t3.t.absent", NULL,
+		LK_NOT_FOUND, "");
 
 	/* fail: t3.t. */
-	exercise_get_integer("t3.t.", 0,
+	exercise_get_integer(0,
+		"t3.t.", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t3.t.");
 
 	/* fail: t3.t.i3.k4 */
-	exercise_get_integer("t3.t.i3.k4", 33,
+	exercise_get_integer(33,
+		"t3.t.i3.k4", NULL,
 		LK_OUT_OF_RANGE, "Not a table: t3.t.i3");
 
 	/* fail: t3.t.b3 (not an integer)  */
-	exercise_get_integer("t3.t.b3", 0,
+	exercise_get_integer(0,
+		"t3.t.b3", NULL,
 		LK_OUT_OF_RANGE, "Not an integer: t3.t.b3");
 
 	/* fail: t3.k.i3 */
-	exercise_get_integer("t3.k.i3", 0,
+	exercise_get_integer(0,
+		"t3.k.i3", NULL,
 		LK_OUT_OF_RANGE, "Not a table: t3.k");
 
 	/* fail: t3.12345.3 */
-	exercise_get_integer("t3.12345.3", 0,
+	exercise_get_integer(0,
+		"t3.12345.3", NULL,
 		LK_OUT_OF_RANGE, "Not a table: t3.12345");
 
 	/* pass: tf.i function returning integer */
-	exercise_get_integer("tf.i", 4, LK_OK, "");
+	exercise_get_integer(4,
+		"tf.i", NULL,
+		LK_OK, "");
 
 	/* fail: tf.i. (trailing .) */
-	exercise_get_integer("tf.i.", 4, LK_OUT_OF_RANGE, "Not a table: tf.i");
+	exercise_get_integer(4,
+		"tf.i.", NULL,
+		LK_OUT_OF_RANGE, "Not a table: tf.i");
 
 	/* fail: t5b function not returning integer */
-	exercise_get_integer("t5b", 0, LK_OUT_OF_RANGE, "Not an integer: t5b");
+	exercise_get_integer(0,
+		"t5b", NULL,
+		LK_OUT_OF_RANGE, "Not an integer: t5b");
 
 	/* fail: tf.d function not returning integer */
-	exercise_get_integer("tf.b", 2,
+	exercise_get_integer(2,
+		"tf.b", NULL,
 		LK_OUT_OF_RANGE, "Not an integer: tf.b");
 
 	/* fail: t6..k2 - empty key */
-	exercise_get_integer("t6..k2", 6,
+	exercise_get_integer(6,
+		"t6..k2", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t6..k2");
 
 	/* fail: t6...k2 */
-	exercise_get_integer("t6...k2", 0,
+	exercise_get_integer(0,
+		"t6...k2", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t6...k2");
 
 	/* fail: "" */
-	exercise_get_integer("", -5, LK_OUT_OF_RANGE, "Empty path");
+	exercise_get_integer(-5,
+		"", NULL,
+		LK_OUT_OF_RANGE, "Empty path");
 
 	/* fail: "." */
-	exercise_get_integer(".", -5, LK_OUT_OF_RANGE, "Empty component in: .");
+	exercise_get_integer(0,
+		".", NULL,
+		LK_OUT_OF_RANGE, "Empty component in: .");
 
 	/* pass: i */
-	exercise_get_integer("i", 11, LK_OK, "");
+	exercise_get_integer(11,
+		"i", NULL,
+		LK_OK, "");
 
 	/* pass: loooooooooooooooooooooooooooong.x.yi */
-	exercise_get_integer("loooooooooooooooooooooooooooong.x.yi",
-		99, LK_OK, "");
+	exercise_get_integer(99,
+		"loooooooooooooooooooooooooooong.x.yi", NULL,
+		LK_OK, "");
 
 	/* fail: t7. */
-	exercise_get_integer("t7.", 7,
+	exercise_get_integer(7,
+		"t7.", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t7.");
 
 	/* fail: .t8 */
-	exercise_get_integer(".t8", 8,
+	exercise_get_integer(8,
+		".t8", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: .t8");
 
 	/* fail: t */
-	exercise_get_integer("t", 0, LK_OUT_OF_RANGE, "Not an integer: t");
+	exercise_get_integer(0,
+		"t", NULL,
+		LK_OUT_OF_RANGE, "Not an integer: t");
 
 	/* fail: t. */
-	exercise_get_integer("t.", 0,
+	exercise_get_integer(0,
+		"t.", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t.");
 
 	/* pass: t.k nil VALUE */
-	exercise_get_integer("t.k", 999, LK_NOT_FOUND, "");
+	exercise_get_integer(999,
+		"t.k", NULL,
+		LK_NOT_FOUND, "");
 
 	/* fail: toolong takes too long */
-	exercise_get_integer("toolong", 0,
+	exercise_get_integer(0,
+		"toolong", NULL,
 		LK_LUA_ERROR, "Instruction count exceeded");
 
 	/* fail: badrun calls unknown symbol */
-	exercise_get_integer("badrun", 0, LK_LUA_ERROR, badrun_error);
+	exercise_get_integer(0,
+		"badrun", NULL,
+		LK_LUA_ERROR, badrun_error);
 
 	/* pass: jri */
-	exercise_get_integer("jri", 5, LK_OK, "");
+	exercise_get_integer(5,
+		"jri", NULL,
+		LK_OK, "");
 
 	/* fail: hidden */
-	exercise_get_integer("hidden", 0, LK_NOT_FOUND, "");
+	exercise_get_integer(0,
+		"hidden", NULL,
+		LK_NOT_FOUND, "");
 
 	return EXIT_SUCCESS;
 }
