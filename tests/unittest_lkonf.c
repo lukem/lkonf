@@ -64,6 +64,7 @@ enum TestFlags
 	TF_get_string		= 1<<8,
 	TF_getkey_boolean	= 1<<9,
 	TF_getkey_double	= 1<<10,
+	TF_getkey_integer	= 1<<11,
 };
 
 
@@ -443,7 +444,7 @@ test_get_boolean(void)
 		assert(LK_INVALID_ARGUMENT == lkonf_get_boolean(0, 0, 0));
 	}
 
-	/* fail: null ovalue */
+	/* fail: null oValue */
 	{
 		lkonf_context * lc = lkonf_construct();
 		assert(lc && "lkonf_construct returned 0");
@@ -907,7 +908,7 @@ test_get_double(void)
 		assert(LK_INVALID_ARGUMENT == lkonf_get_double(0, 0, 0));
 	}
 
-	/* fail: null ovalue */
+	/* fail: null oValue */
 	{
 		lkonf_context * lc = lkonf_construct();
 		assert(lc && "lkonf_construct returned 0");
@@ -1108,7 +1109,7 @@ test_getkey_double(void)
 		assert(LK_INVALID_ARGUMENT == lkonf_getkey_double(0, 0, 0));
 	}
 
-	/* fail: null ovalue */
+	/* fail: null oValue */
 	{
 		lkonf_context * lc = lkonf_construct();
 		assert(lc && "lkonf_construct returned 0");
@@ -1250,7 +1251,7 @@ test_getkey_double(void)
 		"d", (lkonf_keys){"d", 0},
 		LK_OK, "");
 
-	/* pass: loooooooooooooooooooooooooooong.x.yd */
+	/* pass: loooooooooooooooooooooooooooong x yd */
 	exercise_get_double(99.999,
 		"loooooooooooooooooooooooooooong x yd",
 		(lkonf_keys){"loooooooooooooooooooooooooooong", "x", "yd", 0},
@@ -1325,7 +1326,7 @@ exercise_get_integer(
 	const char *		expect_str)
 {
 	char desc[128];
-	snprintf(desc, sizeof(desc), "get%s_integer('%s')",
+	snprintf(desc, sizeof(desc), "%s_integer('%s')",
 		keys ? "getkey" : "get", path);
 	printf("%s = %" PRId64, desc, (int64_t)wanted);
 	if (LK_OK != expect_code) {
@@ -1376,7 +1377,7 @@ test_get_integer(void)
 		assert(LK_INVALID_ARGUMENT == lkonf_get_integer(0, 0, 0));
 	}
 
-	/* fail: null ovalue */
+	/* fail: null oValue */
 	{
 		lkonf_context * lc = lkonf_construct();
 		assert(lc && "lkonf_construct returned 0");
@@ -1473,7 +1474,7 @@ test_get_integer(void)
 		"t5b", NULL,
 		LK_OUT_OF_RANGE, "Not an integer: t5b");
 
-	/* fail: tf.d function not returning integer */
+	/* fail: tf.b function not returning integer */
 	exercise_get_integer(2,
 		"tf.b", NULL,
 		LK_OUT_OF_RANGE, "Not an integer: tf.b");
@@ -1567,6 +1568,209 @@ test_get_integer(void)
 	return EXIT_SUCCESS;
 }
 
+int
+test_getkey_integer(void)
+{
+	printf("lkonf_getkey_integer()\n");
+
+	/* fail: load null lkonf_context */
+	{
+		assert(LK_INVALID_ARGUMENT == lkonf_getkey_integer(0, 0, 0));
+	}
+
+	/* fail: null oValue */
+	{
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
+
+		const lkonf_error res = lkonf_getkey_integer(lc,
+			(lkonf_keys){ 0 }, 0);
+		ensure_result(lc, res,
+			"getkey_integer(lc, {0}, 0)",
+			LK_INVALID_ARGUMENT, "oValue NULL");
+
+		lkonf_destruct(lc);
+	}
+
+	/* fail: null iKeys */
+	{
+		lkonf_context * lc = lkonf_construct();
+		assert(lc && "lkonf_construct returned 0");
+
+		lua_Integer v = -1;
+		const lkonf_error res = lkonf_getkey_integer(lc, 0, &v);
+		ensure_result(lc, res,
+			"getkey_integer(lc, 0, &v)",
+			LK_INVALID_ARGUMENT, "iKeys NULL");
+
+		lkonf_destruct(lc);
+	}
+
+	/* pass: i1 */
+	exercise_get_integer(1,
+		"i1", (lkonf_keys){"i1", 0},
+		LK_OK, "");
+
+	/* fail: top-level key 'missing' not set */
+	exercise_get_integer(5,
+		"missing", (lkonf_keys){"missing", 0},
+		LK_NOT_FOUND, "");
+
+	/* pass: t2 i */
+	exercise_get_integer(2,
+		"t2 i", (lkonf_keys){"t2", "i", 0},
+		LK_OK, "");
+
+	/* pass: t3 t i3 */
+	exercise_get_integer(33,
+		"t3 t i3", (lkonf_keys){"t3", "t", "i3", 0},
+		LK_OK, "");
+
+	/* fail: t3 t absent not set */
+	exercise_get_integer(5,
+		"t3 t absent", (lkonf_keys){"t3", "t", "absent", 0},
+		LK_NOT_FOUND, "");
+
+	/* fail: t3 t "" not set */
+	exercise_get_integer(0,
+		"t3 t \"\"", (lkonf_keys){"t3", "t", "", 0},
+		LK_NOT_FOUND, "");
+
+	/* fail: t3 t i3 k4 */
+	exercise_get_integer(33,
+		"t3 t i3 k4", (lkonf_keys){"t3", "t", "i3", "k4", 0},
+		LK_OUT_OF_RANGE, "Not a table: i3");
+
+	/* fail: t3 t b3 (not an integer)  */
+	exercise_get_integer(0,
+		"t3 t b3", (lkonf_keys){"t3", "t", "b3", 0},
+		LK_OUT_OF_RANGE, "Not an integer: b3");
+
+	/* fail: t3 k i3 */
+	exercise_get_integer(0,
+		"t3 k i3", (lkonf_keys){"t3", "k", "i3", 0},
+		LK_OUT_OF_RANGE, "Not a table: k");
+
+	/* fail: t3 k k2 */
+	exercise_get_integer(0,
+		"t3 k k2", (lkonf_keys){"t3", "k", "k2", 0},
+		LK_OUT_OF_RANGE, "Not a table: k");
+
+	/* fail: t3 12345 3 */
+	exercise_get_integer(0,
+		"t3 12345 3", (lkonf_keys){"t3", "12345", "3", 0},
+		LK_OUT_OF_RANGE, "Not a table: 12345");
+
+	/* pass: tf i function returning integer */
+	exercise_get_integer(4,
+		"tf i", (lkonf_keys){"tf", "i", 0},
+		LK_OK, "");
+
+	/* fail: tf i "" */
+	exercise_get_integer(4,
+		"tf i \"\"", (lkonf_keys){"tf", "i", "", 0},
+		LK_OUT_OF_RANGE, "Not a table: i");
+
+	/* fail: t5b function not returning integer */
+	exercise_get_integer(0,
+		"t5b", (lkonf_keys){"t5b", 0},
+		LK_OUT_OF_RANGE, "Not an integer: t5b");
+
+	/* fail: tf b function not returning integer */
+	exercise_get_integer(2,
+		"tf b", (lkonf_keys){"tf", "b", 0},
+		LK_OUT_OF_RANGE, "Not an integer: b");
+
+	/* fail: t6 "" k2 - missing key k2 */
+	exercise_get_integer(6,
+		"t6 \"\" k2", (lkonf_keys){"t6", "", "k2", 0},
+		LK_NOT_FOUND, "");
+
+	/* pass: t6 "." i */
+	exercise_get_integer(-6,
+		"t6 \".\" i", (lkonf_keys){"t6", ".", "i", 0},
+		LK_OK, "");
+
+	/* fail: "" empty key */
+	exercise_get_integer(-5,
+		"", (lkonf_keys){"", 0},
+		LK_OUT_OF_RANGE, "Empty top-level key");
+
+	/* fail: "." absent */
+	exercise_get_integer(0,
+		".", (lkonf_keys){".", 0},
+		LK_NOT_FOUND, "");
+
+	/* pass: i */
+	exercise_get_integer(11,
+		"i", (lkonf_keys){"i", 0},
+		LK_OK, "");
+
+	/* pass: loooooooooooooooooooooooooooong x yi */
+	exercise_get_integer(99,
+		"loooooooooooooooooooooooooooong x yi",
+		(lkonf_keys){"loooooooooooooooooooooooooooong", "x", "yi", 0},
+		LK_OK, "");
+
+	/* pass: t7 "" */
+	exercise_get_integer(777,
+		"t7 \"\"", (lkonf_keys){"t7", "", 0},
+		LK_OK, "");
+
+	/* fail: "" t8 */
+	exercise_get_integer(8,
+		"\"\" t8", (lkonf_keys){"", "t8", 0},
+		LK_OUT_OF_RANGE, "Empty top-level key");
+
+	/* fail: t9n 3 */
+/* TODO: fix path lookup to support integer lookup? */
+	exercise_get_integer(6,
+		"t9n 3", (lkonf_keys){"t9n", "3", 0},
+		LK_NOT_FOUND, "");
+
+	/* pass: t9s 3 */
+	exercise_get_integer(6,
+		"t9s 3", (lkonf_keys){"t9s", "3", 0},
+		LK_OK, "");
+
+	/* fail: t */
+	exercise_get_integer(0,
+		"t", (lkonf_keys){"t", 0},
+		LK_OUT_OF_RANGE, "Not an integer: t");
+
+	/* fail: t "" */
+	exercise_get_integer(0,
+		"t \"\"", (lkonf_keys){"t", "", 0},
+		LK_NOT_FOUND, "");
+
+	/* pass: t.k nil VALUE */
+	exercise_get_integer(999,
+		"t k", (lkonf_keys){"t", "k", 0},
+		LK_NOT_FOUND, "");
+
+	/* fail: toolong takes too long */
+	exercise_get_integer(0,
+		"toolong", (lkonf_keys){"toolong", 0},
+		LK_LUA_ERROR, "Instruction count exceeded");
+
+	/* fail: badrun calls unknown symbol */
+	exercise_get_integer(0,
+		"badrun", (lkonf_keys){"badrun", 0},
+		LK_LUA_ERROR, badrun_error);
+
+	/* pass: jri */
+	exercise_get_integer(5,
+		"jri", (lkonf_keys){"jri", 0},
+		LK_OK, "");
+
+	/* fail: hidden */
+	exercise_get_integer(0,
+		"hidden", (lkonf_keys){"hidden", 0},
+		LK_NOT_FOUND, "");
+
+	return EXIT_SUCCESS;
+}
+
 
 void
 exercise_get_string(
@@ -1629,7 +1833,7 @@ test_get_string(void)
 		assert(LK_INVALID_ARGUMENT == lkonf_get_string(0, 0, 0, 0));
 	}
 
-	/* fail: null ovalue */
+	/* fail: null oValue */
 	{
 		lkonf_context * lc = lkonf_construct();
 		assert(lc && "lkonf_construct returned 0");
@@ -1650,7 +1854,7 @@ test_get_string(void)
 		char * v = 0;
 		const lkonf_error res = lkonf_get_string(lc, 0, &v, 0);
 		ensure_result(lc, res,
-			"get_integer(lc, 0, &v)",
+			"get_string(lc, 0, &v)",
 			LK_INVALID_ARGUMENT, "iPath NULL");
 
 		lkonf_destruct(lc);
@@ -1758,6 +1962,7 @@ const struct
 	{ "get_double",		TF_get_double,		test_get_double },
 	{ "getkey_double",	TF_getkey_double,	test_getkey_double },
 	{ "get_integer",	TF_get_integer,		test_get_integer },
+	{ "getkey_integer",	TF_getkey_integer,	test_getkey_integer },
 	{ "get_string",		TF_get_string,		test_get_string },
 	{ 0,			0,			0 },
 };
