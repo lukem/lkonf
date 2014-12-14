@@ -36,8 +36,10 @@ lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys, size_t * oMatch)
 	size_t ki;
 	for (ki = 1; 0 != iKeys[ki]; ++ki) {
 		if (! lua_istable(iLc->state, -1)) {
+			char kdesc[128];
+			lki_format_keys(iKeys, ki, kdesc, sizeof(kdesc));
 			return lki_set_error_item(iLc,
-				LK_OUT_OF_RANGE, "Not a table", iKeys[ki-1]);
+				LK_OUT_OF_RANGE, "Not a table", kdesc);
 		}
 
 		lua_pushstring(iLc->state, iKeys[ki]);	/* S: t[k] k2 */

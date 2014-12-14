@@ -710,7 +710,7 @@ test_getkey_boolean(void)
 	/* fail: t3 t b3 k4 */
 	exercise_get_boolean(true,
 		"t3 t b3 k4", (lkonf_keys){"t3", "t", "b3", "k4", 0},
-		LK_OUT_OF_RANGE, "Not a table: b3");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"t\".\"b3\"");
 
 	/* fail: t3 t i3 (not a boolean)  */
 	exercise_get_boolean(false,
@@ -720,12 +720,12 @@ test_getkey_boolean(void)
 	/* fail: t3 k k2 */
 	exercise_get_boolean(false,
 		"t3 k k2", (lkonf_keys){"t3", "k", "k2", 0},
-		LK_OUT_OF_RANGE, "Not a table: k");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"k\"");
 
 	/* fail: t3 12345 3 */
 	exercise_get_boolean(false,
 		"t3 12345 3", (lkonf_keys){"t3", "12345", "3", 0},
-		LK_OUT_OF_RANGE, "Not a table: 12345");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"12345\"");
 
 	/* pass: tf b function returning boolean */
 	exercise_get_boolean(true,
@@ -735,7 +735,7 @@ test_getkey_boolean(void)
 	/* fail: tf b "" */
 	exercise_get_boolean(true,
 		"tf b \"\"", (lkonf_keys){"tf", "b", "", 0},
-		LK_OUT_OF_RANGE, "Not a table: b");
+		LK_OUT_OF_RANGE, "Not a table: \"tf\".\"b\"");
 
 	/* fail: t5i function not returning boolean */
 	exercise_get_boolean(false,
@@ -757,6 +757,11 @@ test_getkey_boolean(void)
 		"t6 \".\" b", (lkonf_keys){"t6", ".", "b", 0},
 		LK_OK, "");
 
+	/* fail: t6 "." b "x" */
+	exercise_get_boolean(false,
+		"t6 \".\" b x", (lkonf_keys){"t6", ".", "b", "x", 0},
+		LK_OUT_OF_RANGE, "Not a table: \"t6\".\".\".\"b\"");
+
 	/* fail: "" empty key */
 	exercise_get_boolean(true,
 		"", (lkonf_keys){"", 0},
@@ -771,6 +776,11 @@ test_getkey_boolean(void)
 	exercise_get_boolean(true,
 		"b", (lkonf_keys){"b", 0},
 		LK_OK, "");
+
+	/* fail: s */
+	exercise_get_boolean(true,
+		"s.foo", (lkonf_keys){"s", "foo", 0},
+		LK_OUT_OF_RANGE, "Not a table: \"s\"");
 
 	/* pass: loooooooooooooooooooooooooooong x yb */
 	exercise_get_boolean(true,
@@ -1174,7 +1184,7 @@ test_getkey_double(void)
 	/* fail: t3 t d3 k4 */
 	exercise_get_double(33,
 		"t3 t d3 k4", (lkonf_keys){"t3", "t", "d3", "k4", 0},
-		LK_OUT_OF_RANGE, "Not a table: d3");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"t\".\"d3\"");
 
 	/* fail: t3 t b3 (not a double)  */
 	exercise_get_double(0,
@@ -1184,17 +1194,17 @@ test_getkey_double(void)
 	/* fail: t3 k d3 */
 	exercise_get_double(0,
 		"t3 k d3", (lkonf_keys){"t3", "k", "d3", 0},
-		LK_OUT_OF_RANGE, "Not a table: k");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"k\"");
 
 	/* fail: t3 k k2 */
 	exercise_get_double(0,
 		"t3 k k2", (lkonf_keys){"t3", "k", "k2", 0},
-		LK_OUT_OF_RANGE, "Not a table: k");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"k\"");
 
 	/* fail: t3 12345 3 */
 	exercise_get_double(0,
 		"t3 12345 3", (lkonf_keys){"t3", "12345", "3", 0},
-		LK_OUT_OF_RANGE, "Not a table: 12345");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"12345\"");
 
 	/* pass: tf d function returning double */
 	exercise_get_double(-4.01,
@@ -1204,7 +1214,7 @@ test_getkey_double(void)
 	/* fail: tf d "" */
 	exercise_get_double(4,
 		"tf d \"\"", (lkonf_keys){"tf", "d", "", 0},
-		LK_OUT_OF_RANGE, "Not a table: d");
+		LK_OUT_OF_RANGE, "Not a table: \"tf\".\"d\"");
 
 	/* fail: t5b function not returning double */
 	exercise_get_double(0,
@@ -1629,7 +1639,7 @@ test_getkey_integer(void)
 	/* fail: t3 t i3 k4 */
 	exercise_get_integer(33,
 		"t3 t i3 k4", (lkonf_keys){"t3", "t", "i3", "k4", 0},
-		LK_OUT_OF_RANGE, "Not a table: i3");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"t\".\"i3\"");
 
 	/* fail: t3 t b3 (not an integer)  */
 	exercise_get_integer(0,
@@ -1639,17 +1649,17 @@ test_getkey_integer(void)
 	/* fail: t3 k i3 */
 	exercise_get_integer(0,
 		"t3 k i3", (lkonf_keys){"t3", "k", "i3", 0},
-		LK_OUT_OF_RANGE, "Not a table: k");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"k\"");
 
 	/* fail: t3 k k2 */
 	exercise_get_integer(0,
 		"t3 k k2", (lkonf_keys){"t3", "k", "k2", 0},
-		LK_OUT_OF_RANGE, "Not a table: k");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"k\"");
 
 	/* fail: t3 12345 3 */
 	exercise_get_integer(0,
 		"t3 12345 3", (lkonf_keys){"t3", "12345", "3", 0},
-		LK_OUT_OF_RANGE, "Not a table: 12345");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"12345\"");
 
 	/* pass: tf i function returning integer */
 	exercise_get_integer(4,
@@ -1659,7 +1669,7 @@ test_getkey_integer(void)
 	/* fail: tf i "" */
 	exercise_get_integer(4,
 		"tf i \"\"", (lkonf_keys){"tf", "i", "", 0},
-		LK_OUT_OF_RANGE, "Not a table: i");
+		LK_OUT_OF_RANGE, "Not a table: \"tf\".\"i\"");
 
 	/* fail: t5b function not returning integer */
 	exercise_get_integer(0,

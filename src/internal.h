@@ -205,11 +205,17 @@ lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys, size_t * oMatch);
 /**
  * Format iKeys as a human-readable string.
  * @param iKeys		Keys to format.
+ * @param iMaxKeys	Maximum number of keys in iKeys to format, if > 0.
+ *			If 0, all keys are formatted.
  * @param iBuffer	Buffer to format into.
  * @param iBufSize	Size of buffer.
  */
 LUA_API void
-lki_format_keys(lkonf_keys iKeys, char * iBuffer, size_t iBufSize);
+lki_format_keys(
+	lkonf_keys	iKeys,
+	size_t		iMaxKeys,
+	char *		iBuffer,
+	size_t		iBufSize);
 
 
 #endif /* LKONF_INTERNAL_H */

@@ -50,7 +50,7 @@ lki_set_error_keys(
 	assert(iLc && "iLc NULL");
 
 	char keydesc[sizeof(iLc->error_string)];
-	lki_format_keys(iKeys, keydesc, sizeof(keydesc));
+	lki_format_keys(iKeys, 0, keydesc, sizeof(keydesc));
 
 	iLc->error_code = iCode;
 	snprintf(iLc->error_string, sizeof(iLc->error_string),
