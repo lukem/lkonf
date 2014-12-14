@@ -252,7 +252,10 @@ lkonf_getkey_double(lkonf_context * iLc, lkonf_keys iKeys, double * oValue);
  * @return	Error code, or LK_OK if oValue populated.
  */
 LUA_API lkonf_error
-lkonf_get_integer(lkonf_context * iLc, const char * iPath, lua_Integer * oValue);
+lkonf_get_integer(
+	lkonf_context *	iLc,
+	const char *	iPath,
+	lua_Integer *	oValue);
 
 /**
  * Get integer value at iKeys.
@@ -264,7 +267,10 @@ lkonf_get_integer(lkonf_context * iLc, const char * iPath, lua_Integer * oValue)
  * @return	Error code, or LK_OK if oValue populated.
  */
 LUA_API lkonf_error
-lkonf_getkey_integer(lkonf_context * iLc, lkonf_keys iKeys, lua_Integer * oValue);
+lkonf_getkey_integer(
+	lkonf_context *	iLc,
+	lkonf_keys	iKeys,
+	lua_Integer *	oValue);
 
 
 /**
