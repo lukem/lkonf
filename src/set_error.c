@@ -14,7 +14,10 @@ lki_reset_error(lkonf_context * iLc)
 }
 
 lkonf_error
-lki_set_error(lkonf_context * iLc, lkonf_error iCode, const char * iString)
+lki_set_error(
+	lkonf_context *		iLc,
+	const lkonf_error	iCode,
+	const char *		iString)
 {
 	assert(iLc && "iLc NULL");
 
@@ -26,10 +29,10 @@ lki_set_error(lkonf_context * iLc, lkonf_error iCode, const char * iString)
 
 lkonf_error
 lki_set_error_item(
-	lkonf_context *	iLc,
-	lkonf_error	iCode,
-	const char *	iString,
-	const char *	iItem)
+	lkonf_context *		iLc,
+	const lkonf_error	iCode,
+	const char *		iString,
+	const char *		iItem)
 {
 	assert(iLc && "iLc NULL");
 
@@ -42,10 +45,10 @@ lki_set_error_item(
 
 lkonf_error
 lki_set_error_keys(
-	lkonf_context *	iLc,
-	lkonf_error	iCode,
-	const char *	iString,
-	lkonf_keys	iKeys)
+	lkonf_context *		iLc,
+	const lkonf_error	iCode,
+	const char *		iString,
+	lkonf_keys		iKeys)
 {
 	assert(iLc && "iLc NULL");
 

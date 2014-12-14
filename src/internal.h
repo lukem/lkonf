@@ -88,7 +88,10 @@ lki_reset_error(lkonf_context * iLc);
  * @warning Asserts that iLc is not 0.
  */
 LUA_API lkonf_error
-lki_set_error(lkonf_context * iLc, lkonf_error iCode, const char * iString);
+lki_set_error(
+	lkonf_context *		iLc,
+	const lkonf_error	iCode,
+	const char *		iString);
 
 /**
  * Set the lkonf_context error code and string.
@@ -102,10 +105,10 @@ lki_set_error(lkonf_context * iLc, lkonf_error iCode, const char * iString);
  */
 LUA_API lkonf_error
 lki_set_error_item(
-	lkonf_context *	iLc,
-	lkonf_error	iCode,
-	const char *	iString,
-	const char *	iItem);
+	lkonf_context *		iLc,
+	const lkonf_error	iCode,
+	const char *		iString,
+	const char *		iItem);
 
 /**
  * Set the lkonf_context error code and string.
@@ -119,10 +122,10 @@ lki_set_error_item(
  */
 LUA_API lkonf_error
 lki_set_error_keys(
-	lkonf_context *	iLc,
-	lkonf_error	iCode,
-	const char *	iString,
-	lkonf_keys	iKeys);
+	lkonf_context *		iLc,
+	const lkonf_error	iCode,
+	const char *		iString,
+	lkonf_keys		iKeys);
 
 /**
  * Set the error code to iCode and error string to the string at Lua stack top.
@@ -132,7 +135,7 @@ lki_set_error_keys(
  * @warning Asserts that iLc is not 0.
  */
 LUA_API lkonf_error
-lki_set_error_from_state(lkonf_context * iLc, lkonf_error iCode);
+lki_set_error_from_state(lkonf_context * iLc, const lkonf_error iCode);
 
 
 /**
