@@ -41,6 +41,25 @@ lki_set_error_item(
 }
 
 lkonf_error
+lki_set_error_keys(
+	lkonf_context *	iLc,
+	lkonf_error	iCode,
+	const char *	iString,
+	lkonf_keys	iKeys)
+{
+	assert(iLc && "iLc NULL");
+
+	char keydesc[sizeof(iLc->error_string)];
+	lki_format_keys(iKeys, keydesc, sizeof(keydesc));
+
+	iLc->error_code = iCode;
+	snprintf(iLc->error_string, sizeof(iLc->error_string),
+		"%s: %s", iString, keydesc);
+
+	return iCode;
+}
+
+lkonf_error
 lki_set_error_from_state(lkonf_context * iLc, lkonf_error iCode)
 {
 	return lki_set_error(iLc, iCode, lua_tostring(iLc->state, -1));

@@ -354,25 +354,22 @@ test_instruction_limit(void)
 }
 
 #if 0
-const char *
-format_keys(lkonf_keys keys)
+void
+format_desc(
+	const char *	desc,
+	const char *	path,
+	lkonf_keys	keys,
+	char *		buf,
+	size_t		buflen)
 {
-	static char keydesc[200];
-
-	char * c = keydesc;
-	const char * e = keydesc + sizeof(keydesc);
-	size_t ki = 0;
-	for (ki = 0; keys[ki]; ++ki) {
-		if (ki) {
-			c += snprintf(c, e-c, ",");
-			if (c >= e)
-				break;
-		}
-		c += snprintf(c, e-c, "\"%s\"", keys[ki]);
-		if (c >= e)
-			break;
+	assert(path);
+	if (keys) {
+		char kdesc[300];
+		lki_format_keys(keys, kdesc, sizeof(kdesc));
+		snprintf(buf, buflen, "getkey_%s(%s)", desc, kdesc);
+	} else {
+		snprintf(desc, sizeof(desc), "get_%s(\"%s\")", desc, path);
 	}
-	return keydesc;
 }
 #endif
 
@@ -386,14 +383,6 @@ exercise_get_boolean(
 {
 	assert(path);
 	char desc[300];
-#if 0
-	if (keys) {
-		snprintf(desc, sizeof(desc), "getkey_boolean({%s,0})",
-			format_keys(keys));
-	} else {
-		snprintf(desc, sizeof(desc), "get_boolean(\"%s\")", path);
-	}
-#endif
 	snprintf(desc, sizeof(desc), "%s_boolean(\"%s\")",
 		keys ? "getkey" : "get", path);
 	printf("%s = %s", desc, wanted ? "true" : "false");
@@ -726,7 +715,7 @@ test_getkey_boolean(void)
 	/* fail: t3 t i3 (not a boolean)  */
 	exercise_get_boolean(false,
 		"t3 t i3", (lkonf_keys){"t3", "t", "i3", 0},
-		LK_OUT_OF_RANGE, "Not a boolean: i3");
+		LK_OUT_OF_RANGE, "Not a boolean: \"t3\".\"t\".\"i3\"");
 
 	/* fail: t3 k k2 */
 	exercise_get_boolean(false,
@@ -751,12 +740,12 @@ test_getkey_boolean(void)
 	/* fail: t5i function not returning boolean */
 	exercise_get_boolean(false,
 		"t5i", (lkonf_keys){"t5i", 0},
-		LK_OUT_OF_RANGE, "Not a boolean: t5i");
+		LK_OUT_OF_RANGE, "Not a boolean: \"t5i\"");
 
 	/* fail: tf i function not returning boolean */
 	exercise_get_boolean(false,
 		"tf i", (lkonf_keys){"tf", "i", 0},
-		LK_OUT_OF_RANGE, "Not a boolean: i");
+		LK_OUT_OF_RANGE, "Not a boolean: \"tf\".\"i\"");
 
 	/* fail: t6 "" k2 - missing key k2 */
 	exercise_get_boolean(true,
@@ -792,7 +781,7 @@ test_getkey_boolean(void)
 	/* fail: t7 "" - not a bool */
 	exercise_get_boolean(true,
 		"t7 \"\"", (lkonf_keys){"t7", "", 0},
-		LK_OUT_OF_RANGE, "Not a boolean: ");
+		LK_OUT_OF_RANGE, "Not a boolean: \"t7\".\"\"");
 
 	/* fail: "" t8 */
 	exercise_get_boolean(true,
@@ -814,7 +803,7 @@ test_getkey_boolean(void)
 	/* fail: t */
 	exercise_get_boolean(false,
 		"t", (lkonf_keys){"t", 0},
-		LK_OUT_OF_RANGE, "Not a boolean: t");
+		LK_OUT_OF_RANGE, "Not a boolean: \"t\"");
 
 	/* fail: t "" */
 	exercise_get_boolean(true,
@@ -1190,7 +1179,7 @@ test_getkey_double(void)
 	/* fail: t3 t b3 (not a double)  */
 	exercise_get_double(0,
 		"t3 t b3", (lkonf_keys){"t3", "t", "b3", 0},
-		LK_OUT_OF_RANGE, "Not a double: b3");
+		LK_OUT_OF_RANGE, "Not a double: \"t3\".\"t\".\"b3\"");
 
 	/* fail: t3 k d3 */
 	exercise_get_double(0,
@@ -1220,12 +1209,12 @@ test_getkey_double(void)
 	/* fail: t5b function not returning double */
 	exercise_get_double(0,
 		"t5b", (lkonf_keys){"t5b", 0},
-		LK_OUT_OF_RANGE, "Not a double: t5b");
+		LK_OUT_OF_RANGE, "Not a double: \"t5b\"");
 
 	/* fail: tf s function not returning double */
 	exercise_get_double(0,
 		"tf s", (lkonf_keys){"tf", "s", 0},
-		LK_OUT_OF_RANGE, "Not a double: s");
+		LK_OUT_OF_RANGE, "Not a double: \"tf\".\"s\"");
 
 	/* fail: t6 "" k2 - missing key k2 */
 	exercise_get_double(6,
@@ -1282,7 +1271,7 @@ test_getkey_double(void)
 	/* fail: t */
 	exercise_get_double(0,
 		"t", (lkonf_keys){"t", 0},
-		LK_OUT_OF_RANGE, "Not a double: t");
+		LK_OUT_OF_RANGE, "Not a double: \"t\"");
 
 	/* fail: t "" */
 	exercise_get_double(0,
@@ -1645,7 +1634,7 @@ test_getkey_integer(void)
 	/* fail: t3 t b3 (not an integer)  */
 	exercise_get_integer(0,
 		"t3 t b3", (lkonf_keys){"t3", "t", "b3", 0},
-		LK_OUT_OF_RANGE, "Not an integer: b3");
+		LK_OUT_OF_RANGE, "Not an integer: \"t3\".\"t\".\"b3\"");
 
 	/* fail: t3 k i3 */
 	exercise_get_integer(0,
@@ -1675,12 +1664,12 @@ test_getkey_integer(void)
 	/* fail: t5b function not returning integer */
 	exercise_get_integer(0,
 		"t5b", (lkonf_keys){"t5b", 0},
-		LK_OUT_OF_RANGE, "Not an integer: t5b");
+		LK_OUT_OF_RANGE, "Not an integer: \"t5b\"");
 
 	/* fail: tf b function not returning integer */
 	exercise_get_integer(2,
 		"tf b", (lkonf_keys){"tf", "b", 0},
-		LK_OUT_OF_RANGE, "Not an integer: b");
+		LK_OUT_OF_RANGE, "Not an integer: \"tf\".\"b\"");
 
 	/* fail: t6 "" k2 - missing key k2 */
 	exercise_get_integer(6,
@@ -1737,7 +1726,7 @@ test_getkey_integer(void)
 	/* fail: t */
 	exercise_get_integer(0,
 		"t", (lkonf_keys){"t", 0},
-		LK_OUT_OF_RANGE, "Not an integer: t");
+		LK_OUT_OF_RANGE, "Not an integer: \"t\"");
 
 	/* fail: t "" */
 	exercise_get_integer(0,

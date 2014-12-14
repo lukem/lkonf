@@ -41,8 +41,7 @@ lkonf_getkey_string(
 	}
 
 	if (LUA_TSTRING != lua_type(iLc->state, -1)) {
-		lki_set_error_item(iLc,
-			LK_OUT_OF_RANGE, "Not a string", iKeys[last]);
+		lki_set_error_keys(iLc, LK_OUT_OF_RANGE, "Not a string", iKeys);
 		return lki_state_exit(iLc);
 	}
 
@@ -51,9 +50,9 @@ lkonf_getkey_string(
 
 	char * copy = malloc(len + 1);
 	if (! copy) {
-		lki_set_error_item(iLc,
+		lki_set_error_keys(iLc,
 			LK_RESOURCE_EXHAUSTED,
-			"Copying string result for", iKeys[last]);
+			"Copying string result for", iKeys);
 		return lki_state_exit(iLc);
 	}
 	memcpy(copy, result, len + 1);

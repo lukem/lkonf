@@ -101,8 +101,28 @@ lki_set_error(lkonf_context * iLc, lkonf_error iCode, const char * iString);
  * @warning Asserts that iLc is not 0.
  */
 LUA_API lkonf_error
-lki_set_error_item(lkonf_context * iLc, lkonf_error iCode, const char * iString,
-	const char * iItem);
+lki_set_error_item(
+	lkonf_context *	iLc,
+	lkonf_error	iCode,
+	const char *	iString,
+	const char *	iItem);
+
+/**
+ * Set the lkonf_context error code and string.
+ * Error string is of the form: iString + ": " + lki_format_keys(iKeys).
+ * @param iLc Context.
+ * @param iCode Error code.
+ * @param iString Error string.
+ * @param iKeys Keys to format.
+ * @return iCode.
+ * @warning Asserts that iLc is not 0.
+ */
+LUA_API lkonf_error
+lki_set_error_keys(
+	lkonf_context *	iLc,
+	lkonf_error	iCode,
+	const char *	iString,
+	lkonf_keys	iKeys);
 
 /**
  * Set the error code to iCode and error string to the string at Lua stack top.
@@ -181,5 +201,15 @@ lki_find_table_by_path(lkonf_context * iLc, const char * iPath);
  */
 LUA_API lkonf_error
 lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys, size_t * oMatch);
+
+/**
+ * Format iKeys as a human-readable string.
+ * @param iKeys		Keys to format.
+ * @param iBuffer	Buffer to format into.
+ * @param iBufSize	Size of buffer.
+ */
+LUA_API void
+lki_format_keys(lkonf_keys iKeys, char * iBuffer, size_t iBufSize);
+
 
 #endif /* LKONF_INTERNAL_H */

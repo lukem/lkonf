@@ -34,8 +34,8 @@ lkonf_getkey_boolean(lkonf_context * iLc, lkonf_keys iKeys, bool * oValue)
 	}
 
 	if (LUA_TBOOLEAN != lua_type(iLc->state, -1)) {
-		lki_set_error_item(iLc,
-			LK_OUT_OF_RANGE, "Not a boolean", iKeys[last]);
+		lki_set_error_keys(iLc,
+			LK_OUT_OF_RANGE, "Not a boolean", iKeys);
 		return lki_state_exit(iLc);
 	}
 

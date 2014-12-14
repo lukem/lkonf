@@ -33,6 +33,7 @@ liblkonf_la_SOURCES += \
 	call_chunk.c \
 	find_table_by_keys.c \
 	find_table_by_path.c \
+	format_keys.c \
 	set_error.c \
 	state_entry_exit.c
 
