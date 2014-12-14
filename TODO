@@ -1,5 +1,3 @@
-method to convert lkonf_keys -> string for diag?
-
 support integer key lookup via path?
 e.g,
 	t = {
