@@ -2125,7 +2125,7 @@ test_getkey_string(void)
 		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"12345\"");
 
 	/* pass: tf s function returning string */
-	exercise_get_string("tf path=s", 9,
+	exercise_get_string("tf path=\"tf\".\"s\"", 16,
 		"tf s", (lkonf_keys){"tf", "s", 0},
 		LK_OK, "");
 

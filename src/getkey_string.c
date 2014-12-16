@@ -29,7 +29,9 @@ lkonf_getkey_string(
 	}
 
 	if (lua_isfunction(iLc->state, -1)) {
-		lua_pushstring(iLc->state, iKeys[last]);
+		if (LK_OK != lki_format_keys(iLc, iKeys, 0)) {
+			return lki_state_exit(iLc);
+		}
 		if (LK_OK != lki_call_chunk(iLc, 1, 1)) {
 			return lki_state_exit(iLc);
 		}
