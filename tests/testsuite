@@ -602,7 +602,7 @@ at_help_all="1;construct.at:1;construct;;
 10;getkey_boolean.at:1;getkey_boolean;;
 11;getkey_double.at:1;getkey_double;;
 12;getkey_integer.at:1;getkey_integer;;
-13;getkey_string.at:1;getkey_double;;
+13;getkey_string.at:1;getkey_string;;
 "
 # List of the all the test groups.
 at_groups_all=`$as_echo "$at_help_all" | sed 's/;.*//'`
@@ -2458,7 +2458,7 @@ read at_status <"$at_status_file"
 #AT_STOP_12
 #AT_START_13
 at_fn_group_banner 13 'getkey_string.at:1' \
-  "getkey_double" "                                  "
+  "getkey_string" "                                  "
 at_xfail=no
 (
   $as_echo "13. $at_setup_line: testing $at_desc ..."
@@ -2466,9 +2466,9 @@ at_xfail=no
 
 
 { set +x
-$as_echo "$at_srcdir/getkey_string.at:3: unittest_lkonf getkey_double"
+$as_echo "$at_srcdir/getkey_string.at:3: unittest_lkonf getkey_string"
 at_fn_check_prepare_trace "getkey_string.at:3"
-( $at_check_trace; unittest_lkonf getkey_double
+( $at_check_trace; unittest_lkonf getkey_string
 ) >>"$at_stdout" 2>>"$at_stderr" 5>&-
 at_status=$? at_failed=false
 $at_check_filter
