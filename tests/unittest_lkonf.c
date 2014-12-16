@@ -594,7 +594,7 @@ test_get_boolean(void)
 		"t.", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t.");
 
-	/* fail: t.k nil VALUE */
+	/* fail: t.k nil value */
 	exercise_get_boolean(true,
 		"t.k", NULL,
 		LK_NOT_FOUND, "");
@@ -820,7 +820,7 @@ test_getkey_boolean(void)
 		"t \"\"", (lkonf_keys){"t", "", 0},
 		LK_NOT_FOUND, "");
 
-	/* fail: t k nil VALUE */
+	/* fail: t k nil value */
 	exercise_get_boolean(true,
 		"t.k", (lkonf_keys){"t", "k", 0},
 		LK_NOT_FOUND, "");
@@ -1071,7 +1071,7 @@ test_get_double(void)
 		"t.", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t.");
 
-	/* pass: t.k nil VALUE */
+	/* fail: t.k nil value */
 	exercise_get_double(999,
 		"t.k", NULL,
 		LK_NOT_FOUND, "");
@@ -1288,7 +1288,7 @@ test_getkey_double(void)
 		"t \"\"", (lkonf_keys){"t", "", 0},
 		LK_NOT_FOUND, "");
 
-	/* fail: t.k nil VALUE */
+	/* fail: t k nil value */
 	exercise_get_double(0,
 		"t k", (lkonf_keys){"t", "k", 0},
 		LK_NOT_FOUND, "");
@@ -1540,7 +1540,7 @@ test_get_integer(void)
 		"t.", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t.");
 
-	/* pass: t.k nil VALUE */
+	/* fail: t.k nil value */
 	exercise_get_integer(999,
 		"t.k", NULL,
 		LK_NOT_FOUND, "");
@@ -1743,7 +1743,7 @@ test_getkey_integer(void)
 		"t \"\"", (lkonf_keys){"t", "", 0},
 		LK_NOT_FOUND, "");
 
-	/* pass: t.k nil VALUE */
+	/* fail: t k nil value */
 	exercise_get_integer(999,
 		"t k", (lkonf_keys){"t", "k", 0},
 		LK_NOT_FOUND, "");
@@ -2003,7 +2003,7 @@ test_get_string(void)
 		"t.", NULL,
 		LK_OUT_OF_RANGE, "Empty component in: t.");
 
-	/* pass: t.k nil VALUE */
+	/* fail: t.k nil value */
 	exercise_get_string("", 0,
 		"t.k", NULL,
 		LK_NOT_FOUND, "");
@@ -2107,42 +2107,42 @@ test_getkey_string(void)
 	/* fail: t3 t s3 k4 */
 	exercise_get_string("", 0,
 		"t3 t s3 k4", (lkonf_keys){"t3", "t", "s3", "k4", 0},
-		LK_OUT_OF_RANGE, "Not a table: s3");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"t\".\"s3\"");
 
 	/* fail: t3 t b3 (not a string)  */
 	exercise_get_string("", 0,
 		"t3 t b3", (lkonf_keys){"t3", "t", "b3", 0},
-		LK_OUT_OF_RANGE, "Not a string: b3");
+		LK_OUT_OF_RANGE, "Not a string: \"t3\".\"t\".\"b3\"");
 
 	/* fail: t3 k s3 */
 	exercise_get_string("", 0,
 		"t3 k 3", (lkonf_keys){"t3", "k", "3", 0},
-		LK_OUT_OF_RANGE, "Not a table: k");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"k\"");
 
-	/* fail: t3 h2345 3 */
+	/* fail: t3 12345 3 */
 	exercise_get_string("", 0,
 		"t3 12345 3", (lkonf_keys){"t3", "12345", "3", 0},
-		LK_OUT_OF_RANGE, "Not a table: 12345");
+		LK_OUT_OF_RANGE, "Not a table: \"t3\".\"12345\"");
 
-	/* pass: tf.s function returning string */
+	/* pass: tf s function returning string */
 	exercise_get_string("tf path=s", 9,
 		"tf s", (lkonf_keys){"tf", "s", 0},
 		LK_OK, "");
 
-	/* fail: tf.s. (trailing .) */
+	/* fail: tf s "" */
 	exercise_get_string("", 4,
 		"tf s \"\"", (lkonf_keys){"tf", "s", "", 0},
-		LK_OUT_OF_RANGE, "Not a table: s");
+		LK_OUT_OF_RANGE, "Not a table: \"tf\".\"s\"");
 
 	/* fail: t5b function not returning string */
 	exercise_get_string("", 0,
 		"t5b", (lkonf_keys){"t5b", 0},
-		LK_OUT_OF_RANGE, "Not a string: t5b");
+		LK_OUT_OF_RANGE, "Not a string: \"t5b\"");
 
-	/* fail: tf.i function not returning string */
+	/* fail: tf i function not returning string */
 	exercise_get_string("", 0,
 		"tf i", (lkonf_keys){"tf", "i", 0},
-		LK_OUT_OF_RANGE, "Not a string: i");
+		LK_OUT_OF_RANGE, "Not a string: \"tf\".\"i\"");
 
 	/* fail: t6 "" k2 - missing key k2 */
 	exercise_get_string("", 6,
@@ -2178,7 +2178,7 @@ test_getkey_string(void)
 	/* pass: t7 "" */
 	exercise_get_string("", 0,
 		"t7 \"\"", (lkonf_keys){"t7", "", 0},
-		LK_OK, "");
+		LK_OUT_OF_RANGE, "Not a string: \"t7\".\"\"");
 
 	/* fail: "" t8 */
 	exercise_get_string("", 0,
@@ -2199,14 +2199,14 @@ test_getkey_string(void)
 	/* fail: t */
 	exercise_get_string("", 0,
 		"t", (lkonf_keys){"t", 0},
-		LK_OUT_OF_RANGE, "Not a string: t");
+		LK_OUT_OF_RANGE, "Not a string: \"t\"");
 
 	/* fail: t "" */
 	exercise_get_string("", 0,
 		"t \"\"", (lkonf_keys){"t", "", 0},
-		LK_OUT_OF_RANGE, "Empty component in: t.");
+		LK_NOT_FOUND, "");
 
-	/* pass: t.k nil VALUE */
+	/* fail: t k nil value */
 	exercise_get_string("", 0,
 		"t k", (lkonf_keys){"t", "k", 0},
 		LK_NOT_FOUND, "");
