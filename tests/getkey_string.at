@@ -1,5 +1,5 @@
-AT_SETUP([getkey_double])
+AT_SETUP([getkey_string])
 
-AT_CHECK([unittest_lkonf getkey_double], [0], [ignore])
+AT_CHECK([unittest_lkonf getkey_string], [0], [ignore])
 
 AT_CLEANUP()
