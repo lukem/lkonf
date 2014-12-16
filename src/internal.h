@@ -113,10 +113,12 @@ lki_set_error_item(
 /**
  * Set the lkonf_context error code and string.
  * Error string is of the form: iString + ": " + lki_format_keys(iKeys).
- * @param iLc Context.
- * @param iCode Error code.
- * @param iString Error string.
- * @param iKeys Keys to format.
+ * @param iLc		Context.
+ * @param iCode		Error code.
+ * @param iString	Error string.
+ * @param iKeys		Keys to format.
+ * @param iMaxKeys	Maximum number of keys in iKeys to format, if > 0.
+ *			If 0, all keys are formatted.
  * @return iCode.
  * @warning Asserts that iLc is not 0.
  */
@@ -125,7 +127,8 @@ lki_set_error_keys(
 	lkonf_context *		iLc,
 	const lkonf_error	iCode,
 	const char *		iString,
-	lkonf_keys		iKeys);
+	lkonf_keys		iKeys,
+	size_t			iMaxKeys);
 
 /**
  * Set the error code to iCode and error string to the string at Lua stack top.
@@ -206,19 +209,15 @@ LUA_API lkonf_error
 lki_find_table_by_keys(lkonf_context * iLc, lkonf_keys iKeys, size_t * oMatch);
 
 /**
- * Format iKeys as a human-readable string.
+ * Format iKeys as a human-readable string, and leave on the stack.
+ * @param iLc		lkonf_context.
  * @param iKeys		Keys to format.
  * @param iMaxKeys	Maximum number of keys in iKeys to format, if > 0.
  *			If 0, all keys are formatted.
- * @param iBuffer	Buffer to format into.
- * @param iBufSize	Size of buffer.
+ * @return		Error code, or LK_OK if pushed ok.
  */
-LUA_API void
-lki_format_keys(
-	lkonf_keys	iKeys,
-	size_t		iMaxKeys,
-	char *		iBuffer,
-	size_t		iBufSize);
+LUA_API lkonf_error
+lki_format_keys(lkonf_context * iLc, lkonf_keys iKeys, size_t iMaxKeys);
 
 
 #endif /* LKONF_INTERNAL_H */

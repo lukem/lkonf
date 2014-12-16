@@ -1,34 +1,36 @@
 #include "internal.h"
 
 #include <assert.h>
+#include <lauxlib.h>
 #include <stdio.h>
 
-void
+lkonf_error
 lki_format_keys(
+	lkonf_context *	iLc,
 	lkonf_keys	iKeys,
-	size_t		iMaxKeys,
-	char *		iBuffer,
-	size_t		iBufSize)
+	size_t		iMaxKeys)
 {
-	assert(iBuffer);
-	assert(iBufSize);
+	if (! iLc) {
+		return LK_INVALID_ARGUMENT;
+	}
 
-// TODO rework to format with truncated path at start not end?
+	luaL_Buffer lb;
+	luaL_buffinit(iLc->state, &lb);
 
-	const char * end = iBuffer + iBufSize;
-	size_t ki = 0;
+	size_t ki;
 	for (ki = 0; iKeys[ki]; ++ki) {
 		if (iMaxKeys && ki >= iMaxKeys) {
 			break;
 		}
 		if (ki) {
-			iBuffer += snprintf(iBuffer, end-iBuffer, ".");
-			if (iBuffer >= end)
-				break;
+			luaL_addstring(&lb, ".");
 		}
-// TODO if a 'simple' key, don't wrap in ""
-		iBuffer += snprintf(iBuffer, end-iBuffer, "\"%s\"", iKeys[ki]);
-		if (iBuffer >= end)
-			break;
+		luaL_addstring(&lb, "\"");
+		luaL_addstring(&lb, iKeys[ki]);
+		luaL_addstring(&lb, "\"");
 	}
+
+	luaL_pushresult(&lb);
+
+	return LK_OK;
 }

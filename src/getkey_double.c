@@ -35,7 +35,7 @@ lkonf_getkey_double(lkonf_context * iLc, lkonf_keys iKeys, double * oValue)
 
 	if (LUA_TNUMBER != lua_type(iLc->state, -1)) {
 		lki_set_error_keys(iLc,
-			LK_OUT_OF_RANGE, "Not a double", iKeys);
+			LK_OUT_OF_RANGE, "Not a double", iKeys, 0);
 		return lki_state_exit(iLc);
 	}
 

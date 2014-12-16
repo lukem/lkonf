@@ -48,16 +48,23 @@ lki_set_error_keys(
 	lkonf_context *		iLc,
 	const lkonf_error	iCode,
 	const char *		iString,
-	lkonf_keys		iKeys)
+	lkonf_keys		iKeys,
+	size_t			iMaxKeys)
 {
 	assert(iLc && "iLc NULL");
 
-	char keydesc[sizeof(iLc->error_string)];
-	lki_format_keys(iKeys, 0, keydesc, sizeof(keydesc));
+		/* push formatted keys onto stack */
+	iLc->error_code = lki_format_keys(iLc, iKeys, iMaxKeys);
+	if (LK_OK != iLc->error_code)
+		return iLc->error_code;
 
+		/* format error */
 	iLc->error_code = iCode;
 	snprintf(iLc->error_string, sizeof(iLc->error_string),
-		"%s: %s", iString, keydesc);
+		"%s: %s", iString, lua_tostring(iLc->state, -1));
+
+		/* pop formatted keys off stack */
+	lua_pop(iLc->state, 1);
 
 	return iCode;
 }
