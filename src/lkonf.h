@@ -2,7 +2,7 @@
 #define LKONF_H 1
 
 /*
- * Copyright (c) 2014 Luke Mewburn <Luke@Mewburn.net>
+ * Copyright (c) 2014-2015 Luke Mewburn <Luke@Mewburn.net>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
