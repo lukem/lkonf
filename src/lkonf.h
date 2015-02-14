@@ -188,6 +188,22 @@ LUA_API lkonf_error
 lkonf_set_instruction_limit(lkonf_context * iLc, const int iLimit);
 
 
+/**
+ * Copy the iKeys from iSrcIdx to iDstIdx..
+ * @param	iLc	lkonf_context.
+ * @param	iSrcIdx	Index of table to copy from.
+ * @param	iDstIdx	Index of table to copy to.
+ * @param	iKeys	Keys to traverse; array terminated with NULL key.
+ * @return		Error code, or LK_OK if ok.
+ */
+LUA_API lkonf_error
+lkonf_copy_table_keys(
+	lkonf_context * iLc,
+	const int	iSrcIdx,
+	const int	iDstIdx,
+	lkonf_keys	iKeys);
+
+
 	/*
 	 * Value retrieval.
 	 */

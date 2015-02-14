@@ -11,6 +11,7 @@ lib_LTLIBRARIES = liblkonf.la
 
 liblkonf_la_SOURCES = \
 	construct.c \
+	copy_table_keys.c \
 	destruct.c \
 	error_to_string.c \
 	get_boolean.c \
